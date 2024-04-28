@@ -162,7 +162,7 @@ export default function Attributes() {
         <Typography>Country of Origin</Typography>
         <TextField
           select
-          defaultValue="China"
+          defaultValue="china"
           id="country-of-origin"
           label=""
           variant="outlined"

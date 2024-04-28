@@ -21,13 +21,14 @@ import { error } from "src/theme/palette";
 
 import Iconify from "src/components/iconify";
 
-import AddVariantModal from "./add-variant-modal";
+import EditOptions, { EDIT_OPTIONS } from "./edit-options-modal";
+import AddVariantModal, { ADD_VARIANT } from "./add-variant-modal";
 
 export default function Variants() {
   const theme = useTheme();
   const rows = [{ title: "512 GB", sku: "", price: "$25", inventory: 5 }];
   const [open, setOpen] = useState<Element | null>(null);
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<string | null>(null);
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -48,11 +49,11 @@ export default function Variants() {
   };
 
   const handleAddVariant = () => {
-    setOpenModal(true);
+    setOpenModal(ADD_VARIANT);
     handleCloseMenu();
   };
   const handleEditOptions = () => {
-    setOpenModal(true);
+    setOpenModal(EDIT_OPTIONS);
     handleCloseMenu();
   };
 
@@ -157,6 +158,7 @@ export default function Variants() {
         {popOverItems()}
       </Popover>
       <AddVariantModal open={openModal} setOpen={setOpenModal} />
+      <EditOptions open={openModal} setOpen={setOpenModal} />
     </Box>
   );
 }

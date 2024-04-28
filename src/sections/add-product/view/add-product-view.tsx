@@ -2,10 +2,11 @@ import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
 import Variants from "../variants";
+import AddImages from "../add-images";
 import Attributes from "../attributes";
 import RawProduct from "../raw-product";
 import GeneralInfo from "../general-info";
-
+ 
 // ----------------------------------------------------------------------
 
 export default function AddProductView() {
@@ -21,12 +22,17 @@ export default function AddProductView() {
   );
 
   return (
-    <Box sx={{ p: 2 }}>
-      <GeneralInfo />
-      <Variants />
-      <Attributes />
-      <RawProduct />
-      {floatingButtons}
+    <Box sx={{ display: "flex", gap: 3, p: 2 }}>
+      <Box sx={{ w: "60%" }}>
+        <GeneralInfo />
+        <Variants />
+        <Attributes />
+        <RawProduct />
+        {floatingButtons}
+      </Box>
+      <Box sx={{ width: "40%" }}>
+        <AddImages />
+      </Box>
     </Box>
   );
 }

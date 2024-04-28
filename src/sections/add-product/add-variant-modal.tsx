@@ -22,19 +22,21 @@ import { grey } from "src/theme/palette";
 
 import Iconify from "src/components/iconify";
 
+export const ADD_VARIANT = "add_variant";
+
 export default function AddVariantModal({
   open,
   setOpen,
 }: {
-  open: boolean;
-  setOpen: (value: boolean) => void;
+  open: string | null;
+  setOpen: (value: string | null) => void;
 }) {
   const theme = useTheme();
-  const handleClose = () => setOpen(false);
+  const handleClose = () => setOpen(null);
 
   return (
     <Modal
-      open={open}
+      open={open == ADD_VARIANT}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -43,9 +45,11 @@ export default function AddVariantModal({
       <Box
         sx={{
           maxWidth: 750,
+          maxHeight: 750,
           backgroundColor: theme.palette.background.default,
           p: 3,
           borderRadius: 1,
+          overflowY: "auto"
         }}
       >
         <Box
@@ -85,12 +89,11 @@ export default function AddVariantModal({
   );
 }
 
-
 function VariantAccordion() {
   const countries = [{ value: "china", label: "China" }];
 
   return (
-    <>
+    <Box>
       <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<Iconify icon="eva:minus-fill" />}
@@ -353,6 +356,6 @@ function VariantAccordion() {
         </AccordionSummary>
         <AccordionDetails></AccordionDetails>
       </Accordion>
-    </>
+    </Box>
   );
 }

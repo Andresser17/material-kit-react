@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 import { grey } from "@mui/material/colors";
 import {
@@ -14,19 +14,21 @@ import {
 
 import Iconify from "src/components/iconify";
 
-export default function EditOptions({
+export const EDIT_OPTIONS = "edit_options";
+
+export default function EditOptionsModal({
   open,
   setOpen,
 }: {
-  open: boolean;
-  setOpen: (value: boolean) => void;
+  open: string | null;
+  setOpen: (value: string | null) => void;
 }) {
   const theme = useTheme();
-  const handleClose = () => setOpen(false);
+  const handleClose = () => setOpen(null);
 
   return (
     <Modal
-      open={open}
+      open={open == EDIT_OPTIONS}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -34,10 +36,12 @@ export default function EditOptions({
     >
       <Box
         sx={{
-          maxWidth: 750,
+          width: 600,
+          maxHeight: 750,
           backgroundColor: theme.palette.background.default,
           p: 3,
           borderRadius: 1,
+          overflowY: "auto",
         }}
       >
         <Box
@@ -47,31 +51,13 @@ export default function EditOptions({
             alignItems: "center",
           }}
         >
-          <Typography variant="h4">Add Variant</Typography>
+          <Typography variant="h4">Edit Options</Typography>
           <IconButton id="section-op" onClick={handleClose}>
             <Iconify icon="eva:close-fill" width={25} />
           </IconButton>
         </Box>
         <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
         <ProductOptions />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-          <Button
-            variant="contained"
-            color="success"
-            size="medium"
-            sx={{ mr: 2 }}
-          >
-            Save
-          </Button>
-          <Button
-            onClick={handleClose}
-            variant="text"
-            size="small"
-            color="error"
-          >
-            Cancel
-          </Button>
-        </Box>
       </Box>
     </Modal>
   );
@@ -79,16 +65,22 @@ export default function EditOptions({
 
 function ProductOptions() {
   const options = ["Color", "Size", "Shape"];
-  const [productOptions, setProductOptions] = useState<Element[]>();
+  // const [productOptions, setProductOptions] = useState<Element[]>();
 
-  const handleAddOption = () => {};
+  // const handleAddOption = () => {};
 
-  const handleDeleteOption = (id: string) => {};
+  const handleDeleteOption = (id: string) => {
+    console.log({id})
+  };
 
   return (
     <>
       {options.map((option) => (
-        <OptionField key={option} title={option} handleDeleteOption={handleDeleteOption} />
+        <OptionField
+          key={option}
+          title={option}
+          handleDeleteOption={handleDeleteOption}
+        />
       ))}
       <Button sx={{ width: "100%", mt: 4, border: `1px solid ${grey[700]}` }}>
         <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
@@ -110,6 +102,7 @@ function OptionField({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        mb: 1
       }}
     >
       <TextField
