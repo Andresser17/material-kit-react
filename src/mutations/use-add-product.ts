@@ -8,6 +8,8 @@ import { useUser } from "src/queries/use-user";
 import { Product } from "src/queries/use-list-products";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
+import { SortableImageType } from "src/sections/add-product/add-images";
+
 type UploadedFile = {
   url: string;
   key: string;
@@ -15,27 +17,33 @@ type UploadedFile = {
 
 async function uploadImages(
   access_token: string | undefined,
-  formData: FormData,
+  images: SortableImageType[],
 ): Promise<Array<UploadedFile>> {
+  const body = new FormData();
+  images.forEach((image) => {
+    body.append("files", image.img);
+  });
+
   const url = new URL("/admin/uploads", BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: formData,
+    body,
   });
   if (!response.ok) throw new Error("Failed uploading files");
 
-  return await response.json();
+  const { uploads } = await response.json();
+
+  return uploads;
 }
 
 async function addProduct(
   access_token: string | undefined,
   newProduct: Product,
-  thumbnail: UploadedFile,
-  images: Array<UploadedFile>,
+  thumbnail: UploadedFile | undefined,
+  images: Array<UploadedFile> | undefined,
 ): Promise<Product> {
   const url = new URL("/admin/products", BACKEND_URL);
   const response = await fetch(url, {
@@ -44,7 +52,11 @@ async function addProduct(
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify({ ...newProduct, thumbnail, images }),
+    body: JSON.stringify({
+      ...newProduct,
+      thumbnail: thumbnail ? thumbnail.url : undefined,
+      images: images ? images : undefined,
+    }),
   });
   if (!response.ok) throw new Error("Failed on creating new product");
 
@@ -52,9 +64,9 @@ async function addProduct(
 }
 
 type IUseAddProduct = UseMutateFunction<
-  Product |  undefined,
+  Product | undefined,
   Error,
-  { newProduct: Product; toUpload: FormData },
+  { newProduct: Product; toUpload: SortableImageType[] },
   unknown
 >;
 
@@ -68,32 +80,22 @@ export function useAddProduct(): IUseAddProduct {
       toUpload,
     }: {
       newProduct: Product;
-      toUpload: FormData;
+      toUpload: SortableImageType[];
     }) => {
-      const uploads = await uploadImages(user?.access_token, toUpload);
-      let thumbnail: UploadedFile = { url: "", key: "" };
-      const images: Array<UploadedFile> = [];
-
-      for (const image of uploads) {
-        if (image.key.split("-")[0] === "thumbnail") {
-          thumbnail = image;
-          return;
-        }
-        images.push(image);
+      if (toUpload.length > 0) {
+        const uploads = await uploadImages(user?.access_token, toUpload);
+        const thumbnail = uploads[0];
+        const images = uploads.slice(1);
+        return addProduct(user?.access_token, newProduct, thumbnail, images);
       }
 
-      return addProduct(
-        user?.access_token,
-        newProduct,
-        thumbnail,
-        images,
-      );
+      return addProduct(user?.access_token, newProduct, undefined, undefined);
     },
     mutationKey: [MUTATION_KEY.add_product],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
-    onError: () => {
-      console.log("Invalid properties");
+    onError: (err) => {
+      console.log(err);
     },
   });
 

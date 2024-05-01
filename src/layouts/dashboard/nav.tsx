@@ -4,12 +4,11 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Drawer from "@mui/material/Drawer";
 import { alpha } from "@mui/material/styles";
+import { Divider, Typography } from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 
 import { usePathname } from "src/routes/hooks";
-// import { RouterLink } from "src/routes/components";
-
-import { Divider, Typography } from "@mui/material";
+import { RouterLink } from "src/routes/components";
 
 import { useResponsive } from "src/hooks/use-responsive";
 
@@ -65,12 +64,7 @@ export default function Nav({
     }
 
     return (
-      <Stack
-        key={section.title}
-        component="nav"
-        spacing={0.5}
-        sx={{ px: 0 }}
-      >
+      <Stack key={section.title} component="nav" spacing={0.5} sx={{ px: 0 }}>
         <NavItem
           key={section.title}
           title={section.title}
@@ -144,6 +138,7 @@ function NavItem({ title, path, icon }: NavSectionLinkType) {
 
   return (
     <ListItemButton
+      component={RouterLink}
       href={path}
       sx={{
         minHeight: 24,

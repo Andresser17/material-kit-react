@@ -1,5 +1,5 @@
 import { CSS } from "@dnd-kit/utilities";
-import { useState, Dispatch, ChangeEvent, SetStateAction } from "react";
+import { Dispatch, ChangeEvent, SetStateAction } from "react";
 import { DndContext, closestCenter, UniqueIdentifier } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -20,19 +20,25 @@ import {
 
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
+import SectionBox from "src/components/section-box";
 
 // ----------------------------------------------------------------------
 
-type SortableImageType = {
+export type SortableImageType = {
   id: UniqueIdentifier;
   img: File;
   src: string;
   title: string;
 };
 
-export default function AddImages() {
+export default function AddImages({
+  images,
+  setImages,
+}: {
+  images: SortableImageType[];
+  setImages: Dispatch<SetStateAction<SortableImageType[]>>;
+}) {
   const theme = useTheme();
-  const [images, setImages] = useState<SortableImageType[]>([]);
   const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const { files } = e.target;
@@ -77,12 +83,9 @@ export default function AddImages() {
   };
 
   return (
-    <Box
+    <SectionBox
       sx={{
         width: "100%",
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: 1,
-        p: 3,
         mb: 3,
       }}
     >
@@ -145,7 +148,7 @@ export default function AddImages() {
           </SortableContext>
         </DndContext>
       </Box>
-    </Box>
+    </SectionBox>
   );
 }
 

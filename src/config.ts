@@ -1,6 +1,9 @@
 export const QUERY_KEY = {
   user: "user",
   product: "product",
+  productType: "productType",
+  tag: "tag",
+  collection: "collection",
 };
 
 export const MUTATION_KEY = {

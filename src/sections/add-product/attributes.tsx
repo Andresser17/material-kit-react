@@ -1,26 +1,18 @@
-import Box from "@mui/material/Box";
-import {
-  Divider,
-  useTheme,
-  MenuItem,
-  TextField,
-  Typography,
-  InputAdornment,
-} from "@mui/material";
+import { Control } from "react-hook-form";
 
-export default function Attributes() {
-  const theme = useTheme();
+import Box from "@mui/material/Box";
+import { Divider, MenuItem, Typography, InputAdornment } from "@mui/material";
+
+import { Product } from "src/queries/use-list-products";
+
+import SectionBox from "src/components/section-box";
+import ControlledField from "src/components/controlled-field";
+
+export default function Attributes({ control }: { control: Control<Product> }) {
   const options = [{ value: "china", label: "China" }];
 
   return (
-    <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: 1,
-        p: 3,
-        mb: 3
-      }}
-    >
+    <SectionBox>
       <Typography variant="h4">Attributes</Typography>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
       <Typography variant="h6" sx={{ mb: 2 }}>
@@ -36,12 +28,12 @@ export default function Attributes() {
         }}
       >
         <Typography>Height</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="number"
           id="height"
           label=""
           variant="outlined"
-          required
           sx={{ width: 96 }}
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
@@ -57,12 +49,12 @@ export default function Attributes() {
         }}
       >
         <Typography>Width</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="number"
           id="width"
           label=""
           variant="outlined"
-          required
           sx={{ width: 96 }}
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
@@ -78,12 +70,12 @@ export default function Attributes() {
         }}
       >
         <Typography>Length</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="number"
           id="length"
           label=""
           variant="outlined"
-          required
           sx={{ width: 96 }}
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
@@ -99,12 +91,12 @@ export default function Attributes() {
         }}
       >
         <Typography>Weight</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="number"
           id="weight"
           label=""
           variant="outlined"
-          required
           sx={{ width: 96 }}
           InputProps={{
             endAdornment: <InputAdornment position="start">kg</InputAdornment>,
@@ -124,12 +116,12 @@ export default function Attributes() {
         }}
       >
         <Typography>MID Code</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="string"
           id="mid-code"
           label=""
           variant="outlined"
-          required
           sx={{ width: 250 }}
         />
       </Box>
@@ -142,12 +134,12 @@ export default function Attributes() {
         }}
       >
         <Typography>HS Code</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           type="string"
           id="hs-code"
           label=""
           variant="outlined"
-          required
           sx={{ width: 250 }}
         />
       </Box>
@@ -160,13 +152,13 @@ export default function Attributes() {
         }}
       >
         <Typography>Country of Origin</Typography>
-        <TextField
+        <ControlledField
+          control={control}
           select
           defaultValue="china"
           id="country-of-origin"
           label=""
           variant="outlined"
-          required
           sx={{ width: 250 }}
         >
           {options.map((option) => (
@@ -174,8 +166,8 @@ export default function Attributes() {
               {option.label}
             </MenuItem>
           ))}
-        </TextField>
+        </ControlledField>
       </Box>
-    </Box>
+    </SectionBox>
   );
 }
