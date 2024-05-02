@@ -1,3 +1,15 @@
+import { ProductVariantDTO } from "@medusajs/types";
+import { Control, useForm, SubmitHandler } from "react-hook-form";
+
+import {
+  Box,
+  Modal,
+  Button,
+  Accordion,
+  Typography,
+  AccordionDetails,
+  AccordionSummary,
+} from "@mui/material";
 import {
   Switch,
   Divider,
@@ -7,20 +19,11 @@ import {
   InputAdornment,
   FormControlLabel,
 } from "@mui/material";
-import {
-  Box,
-  Modal,
-  Button,
-  TextField,
-  Accordion,
-  Typography,
-  AccordionDetails,
-  AccordionSummary,
-} from "@mui/material";
 
 import { grey } from "src/theme/palette";
 
 import Iconify from "src/components/iconify";
+import ControlledField from "src/components/controlled-field";
 
 export const ADD_VARIANT = "add_variant";
 
@@ -33,6 +36,15 @@ export default function AddVariantModal({
 }) {
   const theme = useTheme();
   const handleClose = () => setOpen(null);
+  const { handleSubmit, control } = useForm<ProductVariantDTO>({
+    defaultValues: {},
+    mode: "onChange",
+  });
+  //const addProductMutation = useAddProduct();
+  const onSubmit: SubmitHandler<ProductVariantDTO> = (data) => {
+    console.log(data);
+    // addProductMutation({ newProduct: { ...data, status }, toUpload: images });
+  };
 
   return (
     <Modal
@@ -49,48 +61,56 @@ export default function AddVariantModal({
           backgroundColor: theme.palette.background.default,
           p: 3,
           borderRadius: 1,
-          overflowY: "auto"
+          overflowY: "auto",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h4">Add Variant</Typography>
-          <IconButton id="section-op" onClick={handleClose}>
-            <Iconify icon="eva:close-fill" width={25} />
-          </IconButton>
-        </Box>
-        <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
-        <VariantAccordion />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-          <Button
-            variant="contained"
-            color="success"
-            size="medium"
-            sx={{ mr: 2 }}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            Save
-          </Button>
-          <Button
-            onClick={handleClose}
-            variant="text"
-            size="small"
-            color="error"
-          >
-            Cancel
-          </Button>
-        </Box>
+            <Typography variant="h4">Add Variant</Typography>
+            <IconButton id="section-op" onClick={handleClose}>
+              <Iconify icon="eva:close-fill" width={25} />
+            </IconButton>
+          </Box>
+          <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
+          <VariantAccordion control={control} />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              size="medium"
+              sx={{ mr: 2 }}
+            >
+              Save
+            </Button>
+            <Button
+              onClick={handleClose}
+              variant="text"
+              size="small"
+              color="error"
+            >
+              Cancel
+            </Button>
+          </Box>
+        </form>
       </Box>
     </Modal>
   );
 }
 
-function VariantAccordion() {
+function VariantAccordion({
+  control,
+}: {
+  control: Control<ProductVariantDTO>;
+}) {
   const countries = [{ value: "china", label: "China" }];
+  const handleAddOption = () => {};
 
   return (
     <Box>
@@ -104,7 +124,8 @@ function VariantAccordion() {
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            <TextField
+            <ControlledField
+              control={control}
               id="custom-title"
               label="Custom title"
               variant="outlined"
@@ -114,33 +135,19 @@ function VariantAccordion() {
           <Typography variant="subtitle2" sx={{ my: 2 }}>
             Options
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+          {/* {options.map((option) => (
+            <OptionLabel key={option.id} title={option.title} />
+          ))} */}
+          <Button
+            onClick={handleAddOption}
+            aria-label="Delete option"
+            size="small"
+            fullWidth
+            sx={{ borderRadius: 1, border: `1px solid ${grey[700]}`, mt: 3 }}
           >
-            <TextField
-              id="title"
-              label="Option title"
-              variant="outlined"
-              size="small"
-              fullWidth
-              sx={{ mr: 2 }}
-            />
-            <IconButton
-              aria-label="Delete option"
-              size="small"
-              sx={{ borderRadius: 1, border: `1px solid ${grey[700]}` }}
-            >
-              <Iconify
-                icon="eva:trash-2-outline"
-                width={28}
-                sx={{ p: "3px" }}
-              />
-            </IconButton>
-          </Box>
+            <Iconify icon="material-symbols:add" width={28} sx={{ p: "3px" }} />
+            Add an option
+          </Button>
         </AccordionDetails>
       </Accordion>
 
@@ -154,32 +161,37 @@ function VariantAccordion() {
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            <TextField
+            <ControlledField
+              control={control}
               id="sku"
               label="Stock keeping unit (SKU)"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="stock"
               type="number"
               label="Stock"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="ean"
               label="EAN (Barcode)"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="upc"
               label="UPC (Barcode)"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="barcode"
               label="Barcode"
               variant="outlined"
@@ -251,7 +263,8 @@ function VariantAccordion() {
             Configure to calculate the most accurate shipping rates.
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
-            <TextField
+            <ControlledField
+              control={control}
               id="width"
               type="number"
               label="Width"
@@ -263,7 +276,8 @@ function VariantAccordion() {
                 ),
               }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="length"
               type="number"
               label="Length"
@@ -275,7 +289,8 @@ function VariantAccordion() {
                 ),
               }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="height"
               type="number"
               label="Height"
@@ -287,7 +302,8 @@ function VariantAccordion() {
                 ),
               }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="weight"
               type="number"
               label="Weight"
@@ -315,19 +331,22 @@ function VariantAccordion() {
               gap: 2,
             }}
           >
-            <TextField
+            <ControlledField
+              control={control}
               id="mid-code"
               label="MID Code"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               id="hs-code"
               label="HS Code"
               variant="outlined"
               sx={{ width: "48%" }}
             />
-            <TextField
+            <ControlledField
+              control={control}
               select
               defaultValue="China"
               id="country-of-origin"
@@ -341,7 +360,7 @@ function VariantAccordion() {
                   {option.label}
                 </MenuItem>
               ))}
-            </TextField>
+            </ControlledField>
           </Box>
         </AccordionDetails>
       </Accordion>

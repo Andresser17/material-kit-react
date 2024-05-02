@@ -1,4 +1,5 @@
-import { useState, SetStateAction } from "react";
+import { ProductOptionDTO } from "@medusajs/types";
+import { useState, Dispatch, SetStateAction } from "react";
 
 import {
   Box,
@@ -24,7 +25,13 @@ import Iconify from "src/components/iconify";
 import EditOptions, { EDIT_OPTIONS } from "./edit-options-modal";
 import AddVariantModal, { ADD_VARIANT } from "./add-variant-modal";
 
-export default function Variants() {
+export default function Variants({
+  options,
+  setOptions,
+}: {
+  options: ProductOptionDTO[];
+  setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
+}) {
   const theme = useTheme();
   const rows = [{ title: "512 GB", sku: "", price: "$25", inventory: 5 }];
   const [open, setOpen] = useState<Element | null>(null);
@@ -158,7 +165,12 @@ export default function Variants() {
         {popOverItems()}
       </Popover>
       <AddVariantModal open={openModal} setOpen={setOpenModal} />
-      <EditOptions open={openModal} setOpen={setOpenModal} />
+      <EditOptions
+        open={openModal}
+        setOpen={setOpenModal}
+        options={options}
+        setOptions={setOptions}
+      />
     </Box>
   );
 }

@@ -356,6 +356,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@medusajs/types@^1.11.16":
+  version "1.11.16"
+  resolved "https://registry.npmjs.org/@medusajs/types/-/types-1.11.16.tgz"
+  integrity sha512-utgD9FdDH8u/m7d9Zj2IUBIhLHXBhkBZ9IvILvdaus6BfEk+grkk1qBsAmAdgQTfOM1DGmf8vWChCNTR++uF9Q==
+
 "@mui/base@^5.0.0-alpha.87", "@mui/base@5.0.0-beta.18":
   version "5.0.0-beta.18"
   resolved "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.18.tgz"

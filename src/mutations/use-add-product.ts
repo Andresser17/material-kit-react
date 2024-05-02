@@ -1,3 +1,4 @@
+import { ProductDTO } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -5,7 +6,6 @@ import {
 } from "@tanstack/react-query";
 
 import { useUser } from "src/queries/use-user";
-import { Product } from "src/queries/use-list-products";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { SortableImageType } from "src/sections/add-product/add-images";
@@ -41,10 +41,10 @@ async function uploadImages(
 
 async function addProduct(
   access_token: string | undefined,
-  newProduct: Product,
+  newProduct: ProductDTO,
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
-): Promise<Product> {
+): Promise<ProductDTO> {
   const url = new URL("/admin/products", BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
@@ -64,9 +64,9 @@ async function addProduct(
 }
 
 type IUseAddProduct = UseMutateFunction<
-  Product | undefined,
+  ProductDTO | undefined,
   Error,
-  { newProduct: Product; toUpload: SortableImageType[] },
+  { newProduct: ProductDTO; toUpload: SortableImageType[] },
   unknown
 >;
 
@@ -79,7 +79,7 @@ export function useAddProduct(): IUseAddProduct {
       newProduct,
       toUpload,
     }: {
-      newProduct: Product;
+      newProduct: ProductDTO;
       toUpload: SortableImageType[];
     }) => {
       if (toUpload.length > 0) {

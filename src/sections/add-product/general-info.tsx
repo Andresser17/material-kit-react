@@ -1,4 +1,5 @@
 import { Control } from "react-hook-form";
+import { ProductDTO } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import {
@@ -9,7 +10,6 @@ import {
   createFilterOptions,
 } from "@mui/material";
 
-import { Product } from "src/queries/use-list-products";
 import { Tag, useListTags } from "src/queries/use-list-tags";
 import {
   Collection,
@@ -26,7 +26,7 @@ import ControlledField from "src/components/controlled-field";
 export default function GeneralInfo({
   control,
 }: {
-  control: Control<Product>;
+  control: Control<ProductDTO>;
 }) {
   const { types } = useListProductTypes();
   const { tags } = useListTags();
@@ -106,7 +106,7 @@ export default function GeneralInfo({
 }
 
 interface IAddSelect<T> {
-  control: Control<Product>;
+  control: Control<ProductDTO>;
   id: string;
   label: string;
   placeholder?: string;

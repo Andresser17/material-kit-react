@@ -1,14 +1,17 @@
 import { Control } from "react-hook-form";
+import { ProductDTO } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Divider, MenuItem, Typography, InputAdornment } from "@mui/material";
 
-import { Product } from "src/queries/use-list-products";
-
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
 
-export default function Attributes({ control }: { control: Control<Product> }) {
+export default function Attributes({
+  control,
+}: {
+  control: Control<ProductDTO>;
+}) {
   const options = [{ value: "china", label: "China" }];
 
   return (
