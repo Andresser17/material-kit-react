@@ -19,12 +19,11 @@ import { emptyRows } from "../utils";
 import TableEmptyRows from "../table-empty-rows";
 import ProductTableRow from "../product-table-row";
 import ProductTableToolbar from "../product-table-toolbar";
-// import TableNoData from "../table-no-data";
 import ProductTableHead, { TableOrder } from "../product-table-head";
 
 // ----------------------------------------------------------------------
 
-export default function UserPage() {
+export default function ProductsView() {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState<TableOrder>(TableOrder.ASC);
@@ -157,12 +156,7 @@ export default function UserPage() {
                     .map((product) => (
                       <ProductTableRow
                         key={product.id}
-                        thumbnail={product.thumbnail}
-                        productId={product.id}
-                        title={product.title}
-                        status={product.status}
-                        quantity={0}
-                        price={0}
+                        product={product}
                         selectedRow={selected.indexOf(product.id) !== -1}
                         handleClick={() => {
                           return handleClick(product.id);

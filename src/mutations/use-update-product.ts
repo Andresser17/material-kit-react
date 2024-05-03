@@ -1,63 +1,97 @@
+import toast from "react-hot-toast";
+import { ProductDTO } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
   UseMutateFunction,
 } from "@tanstack/react-query";
 
-import { User } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL } from "src/config";
+import { useUser } from "src/queries/use-user";
+import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-// async function delete(id: string): Promise<any> {
+import { SortableImageType } from "src/sections/add-product/add-images";
 
-// }
+import uploadImages, { UploadedFile } from "./uploadImages";
 
-async function updateProduct(id: string): Promise<User> {
-  const response = await fetch(`${BACKEND_URL}/admin/products${id}`, {
-    method: "PUT",
+async function updateProduct(
+  access_token: string | undefined,
+  id: string,
+  product: ProductDTO,
+  thumbnail: UploadedFile | undefined,
+  images: Array<UploadedFile> | undefined,
+): Promise<ProductDTO> {
+  const url = new URL(`/admin/products/${id}`, BACKEND_URL);
+  const response = await fetch(url, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify({
+      ...product,
+      thumbnail: thumbnail ? thumbnail.url : undefined,
+      images: images ? images : undefined,
+    }),
   });
-  if (!response.ok) throw new Error("Failed on sign in request");
+  if (!response.ok) throw new Error("Failed on updating product");
 
   return await response.json();
 }
 
-type IUseSignIn = UseMutateFunction<
-  User,
+type IUseUpdateProduct = UseMutateFunction<
+  ProductDTO,
   Error,
-  { email: string; password: string },
+  { id: string; product: ProductDTO; toUpload: SortableImageType[] },
   unknown
 >;
 
-export function useUpdateProduct(): IUseSignIn {
+export function useUpdateProduct(): IUseUpdateProduct {
   const queryClient = useQueryClient();
-  // const { enqueueSnackbar } = useSnackbar();
+  const { user } = useUser();
 
-  const { mutate: signInMutation } = useMutation({
-    mutationFn: ({ id }: { id: string }) => updateProduct(id),
-    onSuccess: (data) => {
-      queryClient.setQueryData([QUERY_KEY.product], data);
+  const { mutate } = useMutation({
+    mutationFn: async ({
+      id,
+      product,
+      toUpload,
+    }: {
+      id: string;
+      product: ProductDTO;
+      toUpload: SortableImageType[];
+    }) => {
+      if (toUpload.length > 0) {
+        const uploads = await uploadImages(user?.access_token, toUpload);
+        const thumbnail = uploads[0];
+        const images = uploads.slice(1);
+        return updateProduct(
+          user?.access_token,
+          id,
+          product,
+          thumbnail,
+          images,
+        );
+      }
+
+      return updateProduct(
+        user?.access_token,
+        id,
+        product,
+        undefined,
+        undefined,
+      );
     },
-    onError: () => {
-      console.log("Invalid properties");
-      // enqueueSnackbar("Ops.. Error on sign in. Try again!", {
-      //   variant: "error",
-      // });
+    mutationKey: [MUTATION_KEY.update_product],
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
+    onSuccess: () => {
+      //queryClient.setQueryData([QUERY_KEY.product], data);
+      toast.success("Product updated successfully");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.error(err.message);
     },
   });
 
-  return signInMutation;
+  return mutate;
 }
-
-// function useSnackbar(): {
-//   enqueueSnackbar: (
-//     message: string,
-//     config: {
-//       variant: string;
-//     },
-//   ) => void;
-// } {
-//   throw new Error("Function not implemented.");
-// }

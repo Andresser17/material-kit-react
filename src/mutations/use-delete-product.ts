@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import {
   useMutation,
   useQueryClient,
@@ -47,16 +48,12 @@ export function useDeleteProduct(): IUseDeleteProduct {
     mutationKey: [MUTATION_KEY.delete_product],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
-    // onSuccess: (data) => {
-    //   // remove deleted product from cache
-    //   if (data.deleted) {
-    //     console.log("deleted")
-    //     // queryClient.removeQueries({ queryKey: [QUERY_KEY.product] });
-    //     // queryClient.setQueryData([QUERY_KEY.product, { id: data.id }], null);
-    //   }
-    // },
-    onError: () => {
-      console.log("Invalid properties");
+    onSuccess: () => {
+      toast.success("Product deleted sucessfully");
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.error(err.message);
     },
   });
 

@@ -8,6 +8,7 @@ export const QUERY_KEY = {
 
 export const MUTATION_KEY = {
   add_product: "add_product",
+  update_product: "update_product",
   delete_product: "delete_product",
 };
 

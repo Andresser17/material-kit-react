@@ -1,3 +1,5 @@
+import { ProductDTO } from "@medusajs/types";
+import { useNavigate } from "react-router-dom";
 import { useState, ChangeEvent, SetStateAction } from "react";
 
 import Popover from "@mui/material/Popover";
@@ -16,27 +18,18 @@ import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-interface IUserTableRow {
-  thumbnail: string;
-  productId: string;
-  title: string;
-  status: ProductStatus;
-  quantity: number;
-  price: number;
+interface IProductTableRow {
+  product: ProductDTO;
   selectedRow: boolean;
   handleClick: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }
 
 export default function ProductTableRow({
-  thumbnail,
-  productId,
-  title,
-  status,
-  quantity,
-  price,
+  product,
   selectedRow,
   handleClick,
-}: IUserTableRow) {
+}: IProductTableRow) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState<Element | null>(null);
   const deleteProductMutation = useDeleteProduct();
 
@@ -49,15 +42,19 @@ export default function ProductTableRow({
   const handleCloseMenu = () => {
     setOpen(null);
   };
-  
+
   const handleEdit = () => {
-   
-    handleCloseMenu()
-  }
+    handleCloseMenu();
+    navigate("/products/add", {
+      state: {
+        product,
+      },
+    });
+  };
 
   const handleDelete = () => {
-    deleteProductMutation({ id: productId });
-    handleCloseMenu()
+    deleteProductMutation({ id: product.id });
+    handleCloseMenu();
   };
 
   return (
@@ -79,8 +76,8 @@ export default function ProductTableRow({
           }}
         >
           <Avatar
-            alt={thumbnail}
-            src={thumbnail}
+            alt={product.thumbnail as string}
+            src={product.thumbnail as string}
             variant="square"
             sx={{ width: 96, height: 96 }}
           />
@@ -93,21 +90,23 @@ export default function ProductTableRow({
               variant="subtitle2"
               noWrap
             >
-              #{productId.split("").slice(5)}
+              #{product.id.split("").slice(5)}
             </Typography>
-            <Typography variant="subtitle2">{title}</Typography>
+            <Typography variant="subtitle2">{product.title}</Typography>
           </Stack>
         </TableCell>
 
-        <TableCell align="center">{quantity}</TableCell>
+        <TableCell align="center">{0}</TableCell>
 
-        <TableCell align="center">{price}</TableCell>
+        <TableCell align="center">{0}</TableCell>
 
         <TableCell>
           <Label
-            color={(status === ProductStatus.DRAFT && "error") || "success"}
+            color={
+              (product.status === ProductStatus.DRAFT && "error") || "success"
+            }
           >
-            {status}
+            {product.status}
           </Label>
         </TableCell>
 

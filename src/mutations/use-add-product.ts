@@ -1,4 +1,6 @@
+import toast from "react-hot-toast";
 import { ProductDTO } from "@medusajs/types";
+import { UseFormReset } from "react-hook-form";
 import {
   useMutation,
   useQueryClient,
@@ -10,34 +12,7 @@ import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { SortableImageType } from "src/sections/add-product/add-images";
 
-type UploadedFile = {
-  url: string;
-  key: string;
-};
-
-async function uploadImages(
-  access_token: string | undefined,
-  images: SortableImageType[],
-): Promise<Array<UploadedFile>> {
-  const body = new FormData();
-  images.forEach((image) => {
-    body.append("files", image.img);
-  });
-
-  const url = new URL("/admin/uploads", BACKEND_URL);
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-    body,
-  });
-  if (!response.ok) throw new Error("Failed uploading files");
-
-  const { uploads } = await response.json();
-
-  return uploads;
-}
+import uploadImages, { UploadedFile } from "./uploadImages";
 
 async function addProduct(
   access_token: string | undefined,
@@ -70,7 +45,9 @@ type IUseAddProduct = UseMutateFunction<
   unknown
 >;
 
-export function useAddProduct(): IUseAddProduct {
+export function useAddProduct(
+  resetForm: UseFormReset<ProductDTO>,
+): IUseAddProduct {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
@@ -96,6 +73,13 @@ export function useAddProduct(): IUseAddProduct {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
     onError: (err) => {
       console.log(err);
+      // call error pop up
+      toast.error(err.message);
+    },
+    onSuccess() {
+      // call pop up
+      toast.success("Product add successfully");
+      resetForm();
     },
   });
 

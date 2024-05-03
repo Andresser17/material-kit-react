@@ -1,3 +1,4 @@
+import { ProductDTO } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
@@ -68,10 +69,10 @@ export type Product = {
   updated_at: string;
   deleted_at: string | null;
   metadata: { [key: string]: unknown };
-}
+};
 
 interface ProductsList {
-  products: Product[] | null;
+  products: ProductDTO[] | null;
   count: number;
   offset: number;
   limit: number;
@@ -104,7 +105,7 @@ export function useListProducts({
     filters: { mutationKey: [MUTATION_KEY], status: "pending" },
     // select: (mutation) => mutation.state.variables,
   });
-  
+
   if (Array.isArray(data?.products)) {
     return data;
   }
