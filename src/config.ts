@@ -2,6 +2,8 @@ export const QUERY_KEY = {
   user: "user",
   product: "product",
   productType: "productType",
+  order: "order",
+  draftOrder: "draftOrder",
   tag: "tag",
   collection: "collection",
 };

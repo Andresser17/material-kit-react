@@ -1,6 +1,8 @@
-import { Theme as OriginalTheme } from '@mui/material/styles';
+import { SalesChannelDTO } from "@medusajs/types";
 
-export declare module '@mui/material/styles' {
+import { Theme as OriginalTheme } from "@mui/material/styles";
+
+export declare module "@mui/material/styles" {
   interface Theme {
     palette: OriginalTheme.palette & {
       background: palette.background & {
@@ -36,5 +38,14 @@ export declare module '@mui/material/styles' {
   interface ThemeOptions {
     shadows?: string[];
     customShadows?: Theme.customShadows;
+  }
+}
+
+export declare module "@medusajs/types" {
+  interface OrderDTO {
+    fulfillment_status: FulfillmentStatus;
+    payment_status: PaymentStatus;
+    sales_channel: SalesChannelDTO;
+    payments: Payment[];
   }
 }
