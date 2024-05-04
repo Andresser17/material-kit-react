@@ -2,7 +2,6 @@ import { SetStateAction } from "react";
 
 import Box from "@mui/material/Box";
 import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
 import TableHead from "@mui/material/TableHead";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TableCell, { TableCellProps } from "@mui/material/TableCell";
@@ -18,10 +17,9 @@ export enum TableOrder {
   DESC = "desc",
 }
 
-interface IProductTableHead {
+interface IDraftOrdersTableHead {
   order: TableOrder;
   orderBy: string;
-  rowCount: number;
   headLabel: Array<{
     id: string;
     label: string;
@@ -29,35 +27,22 @@ interface IProductTableHead {
     width?: number;
     minWidth?: number;
   }>;
-  numSelected: number;
   onRequestSort: (event: unknown, id: SetStateAction<string>) => void;
-  onSelectAllClick: (event: { target: { checked: unknown } }) => void;
 }
 
 export default function ProductTableHead({
   order,
   orderBy,
-  rowCount,
   headLabel,
-  numSelected,
   onRequestSort,
-  onSelectAllClick,
-}: IProductTableHead) {
+}: IDraftOrdersTableHead) {
   const onSort = (id: SetStateAction<string>) => (event: unknown) => {
     onRequestSort(event, id);
   };
-  
+
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>
-
         {headLabel.map((cell) => (
           <TableCell
             key={cell.id}

@@ -2,6 +2,8 @@ import { SalesChannelDTO } from "@medusajs/types";
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
+import { DraftOrderStatus } from "./enums";
+
 export declare module "@mui/material/styles" {
   interface Theme {
     palette: OriginalTheme.palette & {
@@ -47,5 +49,21 @@ export declare module "@medusajs/types" {
     payment_status: PaymentStatus;
     sales_channel: SalesChannelDTO;
     payments: Payment[];
+  }
+
+  interface DraftOrder {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    status: DraftOrderStatus;
+    display_id: number;
+    cart_id: string;
+    cart: Cart;
+    order_id: string;
+    order: Order;
+    canceled_at: string;
+    completed_at: string;
+    no_notification_order: boolean;
+    metadata: Record<string, unknown>;
   }
 }

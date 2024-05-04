@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState, SetStateAction } from "react";
 
 import Card from "@mui/material/Card";
@@ -10,20 +11,22 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
-import { useListProducts } from "src/queries/use-list-products";
+import { useListDraftOrders } from "src/queries/use-list-draft-orders";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
+import TableEmptyRows from "src/components/table-empty-rows";
 
 import { emptyRows } from "../utils";
-import TableEmptyRows from "../table-empty-rows";
-import ProductTableRow from "../product-table-row";
-import ProductTableToolbar from "../product-table-toolbar";
-import ProductTableHead, { TableOrder } from "../product-table-head";
+import DraftOrdersTableRow from "../draft-orders-table-row";
+import ProductTableToolbar from "../draft-orders-table-toolbar";
+import DraftOrdersTableHead, { TableOrder } from "../draft-orders-table-head";
 
 // ----------------------------------------------------------------------
 
-export default function ProductsView() {
+export default function DraftOrdersView() {
+  const navigate = useNavigate();
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState<TableOrder>(TableOrder.ASC);
@@ -36,7 +39,7 @@ export default function ProductsView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const { products, count } = useListProducts({});
+  const { draft_orders, count } = useListDraftOrders({});
 
   const handleSort = (_event: unknown, id: SetStateAction<string>) => {
     const isAsc = orderBy === id && order === TableOrder.ASC;
@@ -44,33 +47,6 @@ export default function ProductsView() {
       setOrder(isAsc ? TableOrder.DESC : TableOrder.ASC);
       setOrderBy(id);
     }
-  };
-
-  const handleSelectAllClick = (event: { target: { checked: unknown } }) => {
-    if (event.target.checked) {
-      const newSelecteds = products?.map((product) => product.id);
-      if (newSelecteds) setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] | ((prevState: never[]) => never[]) = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handlePageChange = (
@@ -92,14 +68,6 @@ export default function ProductsView() {
     setFilterName(event.target.value);
   };
 
-  // const dataFiltered = applyFilter({
-  //   inputData: user,
-  //   comparator: getComparator(order, orderBy),
-  //   filterName,
-  // });
-
-  // const notFound = !dataFiltered.length && !!filterName;
-
   return (
     <Container>
       <Stack
@@ -108,14 +76,15 @@ export default function ProductsView() {
         justifyContent="space-between"
         mb={5}
       >
-        <Typography variant="h4">Products</Typography>
+        <Typography variant="h4">Draft Orders</Typography>
 
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={() => navigate("/draft-orders/add")}
         >
-          Add Product
+          Create draft order
         </Button>
       </Stack>
 
@@ -130,37 +99,29 @@ export default function ProductsView() {
         <Scrollbar sx={null}>
           <TableContainer sx={{ overflow: "unset" }}>
             <Table sx={{ minWidth: 800 }}>
-              <ProductTableHead
+              <DraftOrdersTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={count}
-                numSelected={selected.length}
                 onRequestSort={handleSort}
-                onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: "thumbnail", label: "Thumbnail", align: "center" },
-                  { id: "product", label: "Product" },
-                  { id: "quantity", label: "Quantity", align: "center" },
-                  { id: "price", label: "Price", align: "center" },
+                  { id: "draft", label: "Draft" },
+                  { id: "order", label: "Order" },
+                  { id: "date-added", label: "Date added", align: "center" },
+                  { id: "customer", label: "Customer", align: "center" },
                   { id: "status", label: "Status" },
-                  { id: "options", label: "" },
                 ]}
               />
               <TableBody>
-                {products &&
-                  products
+                {draft_orders &&
+                  draft_orders
                     ?.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage,
                     )
-                    .map((product) => (
-                      <ProductTableRow
-                        key={product.id}
-                        product={product}
-                        selectedRow={selected.indexOf(product.id) !== -1}
-                        handleClick={() => {
-                          return handleClick(product.id);
-                        }}
+                    .map((draft_order) => (
+                      <DraftOrdersTableRow
+                        key={draft_order.id}
+                        data={draft_order}
                       />
                     ))}
 
