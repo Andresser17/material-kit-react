@@ -38,6 +38,11 @@ export const navSections: Array<NavSection> = [
         path: "/products/add",
         icon: icon("ic_analytics"),
       },
+      {
+        title: "Create Draft Order",
+        path: "/draft-orders/create",
+        icon: icon("ic_analytics"),
+      },
     ],
   },
   {

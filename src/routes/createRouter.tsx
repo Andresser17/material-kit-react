@@ -10,6 +10,12 @@ export const ProductsPage = lazy(() => import("src/pages/products"));
 export const AddProductPage = lazy(() => import("src/pages/add-product"));
 export const OrdersPage = lazy(() => import("src/pages/orders"));
 export const DraftOrdersPage = lazy(() => import("src/pages/draft-orders"));
+export const CreateDraftOrderPage = lazy(
+  () => import("src/pages/create-draft-order"),
+);
+export const DraftOrderDetailsPage = lazy(
+  () => import("src/pages/draft-order"),
+);
 export const LoginPage = lazy(() => import("src/pages/login"));
 export const ErrorPage = lazy(() => import("src/pages/error-page"));
 
@@ -38,6 +44,8 @@ export function createRouter(isLoggedIn: boolean) {
         { path: "products/add", element: <AddProductPage /> },
         { path: "orders", element: <OrdersPage /> },
         { path: "draft-orders", element: <DraftOrdersPage /> },
+        { path: "draft-orders/create", element: <CreateDraftOrderPage /> },
+        { path: "draft-orders/:id", element: <DraftOrderDetailsPage /> },
       ],
       errorElement: <ErrorPage />,
     },

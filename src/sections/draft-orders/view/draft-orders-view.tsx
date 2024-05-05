@@ -82,7 +82,7 @@ export default function DraftOrdersView() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={() => navigate("/draft-orders/add")}
+          onClick={() => navigate("/draft-orders/create")}
         >
           Create draft order
         </Button>
