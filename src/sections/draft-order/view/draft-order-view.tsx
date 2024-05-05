@@ -87,9 +87,6 @@ export default function DraftOrderView() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
           p: 2,
         }}
       >
@@ -97,6 +94,7 @@ export default function DraftOrderView() {
           sx={{
             width: {
               sm: "600px",
+              md: "660px",
             },
             maxWidth: {
               xs: "100%",

@@ -8,7 +8,7 @@ export default function Payment() {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="subtitle1">Payment</Typography>
+        <Typography variant="h4">Payment</Typography>
         <Button size="small" variant="outlined" sx={{ fontWeight: "normal" }}>
           Mark as paid
         </Button>

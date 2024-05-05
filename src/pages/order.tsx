@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-import { DraftOrdersView } from "src/sections/draft-orders/view";
+import { OrderView } from "src/sections/order/view";
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function DraftOrderPage() {
         <title>Order Details</title>
       </Helmet>
 
-      <DraftOrdersView />
+      <OrderView />
     </>
   );
 }

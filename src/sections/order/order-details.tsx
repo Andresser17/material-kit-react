@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { DraftOrderStatus } from "src/enums";
+import { OrderStatus } from "src/enums";
 
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
@@ -18,7 +18,7 @@ import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface IOrderDetails {
-  status: DraftOrderStatus;
+  status: OrderStatus;
 }
 
 export default function OrderDetails({ status }: IOrderDetails) {
@@ -39,7 +39,7 @@ export default function OrderDetails({ status }: IOrderDetails) {
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            Order {`{#75}`}
+            #26
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
             12 April 2024 05:05 pm
@@ -47,12 +47,12 @@ export default function OrderDetails({ status }: IOrderDetails) {
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Label
-            color={status === DraftOrderStatus.COMPLETED ? "success" : "info"}
+            color={status === OrderStatus.COMPLETED ? "success" : "info"}
             sx={{ mr: 1 }}
           >
             {status}
           </Label>
-          {status === DraftOrderStatus.COMPLETED ? (
+          {status === OrderStatus.COMPLETED ? (
             <Button>Go to order</Button>
           ) : (
             <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
@@ -65,7 +65,7 @@ export default function OrderDetails({ status }: IOrderDetails) {
       <Box sx={{ display: "flex" }}>
         <TitleValueField title="Email" value="user@example.com" />
         <TitleValueField title="Phone" value="N/A" />
-        <TitleValueField title="Amount USD" value="$50.00" />
+        <TitleValueField title="Payment" value="Manual-payment" />
       </Box>
       <Popover
         open={open != null}
@@ -78,7 +78,7 @@ export default function OrderDetails({ status }: IOrderDetails) {
           onClick={handleCancelOrder}
           sx={{ color: "error.main", fontSize: 12 }}
         >
-          Cancel Draft Order
+          Cancel Order
         </MenuItem>
       </Popover>
     </SectionBox>

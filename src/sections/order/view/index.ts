@@ -1,1 +1,1 @@
-export { default as CreateDraftOrderView } from "./create-draft-order-view";
+export { default as OrderView } from "./order-view";

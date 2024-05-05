@@ -5,18 +5,22 @@ import { ProductOptionDTO } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
 
 import { useAddProduct } from "src/mutations/use-add-product";
 import { useUpdateProduct } from "src/mutations/use-update-product";
+import { OrderStatus, PaymentStatus, FulfillmentStatus } from "src/enums";
 import { ProductStatus as ProductStatusEnum } from "src/queries/use-list-products";
 
-import ChooseRegion from "../choose-region";
-import CustomerAndShipping from "../customer-and-shipping";
+import Summary from "../summary";
+import Payment from "../payment";
+import Customer from "../customer";
+import Fulfillment from "../fulfillment";
+import OrderDetails from "../order-details";
+import TimelineSection from "../timeline-section";
 
 // ----------------------------------------------------------------------
 
-export default function CreateDraftOrderView() {
+export default function OrderView() {
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
   const [options, setOptions] = useState<ProductOptionDTO[]>([]);
   const location = useLocation();
@@ -79,46 +83,24 @@ export default function CreateDraftOrderView() {
     });
   };
 
-  const floatingButtons = (
-    <Box sx={{ position: "fixed", bottom: 10, right: 5, zIndex: 99 }}>
-      <Button
-        type="submit"
-        variant="contained"
-        color="success"
-        size="large"
-        sx={{ mr: 2 }}
-      >
-        Save
-      </Button>
-      <Button variant="text" color="error">
-        Cancel
-      </Button>
-    </Box>
-  );
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          gap: 3,
           p: 2,
         }}
       >
-        <Box
-          sx={{
-            width: {
-              md: "500px",
-            },
-            maxWidth: {
-              xs: "100%",
-            },
-          }}
-        >
-          <ChooseRegion control={control} />
-          <CustomerAndShipping />
-          {floatingButtons}
+        <Box sx={{ width: "60%", maxWidth: "660px" }}>
+          <OrderDetails status={OrderStatus.PENDING} />
+          <Summary />
+          <Payment status={PaymentStatus.CAPTURED} />
+          <Fulfillment status={FulfillmentStatus.SHIPPED} />
+          <Customer />
+        </Box>
+        <Box sx={{ width: "40%", maxWidth: "450px" }}>
+          <TimelineSection />
         </Box>
       </Box>
     </form>

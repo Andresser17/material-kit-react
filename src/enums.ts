@@ -21,6 +21,14 @@ export enum PaymentStatus {
   REQUIRES_ACTION = "requires_action",
 }
 
+export enum OrderStatus {
+  PENDING = "pending",
+  COMPLETED = "completed",
+  ARCHIVED = "archived",
+  CANCELED = "canceled",
+  REQUIRES_ACTION = "requires_action",
+}
+
 export enum DraftOrderStatus {
   OPEN = "open",
   COMPLETED = "completed",
