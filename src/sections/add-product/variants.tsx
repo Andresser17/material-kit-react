@@ -1,5 +1,5 @@
-import { ProductOptionDTO } from "@medusajs/types";
 import { useState, Dispatch, SetStateAction } from "react";
+import { ProductDTO, ProductOptionDTO } from "@medusajs/types";
 
 import {
   Box,
@@ -26,9 +26,11 @@ import EditOptions, { EDIT_OPTIONS } from "./edit-options-modal";
 import AddVariantModal, { ADD_VARIANT } from "./add-variant-modal";
 
 export default function Variants({
+  product,
   options,
   setOptions,
 }: {
+  product: ProductDTO;
   options: ProductOptionDTO[];
   setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
 }) {
@@ -168,6 +170,7 @@ export default function Variants({
       <EditOptions
         open={openModal}
         setOpen={setOpenModal}
+        productId={product?.id}
         options={options}
         setOptions={setOptions}
       />

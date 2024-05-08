@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
-import { ProductDTO } from "@medusajs/types";
 import { UseFormReset } from "react-hook-form";
+import { ProductDTO, ProductOptionDTO } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -17,6 +17,7 @@ import uploadImages, { UploadedFile } from "./uploadImages";
 async function addProduct(
   access_token: string | undefined,
   newProduct: ProductDTO,
+  options: ProductOptionDTO[],
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
 ): Promise<ProductDTO> {
@@ -29,6 +30,9 @@ async function addProduct(
     },
     body: JSON.stringify({
       ...newProduct,
+      options: options
+        .filter((option) => option.id.split("_")[0] === "default")
+        .map((option) => ({ title: option.title })),
       thumbnail: thumbnail ? thumbnail.url : undefined,
       images: images ? images : undefined,
     }),
@@ -41,7 +45,11 @@ async function addProduct(
 type IUseAddProduct = UseMutateFunction<
   ProductDTO | undefined,
   Error,
-  { newProduct: ProductDTO; toUpload: SortableImageType[] },
+  {
+    newProduct: ProductDTO;
+    options: ProductOptionDTO[];
+    toUpload: SortableImageType[];
+  },
   unknown
 >;
 
@@ -54,19 +62,33 @@ export function useAddProduct(
   const { mutate: addProductMutation } = useMutation({
     mutationFn: async ({
       newProduct,
+      options,
       toUpload,
     }: {
       newProduct: ProductDTO;
+      options: ProductOptionDTO[];
       toUpload: SortableImageType[];
     }) => {
       if (toUpload.length > 0) {
         const uploads = await uploadImages(user?.access_token, toUpload);
         const thumbnail = uploads[0];
         const images = uploads.slice(1);
-        return addProduct(user?.access_token, newProduct, thumbnail, images);
+        return addProduct(
+          user?.access_token,
+          newProduct,
+          options,
+          thumbnail,
+          images,
+        );
       }
 
-      return addProduct(user?.access_token, newProduct, undefined, undefined);
+      return addProduct(
+        user?.access_token,
+        newProduct,
+        options,
+        undefined,
+        undefined,
+      );
     },
     mutationKey: [MUTATION_KEY.add_product],
     onSettled: () =>
@@ -78,7 +100,7 @@ export function useAddProduct(
     },
     onSuccess() {
       // call pop up
-      toast.success("Product add successfully");
+      toast.success("Product added successfully");
       resetForm();
     },
   });

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { ProductDTO } from "@medusajs/types";
 import { useLocation } from "react-router-dom";
-import { ProductOptionDTO } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { ProductDTO, ProductOptionDTO } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
@@ -81,7 +80,11 @@ export default function AddProductView() {
       return;
     }
     addProductMutation({
-      newProduct: { ...data, status, options },
+      newProduct: {
+        ...data,
+        status,
+      },
+      options,
       toUpload: images,
     });
   };
@@ -135,7 +138,11 @@ export default function AddProductView() {
       <Box sx={{ display: "flex", gap: 3, p: 2 }}>
         <Box sx={{ w: "60%" }}>
           <GeneralInfo control={control} />
-          <Variants options={options} setOptions={setOptions} />
+          <Variants
+            product={location.state?.product}
+            options={options}
+            setOptions={setOptions}
+          />
           <Attributes control={control} />
           <RawProduct />
         </Box>

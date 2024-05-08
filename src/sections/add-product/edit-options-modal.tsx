@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { ProductOptionDTO } from "@medusajs/types";
 import { useState, Dispatch, useEffect, SetStateAction } from "react";
 
@@ -7,11 +8,14 @@ import {
   Modal,
   Button,
   Divider,
-  useTheme,
   TextField,
   IconButton,
   Typography,
 } from "@mui/material";
+
+import { useAddProductOption } from "src/mutations/use-add-product-option";
+import { useDeleteProductOption } from "src/mutations/use-delete-product-option";
+import { useUpdateProductOption } from "src/mutations/use-update-product-option";
 
 import Iconify from "src/components/iconify";
 
@@ -20,15 +24,16 @@ export const EDIT_OPTIONS = "edit_options";
 export default function EditOptionsModal({
   open,
   setOpen,
+  productId,
   options,
   setOptions,
 }: {
   open: string | null;
   setOpen: (value: string | null) => void;
+  productId: string;
   options: ProductOptionDTO[];
   setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
 }) {
-  const theme = useTheme();
   const handleClose = () => setOpen(null);
 
   return (
@@ -43,7 +48,7 @@ export default function EditOptionsModal({
         sx={{
           width: 600,
           maxHeight: 750,
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: "background.default",
           p: 3,
           borderRadius: 1,
           overflowY: "auto",
@@ -62,35 +67,35 @@ export default function EditOptionsModal({
           </IconButton>
         </Box>
         <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
-        <ProductOptions options={options} setOptions={setOptions} />
+        <ProductOptions
+          productId={productId}
+          options={options}
+          setOptions={setOptions}
+        />
       </Box>
     </Modal>
   );
 }
 
 function ProductOptions({
+  productId,
   options,
   setOptions,
 }: {
+  productId: string;
   options: ProductOptionDTO[];
   setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
 }) {
-  const handleAddOption = () => {
-    setOptions(
-      (prev: ProductOptionDTO[]) =>
-        [
-          ...prev,
-          {
-            id: `default-${options.length + 1}`,
-            title: "",
-            values: [],
-            created_at: "",
-            updated_at: "",
-          },
-        ] as ProductOptionDTO[],
-    );
+  const deleteProductOptionMutation = useDeleteProductOption();
 
-    // save new option (call mutation)
+  const handleAddOption = () => {
+    setOptions((prev) => [
+      ...prev,
+      {
+        id: `default_${prev.length + 1}`,
+        title: "",
+      } as ProductOptionDTO,
+    ]);
   };
 
   const updateOption = (id: string, newTitle: string) => {
@@ -100,30 +105,24 @@ function ProductOptions({
         return option;
       });
     });
-
-    // save new option (call mutation)
   };
 
   const handleDeleteOption = (id: string) => {
-    if (id.split("-")[0] === "default") {
-      setOptions((prev) => {
-        return prev.filter((option) => option.id != id);
-      });
-    }
+    setOptions((prev) => {
+      return prev.filter((option) => option.id != id);
+    });
 
-    // call mutation
+    if (id.split("_")[0] != "default")
+      deleteProductOptionMutation({ product_id: productId, option_id: id });
   };
 
   useEffect(() => {
     if (options.length === 0)
       setOptions([
         {
-          id: `default-${options.length + 1}`,
+          id: "default_1",
           title: "",
-          values: [],
-          created_at: "",
-          updated_at: "",
-        },
+        } as ProductOptionDTO,
       ]);
     else setOptions(options);
   }, []);
@@ -164,6 +163,27 @@ function OptionField({
   handleDeleteOption: () => void;
 }) {
   const [text, setText] = useState("");
+  const location = useLocation();
+  const addProductOptionMutation = useAddProductOption();
+  const updateProductOptionMutation = useUpdateProductOption();
+
+  const handleSaveOption = (id: string, title: string) => {
+    // save new option (call mutation)
+    if (location.state?.product.id) {
+      if (id.split("_")[0] === "default") {
+        addProductOptionMutation({
+          product_id: location.state.product.id,
+          newProductOption: { id, title: text },
+        });
+      } else {
+        updateProductOptionMutation({
+          product_id: location.state.product.id,
+          option: { id, title: text } as ProductOptionDTO,
+        });
+      }
+    }
+    updateOption(id, title);
+  };
 
   useEffect(() => {
     if (text.length === 0) setText(title);
@@ -187,7 +207,7 @@ function OptionField({
         sx={{ mr: 2 }}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onBlur={() => updateOption(id, text)}
+        onBlur={() => handleSaveOption(id, text)}
       />
       <IconButton
         onClick={handleDeleteOption}

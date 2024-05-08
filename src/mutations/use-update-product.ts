@@ -41,7 +41,11 @@ async function updateProduct(
 type IUseUpdateProduct = UseMutateFunction<
   ProductDTO,
   Error,
-  { id: string; product: ProductDTO; toUpload: SortableImageType[] },
+  {
+    id: string;
+    product: ProductDTO;
+    toUpload: SortableImageType[];
+  },
   unknown
 >;
 

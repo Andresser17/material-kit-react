@@ -66,4 +66,9 @@ export declare module "@medusajs/types" {
     no_notification_order: boolean;
     metadata: Record<string, unknown>;
   }
+
+  interface ProductOptionRequest {
+    id: string;
+    title: string;
+  }
 }
