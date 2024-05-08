@@ -81,15 +81,40 @@ export function useUpdateProduct(): IUseUpdateProduct {
       );
     },
     mutationKey: [MUTATION_KEY.update_product],
+    onMutate: async (data) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEY.product, data.id],
+      });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData([
+        QUERY_KEY.product,
+        data.id,
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData([QUERY_KEY.product, data.id], data);
+
+      // Return a context with the previous and new todo
+      return { previousData, data };
+    },
+    // If the mutation fails, use the context we returned above
+    onError: (err, _data, context) => {
+      console.log(err);
+      toast.error(err.message);
+
+      queryClient.setQueryData(
+        [QUERY_KEY.product, context?.data.id],
+        context?.previousData,
+      );
+    },
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
     onSuccess: () => {
-      //queryClient.setQueryData([QUERY_KEY.product], data);
+      // queryClient.setQueryData([QUERY_KEY.product, { id: variables.id }], data);
       toast.success("Product updated successfully");
-    },
-    onError: (err) => {
-      console.log(err);
-      toast.error(err.message);
     },
   });
 

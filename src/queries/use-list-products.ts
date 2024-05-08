@@ -92,9 +92,9 @@ export function useListProducts({
         params: queryKey[2] as IListProducts["params"],
         query: queryKey[3] as IListProducts["query"],
       }),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    // refetchOnMount: false,
+    // refetchOnWindowFocus: false,
+    // refetchOnReconnect: false,
     throwOnError: (error) => {
       console.log(error);
       return false;

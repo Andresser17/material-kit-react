@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductDTO } from "@medusajs/types";
 import { useLocation } from "react-router-dom";
 import { ProductOptionDTO } from "@medusajs/types";
@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
+import { UploadedFile } from "src/mutations/uploadImages";
 import { useAddProduct } from "src/mutations/use-add-product";
 import { useUpdateProduct } from "src/mutations/use-update-product";
 import { ProductStatus as ProductStatusEnum } from "src/queries/use-list-products";
@@ -68,11 +69,11 @@ export default function AddProductView() {
     setStatus(ProductStatusEnum.DRAFT);
     setOptions([]);
   };
-  const upadteProductMutation = useUpdateProduct();
+  const updateProductMutation = useUpdateProduct();
   const addProductMutation = useAddProduct(resetForm);
   const onSubmit: SubmitHandler<ProductDTO> = (data) => {
     if (location.state?.product) {
-      upadteProductMutation({
+      updateProductMutation({
         id: location.state?.product.id,
         product: { ...data, status },
         toUpload: images,
@@ -84,6 +85,33 @@ export default function AddProductView() {
       toUpload: images,
     });
   };
+
+  useEffect(() => {
+    if (location.state?.product) {
+      setImages(() => {
+        const thumbnail = location.state.product.thumbnail
+          ?.split(" ")
+          .map((thumb: string) => ({
+            id: thumb,
+            img: null,
+            src: thumb,
+            title: thumb.split("/")[4],
+          }));
+
+        const images = location.state.product.images.map(
+          (image: UploadedFile) => ({
+            id: image.key,
+            img: null,
+            src: image.url,
+            title: image.key,
+          }),
+        );
+        return [...(thumbnail ? thumbnail : []), ...(images ? images : [])];
+      });
+      setStatus(location.state.product.status);
+      setOptions(location.state.product.options);
+    }
+  }, []);
 
   const floatingButtons = (
     <Box sx={{ position: "fixed", bottom: 10, right: 5, zIndex: 99 }}>

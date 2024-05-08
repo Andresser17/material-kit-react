@@ -43,6 +43,7 @@ export function createRouter(isLoggedIn: boolean) {
           element: <ProductsPage />,
         },
         { path: "products/add", element: <AddProductPage /> },
+        { path: "products/:id", element: <AddProductPage /> },
         { path: "orders", element: <OrdersPage /> },
         { path: "orders/:id", element: <OrderDetailsPage /> },
         { path: "draft-orders", element: <DraftOrdersPage /> },

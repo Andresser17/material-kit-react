@@ -45,7 +45,7 @@ export default function ProductTableRow({
 
   const handleEdit = () => {
     handleCloseMenu();
-    navigate("/products/add", {
+    navigate(`/products/${product.id}`, {
       state: {
         product,
       },

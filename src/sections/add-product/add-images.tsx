@@ -9,24 +9,18 @@ import {
 } from "@dnd-kit/sortable";
 
 import Box from "@mui/material/Box";
-import {
-  Theme,
-  Button,
-  styled,
-  useTheme,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Theme, Button, useTheme, Typography, IconButton } from "@mui/material";
 
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
+import VisuallyHiddenInput from "src/components/visually-hidden-input";
 
 // ----------------------------------------------------------------------
 
 export type SortableImageType = {
   id: UniqueIdentifier;
-  img: File;
+  img: File | null;
   src: string;
   title: string;
 };
@@ -134,17 +128,18 @@ export default function AddImages({
             items={images}
             strategy={horizontalListSortingStrategy}
           >
-            {images.map((image, i) => (
-              <SortableImage
-                key={image.title}
-                src={image.src}
-                title={image.title}
-                id={image.id}
-                isCover={i === 0}
-                theme={theme}
-                setImages={setImages}
-              />
-            ))}
+            {images &&
+              images.map((image, i) => (
+                <SortableImage
+                  key={image.id}
+                  src={image.src}
+                  title={image.title}
+                  id={image.id}
+                  isCover={i === 0}
+                  theme={theme}
+                  setImages={setImages}
+                />
+              ))}
           </SortableContext>
         </DndContext>
       </Box>
@@ -242,15 +237,3 @@ function SortableImage({
     </Box>
   );
 }
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});

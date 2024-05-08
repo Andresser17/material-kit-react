@@ -1,5 +1,5 @@
+import { Control } from "react-hook-form";
 import { useState, SetStateAction } from "react";
-import { CartLineItemDTO } from "@medusajs/types";
 
 import {
   Box,
@@ -12,19 +12,30 @@ import {
 
 import { emptyRows } from "src/utils/table-utils";
 
+import {
+  DraftOrderItem,
+  DraftOrderRequest,
+} from "src/mutations/use-create-draft-order";
+
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
 import ItemsTableRow from "./items-table-row";
 import ItemsTableHead from "./items-table-head";
+import AddExistingModal from "../add-existing-modal";
 
-export default function ItemsTable() {
+export default function ItemsTable({
+  control,
+}: {
+  control: Control<DraftOrderRequest>;
+}) {
+  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [items, setItems] = useState<CartLineItemDTO[]>([
+  const [items, setItems] = useState<DraftOrderItem[]>([
     {
       id: "1",
       title: "generic",
@@ -46,6 +57,10 @@ export default function ItemsTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
+  const handleModalToggle = () => {
+    setOpen(true);
+  };
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
@@ -55,6 +70,7 @@ export default function ItemsTable() {
           size="small"
           startIcon={<Iconify icon="eva:plus-fill" />}
           sx={{ borderRadius: "5px" }}
+          onClick={handleModalToggle}
         >
           Add Existing
         </Button>
@@ -103,6 +119,8 @@ export default function ItemsTable() {
         rowsPerPageOptions={[5, 10, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <AddExistingModal open={open} setOpen={setOpen} addItems={setItems} />
     </Box>
   );
 }

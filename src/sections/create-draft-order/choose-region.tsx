@@ -1,8 +1,9 @@
 import { Control } from "react-hook-form";
-import { ProductDTO } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Select, Divider, MenuItem, Typography } from "@mui/material";
+
+import { DraftOrderRequest } from "src/mutations/use-create-draft-order";
 
 import SectionBox from "src/components/section-box";
 
@@ -11,9 +12,8 @@ import ItemsTable from "./items-table/items-table";
 export default function ChooseRegion({
   control,
 }: {
-  control: Control<ProductDTO>;
+  control: Control<DraftOrderRequest>;
 }) {
-  console.log(control);
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Typography variant="h4">Choose region</Typography>
@@ -35,7 +35,7 @@ export default function ChooseRegion({
       <Typography variant="subtitle2" sx={{ my: 2 }}>
         Items for the order
       </Typography>
-      <ItemsTable />
+      <ItemsTable control={control} />
     </SectionBox>
   );
 }

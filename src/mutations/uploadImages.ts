@@ -13,7 +13,9 @@ export default async function uploadImages(
 ): Promise<Array<UploadedFile>> {
   const body = new FormData();
   images.forEach((image) => {
-    body.append("files", image.img);
+    if (image.img) {
+      body.append("files", image.img);
+    }
   });
 
   const url = new URL("/admin/uploads", BACKEND_URL);
