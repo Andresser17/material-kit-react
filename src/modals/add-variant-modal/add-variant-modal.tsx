@@ -1,116 +1,76 @@
-import { ProductVariantDTO } from "@medusajs/types";
 import { Control, useForm, SubmitHandler } from "react-hook-form";
+import { Dispatch, useState, useEffect, SetStateAction } from "react";
+import {
+  ProductOptionDTO,
+  ProductVariantDTO,
+  ProductOptionValueDTO,
+} from "@medusajs/types";
 
 import {
+  Switch,
+  MenuItem,
+  InputAdornment,
+  FormControlLabel,
+} from "@mui/material";
+import {
   Box,
-  Modal,
-  Button,
   Accordion,
+  TextField,
   Typography,
   AccordionDetails,
   AccordionSummary,
 } from "@mui/material";
-import {
-  Switch,
-  Divider,
-  useTheme,
-  MenuItem,
-  IconButton,
-  InputAdornment,
-  FormControlLabel,
-} from "@mui/material";
 
 import { grey } from "src/theme/palette";
+import BaseModal from "src/modals/base-modal";
 
 import Iconify from "src/components/iconify";
 import ControlledField from "src/components/controlled-field";
 
-export const ADD_VARIANT = "add_variant";
+import { useModal } from "../useModal";
 
-export default function AddVariantModal({
-  open,
-  setOpen,
-}: {
-  open: string | null;
-  setOpen: (value: string | null) => void;
-}) {
-  const theme = useTheme();
-  const handleClose = () => setOpen(null);
+interface IAddVariantModal {
+  options: ProductOptionDTO[];
+}
+
+export default function AddVariantModal({ options }: IAddVariantModal) {
+  const { onClose: closeModal } = useModal("add-variant-modal");
+  const [optionValues, setOptionValues] = useState<ProductOptionValueDTO[]>([]);
   const { handleSubmit, control } = useForm<ProductVariantDTO>({
     defaultValues: {},
     mode: "onChange",
   });
-  //const addProductMutation = useAddProduct();
   const onSubmit: SubmitHandler<ProductVariantDTO> = (data) => {
     console.log(data);
-    // addProductMutation({ newProduct: { ...data, status }, toUpload: images });
+    console.log({ optionValues });
   };
 
   return (
-    <Modal
-      open={open == ADD_VARIANT}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-    >
-      <Box
-        sx={{
-          maxWidth: 750,
-          maxHeight: 750,
-          backgroundColor: theme.palette.background.default,
-          p: 3,
-          borderRadius: 1,
-          overflowY: "auto",
-        }}
-      >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h4">Add Variant</Typography>
-            <IconButton id="section-op" onClick={handleClose}>
-              <Iconify icon="eva:close-fill" width={25} />
-            </IconButton>
-          </Box>
-          <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
-          <VariantAccordion control={control} />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="success"
-              size="medium"
-              sx={{ mr: 2 }}
-            >
-              Save
-            </Button>
-            <Button
-              onClick={handleClose}
-              variant="text"
-              size="small"
-              color="error"
-            >
-              Cancel
-            </Button>
-          </Box>
-        </form>
-      </Box>
-    </Modal>
+    <BaseModal title="Add Variant" open closeOnTap onClose={closeModal}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <VariantAccordion
+          control={control}
+          options={options}
+          optionValues={optionValues}
+          setOptionValues={setOptionValues}
+        />
+      </form>
+    </BaseModal>
   );
 }
 
 function VariantAccordion({
   control,
+  options,
+  optionValues,
+  setOptionValues,
 }: {
   control: Control<ProductVariantDTO>;
+  options: ProductOptionDTO[];
+  optionValues: ProductOptionValueDTO[];
+  setOptionValues: Dispatch<SetStateAction<ProductOptionValueDTO[]>>;
 }) {
   const countries = [{ value: "china", label: "China" }];
-  const handleAddOption = () => {};
 
   return (
     <Box>
@@ -135,19 +95,21 @@ function VariantAccordion({
           <Typography variant="subtitle2" sx={{ my: 2 }}>
             Options
           </Typography>
-          {/* {options.map((option) => (
-            <OptionLabel key={option.id} title={option.title} />
-          ))} */}
-          <Button
-            onClick={handleAddOption}
-            aria-label="Delete option"
-            size="small"
-            fullWidth
-            sx={{ borderRadius: 1, border: `1px solid ${grey[700]}`, mt: 3 }}
-          >
-            <Iconify icon="material-symbols:add" width={28} sx={{ p: "3px" }} />
-            Add an option
-          </Button>
+          {options &&
+            options.map((option) => {
+              const optionValue = optionValues.find(
+                (optionValue) => optionValue.option_id === option.id,
+              );
+
+              return (
+                <TitleValueOption
+                  key={option.id}
+                  option={option}
+                  optionValue={optionValue}
+                  setOptionValues={setOptionValues}
+                />
+              );
+            })}
         </AccordionDetails>
       </Accordion>
 
@@ -375,6 +337,63 @@ function VariantAccordion({
         </AccordionSummary>
         <AccordionDetails></AccordionDetails>
       </Accordion>
+    </Box>
+  );
+}
+
+interface ITitleValueOption {
+  option: ProductOptionDTO;
+  optionValue: ProductOptionValueDTO | undefined;
+  setOptionValues: Dispatch<SetStateAction<ProductOptionValueDTO[]>>;
+}
+
+function TitleValueOption({
+  option,
+  optionValue,
+  setOptionValues,
+}: ITitleValueOption) {
+  const [text, setText] = useState("");
+
+  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
+    setText(e.target.value);
+  };
+
+  const handleBlur = () => {
+    setOptionValues((prev: ProductOptionValueDTO[]) => {
+      return prev.map((optionValue: ProductOptionValueDTO) => {
+        if (optionValue.option_id === option.id) {
+          return { ...optionValue, value: text };
+        }
+
+        return optionValue;
+      });
+    });
+  };
+
+  useEffect(() => {
+    setText(optionValue ? optionValue.value : "");
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        mb: 1,
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        sx={{ fontSize: 14, color: "#888", mr: 2 }}
+      >
+        {option.title}
+      </Typography>
+      <TextField
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={text}
+        size="small"
+      />
     </Box>
   );
 }

@@ -8,7 +8,6 @@ import {
   Divider,
   Popover,
   TableRow,
-  useTheme,
   MenuItem,
   TableHead,
   TableBody,
@@ -19,11 +18,11 @@ import {
 } from "@mui/material";
 
 import { error } from "src/theme/palette";
+import { useModal } from "src/modals/useModal";
 
 import Iconify from "src/components/iconify";
 
-import EditOptions, { EDIT_OPTIONS } from "./edit-options-modal";
-import AddVariantModal, { ADD_VARIANT } from "./add-variant-modal";
+import EditOptionsModal, { EDIT_OPTIONS } from "./edit-options-modal";
 
 export default function Variants({
   product,
@@ -34,7 +33,7 @@ export default function Variants({
   options: ProductOptionDTO[];
   setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
 }) {
-  const theme = useTheme();
+  const { onOpen: openAddVariantModal } = useModal("add-variant-modal");
   const rows = [{ title: "512 GB", sku: "", price: "$25", inventory: 5 }];
   const [open, setOpen] = useState<Element | null>(null);
   const [openModal, setOpenModal] = useState<string | null>(null);
@@ -57,10 +56,6 @@ export default function Variants({
     handleCloseMenu();
   };
 
-  const handleAddVariant = () => {
-    setOpenModal(ADD_VARIANT);
-    handleCloseMenu();
-  };
   const handleEditOptions = () => {
     setOpenModal(EDIT_OPTIONS);
     handleCloseMenu();
@@ -85,7 +80,7 @@ export default function Variants({
       case "section-op":
         return (
           <>
-            <MenuItem onClick={handleAddVariant}>
+            <MenuItem onClick={() => openAddVariantModal({ options })}>
               <Iconify icon="eva:cube-outline" sx={{ mr: 1 }} />
               Add Variant
             </MenuItem>
@@ -108,7 +103,7 @@ export default function Variants({
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: "background.paper",
         borderRadius: 1,
         p: 3,
         mb: 3,
@@ -166,8 +161,12 @@ export default function Variants({
       >
         {popOverItems()}
       </Popover>
-      <AddVariantModal open={openModal} setOpen={setOpenModal} />
-      <EditOptions
+      {/* <AddVariantModal
+        open={openModal}
+        setOpen={setOpenModal}
+        options={options}
+      /> */}
+      <EditOptionsModal
         open={openModal}
         setOpen={setOpenModal}
         productId={product?.id}
