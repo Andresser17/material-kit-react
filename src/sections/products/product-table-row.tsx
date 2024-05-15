@@ -10,7 +10,7 @@ import TableCell from "@mui/material/TableCell";
 import IconButton from "@mui/material/IconButton";
 import { Stack, Avatar, Typography } from "@mui/material";
 
-import { ProductStatus } from "src/queries/use-list-products";
+import { ProductStatus } from "src/enums";
 import { useDeleteProduct } from "src/mutations/use-delete-product";
 
 import Label from "src/components/label";

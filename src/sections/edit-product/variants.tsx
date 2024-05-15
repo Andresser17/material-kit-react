@@ -1,5 +1,5 @@
-import { useState, SetStateAction } from "react";
-import { ProductDTO, ProductOptionRequest } from "@medusajs/types";
+import { useState, Dispatch, SetStateAction } from "react";
+import { ProductRequest, ProductOptionRequest } from "@medusajs/types";
 
 import {
   Box,
@@ -19,22 +19,24 @@ import {
 
 import { error } from "src/theme/palette";
 import { useModal } from "src/modals/useModal";
-import { useListProductVariants } from "src/queries/use-list-product-variants";
 
 import Iconify from "src/components/iconify";
 
-interface IVariants {
-  product: ProductDTO | undefined;
-  options: ProductOptionRequest[];
-}
+import EditOptionsModal, { EDIT_OPTIONS } from "./edit-options-modal";
 
-export default function Variants({ product, options }: IVariants) {
-  const [open, setOpen] = useState<Element | null>(null);
+export default function Variants({
+  product,
+  options,
+  setOptions,
+}: {
+  product: ProductRequest;
+  options: ProductOptionRequest[];
+  setOptions: Dispatch<SetStateAction<ProductOptionRequest[]>>;
+}) {
   const { onOpen: openAddVariantModal } = useModal("add-variant-modal");
-  const { onOpen: openEditOptionsModal } = useModal("edit-options-modal");
-  const { variants } = useListProductVariants({
-    product_id: product?.id ?? "",
-  });
+  const rows = [{ title: "512 GB", sku: "", price: "$25", inventory: 5 }];
+  const [open, setOpen] = useState<Element | null>(null);
+  const [openModal, setOpenModal] = useState<string | null>(null);
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -55,12 +57,7 @@ export default function Variants({ product, options }: IVariants) {
   };
 
   const handleEditOptions = () => {
-    openEditOptionsModal();
-    handleCloseMenu();
-  };
-
-  const handleAddVariant = () => {
-    openAddVariantModal({ product, options });
+    setOpenModal(EDIT_OPTIONS);
     handleCloseMenu();
   };
 
@@ -83,7 +80,7 @@ export default function Variants({ product, options }: IVariants) {
       case "section-op":
         return (
           <>
-            <MenuItem onClick={handleAddVariant}>
+            <MenuItem onClick={() => openAddVariantModal({ product, options })}>
               <Iconify icon="eva:cube-outline" sx={{ mr: 1 }} />
               Add Variant
             </MenuItem>
@@ -110,8 +107,6 @@ export default function Variants({ product, options }: IVariants) {
         borderRadius: 1,
         p: 3,
         mb: 3,
-        opacity: !product ? 0.5 : 1,
-        pointerEvents: !product ? "none" : "auto",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -133,29 +128,24 @@ export default function Variants({ product, options }: IVariants) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {variants &&
-              variants.map((variant) => (
-                <TableRow
-                  key={variant.title}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {variant.title}
-                  </TableCell>
-                  <TableCell align="right">{variant.sku}</TableCell>
-                  <TableCell align="right">
-                    {variant.prices[0].amount}
-                  </TableCell>
-                  <TableCell align="right">
-                    {variant.inventory_quantity}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton id="table-row-op" onClick={handleOpenMenu}>
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {rows.map((row) => (
+              <TableRow
+                key={row.title}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.title}
+                </TableCell>
+                <TableCell align="right">{row.sku}</TableCell>
+                <TableCell align="right">{row.price}</TableCell>
+                <TableCell align="right">{row.inventory}</TableCell>
+                <TableCell align="right">
+                  <IconButton id="table-row-op" onClick={handleOpenMenu}>
+                    <Iconify icon="eva:more-vertical-fill" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -171,6 +161,18 @@ export default function Variants({ product, options }: IVariants) {
       >
         {popOverItems()}
       </Popover>
+      {/* <AddVariantModal
+        open={openModal}
+        setOpen={setOpenModal}
+        options={options}
+      /> */}
+      <EditOptionsModal
+        open={openModal}
+        setOpen={setOpenModal}
+        productId={product?.id}
+        options={options}
+        setOptions={setOptions}
+      />
     </Box>
   );
 }

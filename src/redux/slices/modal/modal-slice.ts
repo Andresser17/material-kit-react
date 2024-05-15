@@ -2,20 +2,26 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "src/redux/store";
 import { Modal } from "src/modals/modal-provider";
+import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 
 // Define a type for the slice state
-export interface ModalState {
-  modals: Modal[];
+export interface ModalState<T> {
+  modals: Modal<T>[];
 }
 
 // Define the initial state using that type
-const initialState: ModalState = {
+const initialState = {
   modals: [
     {
-      src: "src/sections/add-product/add-variant-modal",
       id: "add-variant-modal",
       open: false,
-    },
+      props: {},
+    } as Modal<IAddVariantModal>,
+    {
+      id: "edit-options-modal",
+      open: false,
+      props: null,
+    } as Modal<null>,
   ],
 };
 
@@ -24,17 +30,16 @@ export const modalSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    openModal: (
-      state,
-      action: PayloadAction<{ id: string; meta: Record<string, unknown> }>,
-    ) => {
+    openModal<T>(
+      state: ModalState<T>,
+      action: PayloadAction<{ id: string; props?: T }>,
+    ) {
       const index = state.modals.findIndex(
         (modal) => modal.id === action.payload.id,
       );
-      console.log({ index });
       if (index != -1) {
         state.modals[index].open = true;
-        state.modals[index].meta = action.payload.meta;
+        state.modals[index].props = action.payload.props;
       }
     },
     closeModal: (state, action: PayloadAction<string>) => {
@@ -45,10 +50,6 @@ export const modalSlice = createSlice({
         state.modals[index].open = false;
       }
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
   },
 });
 
@@ -63,9 +64,9 @@ export const isModalOpen = (state: RootState, id: string) => {
   return modal?.open ?? false;
 };
 
-export const getModalMeta = (state: RootState, id: string) => {
+export const getModalProps = (state: RootState, id: string) => {
   const modal = state.modal.modals.find((modal) => modal.id === id);
-  return modal?.meta;
+  return modal?.props;
 };
 
 export default modalSlice.reducer;

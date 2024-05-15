@@ -1,4 +1,11 @@
 /* eslint-disable no-unused-vars */
+export enum ProductStatus {
+  DRAFT = "draft",
+  PROPOSED = "proposed",
+  PUBLISHED = "published",
+  REJECTED = "rejected",
+}
+
 export enum FulfillmentStatus {
   NOT_FULFILLED = "not_fulfilled",
   PARTIALLY_FULFILLED = "partially_fulfilled",

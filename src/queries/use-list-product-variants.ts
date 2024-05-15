@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ProductVariantDTO } from "@medusajs/types";
+import { ProductVariant } from "@medusajs/types";
 
 import { QUERY_KEY, BACKEND_URL } from "src/config";
 
@@ -23,59 +23,11 @@ async function listProductTypes({
   return await response.json();
 }
 
-// export type ProductVariant = {
-//   id
-// string
-// REQUIRED
-// The product variant's ID
-// created_at
-// Date
-// REQUIRED
-// The date with timezone at which the resource was created.
-// updated_at
-// Date
-// REQUIRED
-// The date with timezone at which the resource was updated.
-// deleted_at
-// null | Date
-// REQUIRED
-// The date with timezone at which the resource was deleted.
-// title
-// string
-// REQUIRED
-// A title that can be displayed for easy identification of the Product Variant.
-// product_id
-// string
-// REQUIRED
-// The ID of the product that the product variant belongs to.
-// product
-// Product
-// REQUIRED
-// The details of the product that the product variant belongs to.
-// prices: MoneyAmount[];
-// sku?: string;
-// barcode?: string;
-// ean?: string;
-// upc?: string;
-// variant_rank?: number
-// inventory_quantity: number;
-// allow_backorder: boolean;
-// manage_inventory: boolean;
-// hs_code?: string;
-// origin_country?: string;
-// mid_code?: string;
-// material?: string;
-// weight?: number;
-// length?: number;
-// height?: number,
-// width?: number,
-// options: ProductOptionValue[],
-// inventory_items: ProductVariantInventoryItem[],
-// metadata?: Record<string, unknown>
-// };
-
 interface IProductVariants {
-  variants: ProductVariantDTO[];
+  count: number;
+  variants: ProductVariant[];
+  offset: number;
+  limit: number;
 }
 
 export function useListProductVariants({
@@ -101,12 +53,10 @@ export function useListProductVariants({
     },
   });
 
-  // useMutationState({
-  //   filters: { mutationKey: [MUTATION_KEY], status: "pending" },
-  //   // select: (mutation) => mutation.state.variables,
-  // });
-
   return {
+    count: data?.count ?? 0,
     variants: data?.variants ?? [],
+    offset: data?.offset ?? 0,
+    limit: data?.limit ?? 0,
   };
 }

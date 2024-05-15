@@ -9,7 +9,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-import { ProductStatus as ProductStatusEnum } from "src/enums";
+import { ProductStatus as ProductStatusEnum } from "src/queries/use-list-products";
 
 import SectionBox from "src/components/section-box";
 

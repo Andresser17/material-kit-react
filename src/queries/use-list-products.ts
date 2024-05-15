@@ -1,4 +1,4 @@
-import { ProductDTO } from "@medusajs/types";
+import { ProductDTO, ProductStatus } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
@@ -30,17 +30,6 @@ async function listProducts({
   if (!response.ok) throw new Error("Failed on get products request");
 
   return await response.json();
-}
-
-export enum ProductStatus {
-  // eslint-disable-next-line no-unused-vars
-  DRAFT = "draft",
-  // eslint-disable-next-line no-unused-vars
-  PROPOSED = "proposed",
-  // eslint-disable-next-line no-unused-vars
-  PUBLISHED = "published",
-  // eslint-disable-next-line no-unused-vars
-  REJECTED = "rejected",
 }
 
 export type Product = {
@@ -85,7 +74,7 @@ export function useListProducts({
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.product, user?.access_token, params, query],
+    queryKey: [QUERY_KEY.list_products, user?.access_token, params, query],
     queryFn: async ({ queryKey }): Promise<ProductsList | null> =>
       listProducts({
         access_token: queryKey[1] as string,

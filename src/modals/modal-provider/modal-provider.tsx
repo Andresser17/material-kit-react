@@ -7,11 +7,10 @@ interface IModalProviderProps {
   children: React.ReactNode;
 }
 
-export type Modal = {
-  src: string;
+export type Modal<T> = {
   id: string;
   open: boolean;
-  meta?: Record<string, unknown>;
+  props?: T;
 };
 
 export default function ModalProvider(props: IModalProviderProps) {

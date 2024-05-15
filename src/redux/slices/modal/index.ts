@@ -5,6 +5,6 @@ export {
   openModal,
   closeModal,
   isModalOpen,
-  getModalMeta,
+  getModalProps,
   getModalsList,
 } from "./modal-slice";

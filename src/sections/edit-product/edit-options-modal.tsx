@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
-import { ProductOptionDTO } from "@medusajs/types";
 import { useState, Dispatch, useEffect, SetStateAction } from "react";
+import { ProductOptionDTO, ProductOptionRequest } from "@medusajs/types";
 
 import { grey } from "@mui/material/colors";
 import {
@@ -31,8 +31,8 @@ export default function EditOptionsModal({
   open: string | null;
   setOpen: (value: string | null) => void;
   productId: string;
-  options: ProductOptionDTO[];
-  setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
+  options: ProductOptionRequest[];
+  setOptions: Dispatch<SetStateAction<ProductOptionRequest[]>>;
 }) {
   const handleClose = () => setOpen(null);
 
@@ -83,8 +83,8 @@ function ProductOptions({
   setOptions,
 }: {
   productId: string;
-  options: ProductOptionDTO[];
-  setOptions: Dispatch<SetStateAction<ProductOptionDTO[]>>;
+  options: ProductOptionRequest[];
+  setOptions: Dispatch<SetStateAction<ProductOptionRequest[]>>;
 }) {
   const deleteProductOptionMutation = useDeleteProductOption();
 
@@ -94,7 +94,7 @@ function ProductOptions({
       {
         id: `default_${prev.length + 1}`,
         title: "",
-      } as ProductOptionDTO,
+      } as ProductOptionRequest,
     ]);
   };
 

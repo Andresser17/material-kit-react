@@ -1,8 +1,13 @@
-import { SalesChannelDTO } from "@medusajs/types";
+import {
+  MoneyAmountDTO,
+  SalesChannelDTO,
+  ProductVariantDTO,
+} from "@medusajs/types";
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
 import { DraftOrderStatus } from "./enums";
+import ProductStatus from "./sections/add-product/product-status";
 
 export declare module "@mui/material/styles" {
   interface Theme {
@@ -44,6 +49,34 @@ export declare module "@mui/material/styles" {
 }
 
 export declare module "@medusajs/types" {
+  interface Product {
+    id: string;
+    title: string;
+    subtitle: string | null;
+    description: string | null;
+    handle: string;
+    is_giftcard: boolean;
+    status: ProductStatus;
+    thumbnail: string;
+    profile_id: string;
+    weight: string | null;
+    length: string | null;
+    height: string | null;
+    width: string | null;
+    hs_code: string | null;
+    origin_country: string | null;
+    mid_code: string | null;
+    material: string | null;
+    collection_id: string;
+    type_id: string;
+    discountable: boolean;
+    external_id: string | null;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    metadata: { [key: string]: unknown };
+  }
+
   interface OrderDTO {
     fulfillment_status: FulfillmentStatus;
     payment_status: PaymentStatus;
@@ -67,8 +100,68 @@ export declare module "@medusajs/types" {
     metadata: Record<string, unknown>;
   }
 
+  interface ProductVariant extends ProductVariantDTO {
+    prices: MoneyAmountDTO[];
+  }
+
+  interface ProductRequest {
+    title: string;
+    subtitle: string;
+    description: string;
+    is_giftcard: boolean;
+    discountable: boolean;
+    images: string[];
+    thumbnail: string;
+    handle: string;
+    status: ProductStatus;
+    type: { value: string; id: string };
+    collection_id: string;
+    tags: { value: string; id: string }[];
+    sales_channels: { id: string }[];
+    categories: { id: string }[];
+    options: { title: string }[];
+    variants: ProductVariantRequest[];
+    weight: number;
+    length: number;
+    height: number;
+    width: number;
+    hs_code: string;
+    origin_country: string;
+    mid_code: string;
+    material: string;
+    metadata: Record<string, unknown>;
+  }
+
   interface ProductOptionRequest {
     id: string;
     title: string;
+  }
+
+  interface ProductVariantRequest {
+    title: string;
+    sku: string;
+    ean: string;
+    upc: string;
+    barcode: string;
+    hs_code: string;
+    inventory_quantity: number;
+    allow_backorder: boolean;
+    manage_inventory: boolean;
+    weight: number;
+    length: number;
+    height: number;
+    width: number;
+    origin_country: string;
+    mid_code: string;
+    material: string;
+    metadata: Record<string, unknown>;
+    prices: {
+      amount: number;
+      region_id: string;
+      currency_code: string;
+      min_quantity: number;
+      max_quantity: number;
+    }[];
+    options: string[];
   }
 }

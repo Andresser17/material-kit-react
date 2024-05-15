@@ -1,6 +1,10 @@
 import toast from "react-hot-toast";
 import { UseFormReset } from "react-hook-form";
-import { ProductDTO, ProductOptionDTO } from "@medusajs/types";
+import {
+  ProductDTO,
+  ProductRequest,
+  ProductOptionRequest,
+} from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -16,8 +20,8 @@ import uploadImages, { UploadedFile } from "./uploadImages";
 
 async function addProduct(
   access_token: string | undefined,
-  newProduct: ProductDTO,
-  options: ProductOptionDTO[],
+  newProduct: ProductRequest,
+  options: ProductOptionRequest[],
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
 ): Promise<ProductDTO> {
@@ -46,27 +50,28 @@ type IUseAddProduct = UseMutateFunction<
   ProductDTO | undefined,
   Error,
   {
-    newProduct: ProductDTO;
-    options: ProductOptionDTO[];
+    newProduct: ProductRequest;
+    options: ProductOptionRequest[];
     toUpload: SortableImageType[];
   },
   unknown
 >;
 
-export function useAddProduct(
-  resetForm: UseFormReset<ProductDTO>,
-): IUseAddProduct {
+export function useAddProduct(resetForm: UseFormReset<ProductRequest>): {
+  data: ProductDTO | undefined;
+  mutate: IUseAddProduct;
+} {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate: addProductMutation } = useMutation({
+  const { data, mutate } = useMutation({
     mutationFn: async ({
       newProduct,
       options,
       toUpload,
     }: {
-      newProduct: ProductDTO;
-      options: ProductOptionDTO[];
+      newProduct: ProductRequest;
+      options: ProductOptionRequest[];
       toUpload: SortableImageType[];
     }) => {
       if (toUpload.length > 0) {
@@ -105,5 +110,5 @@ export function useAddProduct(
     },
   });
 
-  return addProductMutation;
+  return { data, mutate };
 }

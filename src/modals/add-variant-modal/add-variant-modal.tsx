@@ -1,9 +1,10 @@
 import { Control, useForm, SubmitHandler } from "react-hook-form";
 import { Dispatch, useState, useEffect, SetStateAction } from "react";
 import {
-  ProductOptionDTO,
-  ProductVariantDTO,
+  ProductDTO,
+  ProductOptionRequest,
   ProductOptionValueDTO,
+  ProductVariantRequest,
 } from "@medusajs/types";
 
 import {
@@ -23,31 +24,69 @@ import {
 
 import { grey } from "src/theme/palette";
 import BaseModal from "src/modals/base-modal";
+import { useAddProductVariant } from "src/mutations/use-add-product-variant";
 
 import Iconify from "src/components/iconify";
 import ControlledField from "src/components/controlled-field";
 
 import { useModal } from "../useModal";
 
-interface IAddVariantModal {
-  options: ProductOptionDTO[];
+export interface IAddVariantModal {
+  product: ProductDTO | undefined;
+  options: ProductOptionRequest[];
 }
 
-export default function AddVariantModal({ options }: IAddVariantModal) {
-  const { onClose: closeModal } = useModal("add-variant-modal");
+export default function AddVariantModal() {
+  const {
+    props: { product, options },
+    onClose: closeModal,
+  } = useModal<IAddVariantModal>("add-variant-modal");
   const [optionValues, setOptionValues] = useState<ProductOptionValueDTO[]>([]);
-  const { handleSubmit, control } = useForm<ProductVariantDTO>({
-    defaultValues: {},
+  const { handleSubmit, control } = useForm<ProductVariantRequest>({
+    defaultValues: {
+      title: "",
+      sku: "",
+      ean: "",
+      upc: "",
+      barcode: "",
+      hs_code: "",
+      inventory_quantity: 0,
+      allow_backorder: false,
+      manage_inventory: true,
+      weight: 0,
+      length: 0,
+      height: 0,
+      width: 0,
+      origin_country: "",
+      mid_code: "",
+      material: "",
+      metadata: {},
+      prices: [],
+      options: [],
+    },
     mode: "onChange",
   });
-  const onSubmit: SubmitHandler<ProductVariantDTO> = (data) => {
-    console.log(data);
-    console.log({ optionValues });
+  const addProductVariantMutation = useAddProductVariant();
+  const onSubmit: SubmitHandler<ProductVariantRequest> = (data) => {
+    // console.log(data);
+    // console.log({ optionValues });
+    addProductVariantMutation({
+      product_id: product?.id ?? "",
+      newProductVariant: data,
+    });
   };
 
+  console.log({ product, options });
+
   return (
-    <BaseModal title="Add Variant" open closeOnTap onClose={closeModal}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <BaseModal
+      modalId="add-variant-modal"
+      title="Add Variant"
+      open
+      closeOnTap
+      onClose={closeModal}
+    >
+      <form id="add-variant-modal" onSubmit={handleSubmit(onSubmit)}>
         <VariantAccordion
           control={control}
           options={options}
@@ -65,8 +104,8 @@ function VariantAccordion({
   optionValues,
   setOptionValues,
 }: {
-  control: Control<ProductVariantDTO>;
-  options: ProductOptionDTO[];
+  control: Control<ProductVariantRequest>;
+  options: ProductOptionRequest[];
   optionValues: ProductOptionValueDTO[];
   setOptionValues: Dispatch<SetStateAction<ProductOptionValueDTO[]>>;
 }) {
@@ -86,7 +125,7 @@ function VariantAccordion({
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             <ControlledField
               control={control}
-              id="custom-title"
+              id="title"
               label="Custom title"
               variant="outlined"
               sx={{ width: "48%" }}
@@ -310,7 +349,7 @@ function VariantAccordion({
             <ControlledField
               control={control}
               select
-              defaultValue="China"
+              defaultValue="china"
               id="country-of-origin"
               label="Country of origin"
               variant="outlined"
@@ -342,7 +381,7 @@ function VariantAccordion({
 }
 
 interface ITitleValueOption {
-  option: ProductOptionDTO;
+  option: ProductOptionRequest;
   optionValue: ProductOptionValueDTO | undefined;
   setOptionValues: Dispatch<SetStateAction<ProductOptionValueDTO[]>>;
 }

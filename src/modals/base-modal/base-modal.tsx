@@ -13,16 +13,27 @@ import {
 import Iconify from "src/components/iconify";
 
 export interface IBaseModal {
+  modalId: string;
   open: boolean;
   title: string;
   children: string | React.ReactNode;
   footer?: string | React.ReactNode;
   closeOnTap?: boolean;
+  onSubmit?: () => void;
   onClose?: () => void;
 }
 
 const BaseModal = memo((props: IBaseModal) => {
-  const { open, title, footer, closeOnTap, onClose, children } = props;
+  const {
+    modalId,
+    open,
+    title,
+    footer,
+    closeOnTap,
+    onClose,
+    onSubmit,
+    children,
+  } = props;
 
   const root = document.getElementById("root");
 
@@ -93,11 +104,13 @@ const BaseModal = memo((props: IBaseModal) => {
           ) : (
             <>
               <Button
+                form={modalId}
                 type="submit"
                 variant="contained"
                 color="success"
                 size="medium"
                 sx={{ mr: 2 }}
+                onClick={onSubmit}
               >
                 Save
               </Button>

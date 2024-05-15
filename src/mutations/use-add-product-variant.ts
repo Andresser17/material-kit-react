@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { ProductDTO, ProductOptionRequest } from "@medusajs/types";
+import { ProductVariantDTO, ProductVariantRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -9,15 +9,12 @@ import {
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-async function updateProductOption(
+async function addProductVariant(
   access_token: string | undefined,
   product_id: string,
-  option: ProductOptionRequest,
-): Promise<ProductDTO> {
-  const url = new URL(
-    `/admin/products/${product_id}/options/${option.id}`,
-    BACKEND_URL,
-  );
+  newProductVariant: ProductVariantRequest,
+): Promise<ProductVariantDTO> {
+  const url = new URL(`/admin/products/${product_id}/variants`, BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -25,38 +22,42 @@ async function updateProductOption(
       Authorization: `Bearer ${access_token}`,
     },
     body: JSON.stringify({
-      title: option.title,
+      title: newProductVariant.title,
     }),
   });
-  if (!response.ok) throw new Error("Failed on updating product option");
+  if (!response.ok) throw new Error("Failed on creating new product variant");
 
   return await response.json();
 }
 
-type IUseUpdateProductOption = UseMutateFunction<
-  ProductDTO | undefined,
+type IUseAddProductVariant = UseMutateFunction<
+  ProductVariantDTO | undefined,
   Error,
-  { product_id: string; option: ProductOptionRequest },
+  { product_id: string; newProductVariant: ProductVariantRequest },
   unknown
 >;
 
-export function useUpdateProductOption(): IUseUpdateProductOption {
+export function useAddProductVariant(): IUseAddProductVariant {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
   const { mutate } = useMutation({
     mutationFn: async ({
       product_id,
-      option,
+      newProductVariant,
     }: {
       product_id: string;
-      option: ProductOptionRequest;
+      newProductVariant: ProductVariantRequest;
     }) => {
-      return updateProductOption(user?.access_token, product_id, option);
+      return addProductVariant(
+        user?.access_token,
+        product_id,
+        newProductVariant,
+      );
     },
-    mutationKey: [MUTATION_KEY.update_product_option],
+    mutationKey: [MUTATION_KEY.add_product_variant],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.productOption] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.productVariant] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
@@ -64,7 +65,7 @@ export function useUpdateProductOption(): IUseUpdateProductOption {
     },
     onSuccess() {
       // call pop up
-      toast.success("Product option updated successfully");
+      toast.success("Product variant added successfully");
     },
   });
 

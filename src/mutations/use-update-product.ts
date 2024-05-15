@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { ProductDTO } from "@medusajs/types";
+import { ProductDTO, ProductRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -16,7 +16,7 @@ import uploadImages, { UploadedFile } from "./uploadImages";
 async function updateProduct(
   access_token: string | undefined,
   id: string,
-  product: ProductDTO,
+  product: ProductRequest,
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
 ): Promise<ProductDTO> {
@@ -43,7 +43,7 @@ type IUseUpdateProduct = UseMutateFunction<
   Error,
   {
     id: string;
-    product: ProductDTO;
+    product: ProductRequest;
     toUpload: SortableImageType[];
   },
   unknown
@@ -60,7 +60,7 @@ export function useUpdateProduct(): IUseUpdateProduct {
       toUpload,
     }: {
       id: string;
-      product: ProductDTO;
+      product: ProductRequest;
       toUpload: SortableImageType[];
     }) => {
       if (toUpload.length > 0) {
