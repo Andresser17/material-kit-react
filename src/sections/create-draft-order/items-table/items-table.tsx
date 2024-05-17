@@ -1,4 +1,3 @@
-import { Control } from "react-hook-form";
 import { useState, SetStateAction } from "react";
 
 import {
@@ -12,10 +11,12 @@ import {
 
 import { emptyRows } from "src/utils/table-utils";
 
+import { useModal } from "src/modals/useModal";
+import { useAppDispatch, useAppSelector } from "src/redux/hooks";
 import {
-  DraftOrderItem,
-  DraftOrderRequest,
-} from "src/mutations/use-create-draft-order";
+  removeSelected,
+  getSelectedProducts,
+} from "src/redux/slices/add-existing-product/add-existing-product-slice";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
@@ -23,27 +24,17 @@ import TableEmptyRows from "src/components/table-empty-rows";
 
 import ItemsTableRow from "./items-table-row";
 import ItemsTableHead from "./items-table-head";
-import AddExistingModal from "../add-existing-modal";
 
-export default function ItemsTable({
-  control,
-}: {
-  control: Control<DraftOrderRequest>;
-}) {
-  const [open, setOpen] = useState(false);
+export default function ItemsTable() {
+  const selectedProducts = useAppSelector((state) =>
+    getSelectedProducts(state),
+  );
+  const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
+  const { onOpen: openModal } = useModal("add-existing-product-modal");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const [items, setItems] = useState<DraftOrderItem[]>([
-    {
-      id: "1",
-      title: "generic",
-      quantity: 2,
-      unit_price: 2500,
-    },
-  ]);
-  const [count, setCount] = useState(0);
+  const [count] = useState(0);
 
   const handlePageChange = (
     _event: unknown,
@@ -57,8 +48,8 @@ export default function ItemsTable({
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleModalToggle = () => {
-    setOpen(true);
+  const handleDelete = (id: string) => {
+    dispatch(removeSelected(id));
   };
 
   return (
@@ -70,7 +61,7 @@ export default function ItemsTable({
           size="small"
           startIcon={<Iconify icon="eva:plus-fill" />}
           sx={{ borderRadius: "5px" }}
-          onClick={handleModalToggle}
+          onClick={() => openModal()}
         >
           Add Existing
         </Button>
@@ -88,14 +79,14 @@ export default function ItemsTable({
               ]}
             />
             <TableBody>
-              {items &&
-                items
+              {selectedProducts &&
+                selectedProducts
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((item) => (
                     <ItemsTableRow
                       key={item.id}
                       data={item}
-                      handleDelete={() => {}}
+                      handleDelete={handleDelete}
                     />
                   ))}
 
@@ -119,8 +110,6 @@ export default function ItemsTable({
         rowsPerPageOptions={[5, 10, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-
-      <AddExistingModal open={open} setOpen={setOpen} addItems={setItems} />
     </Box>
   );
 }

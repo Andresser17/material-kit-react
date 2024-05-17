@@ -1,5 +1,5 @@
 import { useState, SetStateAction } from "react";
-import { ProductDTO, ProductOptionRequest } from "@medusajs/types";
+import { Product, ProductOptionRequest } from "@medusajs/types";
 
 import {
   Box,
@@ -19,12 +19,12 @@ import {
 
 import { error } from "src/theme/palette";
 import { useModal } from "src/modals/useModal";
-import { useListProductVariants } from "src/queries/use-list-product-variants";
+import { useDeleteProductVariant } from "src/mutations/use-delete-product-variant";
 
 import Iconify from "src/components/iconify";
 
 interface IVariants {
-  product: ProductDTO | undefined;
+  product: Product | undefined;
   options: ProductOptionRequest[];
 }
 
@@ -32,9 +32,10 @@ export default function Variants({ product, options }: IVariants) {
   const [open, setOpen] = useState<Element | null>(null);
   const { onOpen: openAddVariantModal } = useModal("add-variant-modal");
   const { onOpen: openEditOptionsModal } = useModal("edit-options-modal");
-  const { variants } = useListProductVariants({
-    product_id: product?.id ?? "",
-  });
+  // const { variants } = useListProductVariants({
+  //   product_id: product?.id ?? "",
+  // });
+  const deleteProductVariantMutation = useDeleteProductVariant();
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -50,7 +51,8 @@ export default function Variants({ product, options }: IVariants) {
     handleCloseMenu();
   };
 
-  const handleDelete = () => {
+  const handleDelete = (product_id: string, variant_id: string) => {
+    deleteProductVariantMutation({ product_id, variant_id });
     handleCloseMenu();
   };
 
@@ -74,7 +76,7 @@ export default function Variants({ product, options }: IVariants) {
               Edit
             </MenuItem>
 
-            <MenuItem onClick={handleDelete} sx={{ color: error.main }}>
+            <MenuItem onClick={() => handleDelete()} sx={{ color: error.main }}>
               <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
               Delete
             </MenuItem>
@@ -89,7 +91,7 @@ export default function Variants({ product, options }: IVariants) {
             </MenuItem>
 
             {/* TODO */}
-            <MenuItem onClick={handleDelete}>
+            <MenuItem>
               <Iconify icon="mingcute:receive-money-line" sx={{ mr: 1 }} />
               Edit Prices
             </MenuItem>
@@ -133,29 +135,37 @@ export default function Variants({ product, options }: IVariants) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {variants &&
-              variants.map((variant) => (
-                <TableRow
-                  key={variant.title}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {variant.title}
-                  </TableCell>
-                  <TableCell align="right">{variant.sku}</TableCell>
-                  <TableCell align="right">
-                    {variant.prices[0].amount}
-                  </TableCell>
-                  <TableCell align="right">
-                    {variant.inventory_quantity}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton id="table-row-op" onClick={handleOpenMenu}>
-                      <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {product &&
+              product.variants.map((variant) => {
+                const priceAmount = variant.prices[0].amount
+                  .toString()
+                  .split("");
+                const formatedPriceAmount = priceAmount.slice(
+                  0,
+                  priceAmount.length - 2,
+                );
+                console.log(formatedPriceAmount);
+                return (
+                  <TableRow
+                    key={variant.title}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {variant.title}
+                    </TableCell>
+                    <TableCell align="right">{variant.sku}</TableCell>
+                    <TableCell align="right">${formatedPriceAmount}</TableCell>
+                    <TableCell align="right">
+                      {variant.inventory_quantity}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton id="table-row-op" onClick={handleOpenMenu}>
+                        <Iconify icon="eva:more-vertical-fill" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

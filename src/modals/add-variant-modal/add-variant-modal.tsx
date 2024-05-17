@@ -31,6 +31,10 @@ import ControlledField from "src/components/controlled-field";
 
 import { useModal } from "../useModal";
 
+interface ProductVariantForm extends ProductVariantRequest {
+  price: number;
+}
+
 export interface IAddVariantModal {
   product: ProductDTO | undefined;
   options: ProductOptionRequest[];
@@ -42,7 +46,7 @@ export default function AddVariantModal() {
     onClose: closeModal,
   } = useModal<IAddVariantModal>("add-variant-modal");
   const [optionValues, setOptionValues] = useState<ProductOptionValueDTO[]>([]);
-  const { handleSubmit, control } = useForm<ProductVariantRequest>({
+  const { handleSubmit, control } = useForm<ProductVariantForm>({
     defaultValues: {
       title: "",
       sku: "",
@@ -62,17 +66,27 @@ export default function AddVariantModal() {
       material: "",
       metadata: {},
       prices: [],
+      price: 0,
       options: [],
     },
     mode: "onChange",
   });
   const addProductVariantMutation = useAddProductVariant();
-  const onSubmit: SubmitHandler<ProductVariantRequest> = (data) => {
-    // console.log(data);
-    // console.log({ optionValues });
+  const onSubmit: SubmitHandler<ProductVariantForm> = (data) => {
+    const { price, ...properties } = data;
     addProductVariantMutation({
       product_id: product?.id ?? "",
-      newProductVariant: data,
+      newProductVariant: {
+        ...properties,
+        prices: [
+          {
+            amount: Number(price.toString() + "00"),
+            currency_code: "USD",
+            min_quantity: 1,
+            max_quantity: 1,
+          },
+        ],
+      } as ProductVariantRequest,
     });
   };
 
@@ -104,7 +118,7 @@ function VariantAccordion({
   optionValues,
   setOptionValues,
 }: {
-  control: Control<ProductVariantRequest>;
+  control: Control<ProductVariantForm>;
   options: ProductOptionRequest[];
   optionValues: ProductOptionValueDTO[];
   setOptionValues: Dispatch<SetStateAction<ProductOptionValueDTO[]>>;
@@ -128,6 +142,14 @@ function VariantAccordion({
               id="title"
               label="Custom title"
               variant="outlined"
+              sx={{ width: "48%" }}
+            />
+            <ControlledField
+              control={control}
+              id="price"
+              label="Price (USD)"
+              variant="outlined"
+              type="number"
               sx={{ width: "48%" }}
             />
           </Box>

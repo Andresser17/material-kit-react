@@ -1,4 +1,4 @@
-import { ProductDTO, ProductStatus } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
@@ -32,36 +32,36 @@ async function listProducts({
   return await response.json();
 }
 
-export type Product = {
-  id: string;
-  title: string;
-  subtitle: string | null;
-  description: string | null;
-  handle: string;
-  is_giftcard: boolean;
-  status: ProductStatus;
-  thumbnail: string;
-  profile_id: string;
-  weight: string | null;
-  length: string | null;
-  height: string | null;
-  width: string | null;
-  hs_code: string | null;
-  origin_country: string | null;
-  mid_code: string | null;
-  material: string | null;
-  collection_id: string;
-  type_id: string;
-  discountable: boolean;
-  external_id: string | null;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-  metadata: { [key: string]: unknown };
-};
+// export type Product = {
+//   id: string;
+//   title: string;
+//   subtitle: string | null;
+//   description: string | null;
+//   handle: string;
+//   is_giftcard: boolean;
+//   status: ProductStatus;
+//   thumbnail: string;
+//   profile_id: string;
+//   weight: string | null;
+//   length: string | null;
+//   height: string | null;
+//   width: string | null;
+//   hs_code: string | null;
+//   origin_country: string | null;
+//   mid_code: string | null;
+//   material: string | null;
+//   collection_id: string;
+//   type_id: string;
+//   discountable: boolean;
+//   external_id: string | null;
+//   created_at: string;
+//   updated_at: string;
+//   deleted_at: string | null;
+//   metadata: { [key: string]: unknown };
+// };
 
 interface ProductsList {
-  products: ProductDTO[] | null;
+  products: Product[] | null;
   count: number;
   offset: number;
   limit: number;

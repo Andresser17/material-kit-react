@@ -1,5 +1,6 @@
 import { SetStateAction } from "react";
-import { ProductDTO } from "@medusajs/types";
+// ----------------------------------------------------------------------
+import { ProductVariant } from "@medusajs/types";
 
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -8,10 +9,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 import Iconify from "src/components/iconify";
 
-// ----------------------------------------------------------------------
-
 interface IProductTableToolbar {
-  selected: ProductDTO[];
+  selected: ProductVariant[];
   filterName: string;
   onFilterName: (event: { target: { value: SetStateAction<string> } }) => void;
 }

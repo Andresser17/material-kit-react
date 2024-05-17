@@ -17,7 +17,7 @@ import CustomerAndShipping from "../customer-and-shipping";
 
 export default function CreateDraftOrderView() {
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
-  const { handleSubmit, control, reset } = useForm<DraftOrderRequest>({
+  const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
       region_id: "",
@@ -101,7 +101,7 @@ export default function CreateDraftOrderView() {
             },
           }}
         >
-          <ChooseRegion control={control} />
+          <ChooseRegion />
           <CustomerAndShipping />
           {floatingButtons}
         </Box>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ProductDTO, ProductRequest } from "@medusajs/types";
+import { Product, ProductRequest } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
@@ -25,7 +25,7 @@ import AddImages, { SortableImageType } from "../add-images";
 export default function AddProductView() {
   const { id: product_id } = useParams();
   const getProductResponse = useGetProduct(product_id ?? "");
-  const [product, setProduct] = useState<ProductDTO | undefined>(undefined);
+  const [product, setProduct] = useState<Product | undefined>(undefined);
   const [images, setImages] = useState<SortableImageType[]>([]);
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
   const options = useAppSelector((state) => getOptions(state));
@@ -102,10 +102,10 @@ export default function AddProductView() {
       setValue("subtitle", getProductResponse.subtitle as string);
       setValue("handle", getProductResponse.handle as string);
       setValue("status", getProductResponse.status);
-      setValue("weight", getProductResponse.weight as number);
-      setValue("length", getProductResponse.length as number);
-      setValue("height", getProductResponse.height as number);
-      setValue("width", getProductResponse.width as number);
+      setValue("weight", getProductResponse.weight);
+      setValue("length", getProductResponse.length);
+      setValue("height", getProductResponse.height);
+      setValue("width", getProductResponse.width);
       setValue("hs_code", getProductResponse.hs_code as string);
       setValue("origin_country", getProductResponse.origin_country as string);
       setValue("mid_code", getProductResponse.mid_code as string);
@@ -119,7 +119,7 @@ export default function AddProductView() {
       <Box sx={{ display: "flex", gap: 3, p: 2 }}>
         <Box sx={{ w: "60%" }}>
           <GeneralInfo control={control} />
-          <Variants product={product} options={options} />
+          <Variants product={getProductResponse} options={options} />
           <Attributes control={control} />
           <RawProduct />
         </Box>

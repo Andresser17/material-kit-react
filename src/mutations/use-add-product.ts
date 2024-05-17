@@ -1,10 +1,6 @@
 import toast from "react-hot-toast";
 import { UseFormReset } from "react-hook-form";
-import {
-  ProductDTO,
-  ProductRequest,
-  ProductOptionRequest,
-} from "@medusajs/types";
+import { Product, ProductRequest, ProductOptionRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -24,7 +20,7 @@ async function addProduct(
   options: ProductOptionRequest[],
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
-): Promise<ProductDTO> {
+): Promise<Product> {
   const url = new URL("/admin/products", BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
@@ -47,7 +43,7 @@ async function addProduct(
 }
 
 type IUseAddProduct = UseMutateFunction<
-  ProductDTO | undefined,
+  Product | undefined,
   Error,
   {
     newProduct: ProductRequest;
@@ -58,7 +54,7 @@ type IUseAddProduct = UseMutateFunction<
 >;
 
 export function useAddProduct(resetForm: UseFormReset<ProductRequest>): {
-  data: ProductDTO | undefined;
+  data: Product | undefined;
   mutate: IUseAddProduct;
 } {
   const queryClient = useQueryClient();

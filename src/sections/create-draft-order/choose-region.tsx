@@ -1,19 +1,30 @@
-import { Control } from "react-hook-form";
+import { useState, useEffect, SetStateAction } from "react";
 
 import Box from "@mui/material/Box";
 import { Select, Divider, MenuItem, Typography } from "@mui/material";
 
-import { DraftOrderRequest } from "src/mutations/use-create-draft-order";
+import { useListRegions } from "src/queries/use-list-regions";
 
 import SectionBox from "src/components/section-box";
 
 import ItemsTable from "./items-table/items-table";
 
-export default function ChooseRegion({
-  control,
-}: {
-  control: Control<DraftOrderRequest>;
-}) {
+export default function ChooseRegion() {
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const { regions } = useListRegions();
+
+  const handleSelectedRegion = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setSelectedRegion(e.target.value);
+  };
+
+  useEffect(() => {
+    if (regions.length > 0) {
+      setSelectedRegion(regions[0].id);
+    }
+  }, [regions]);
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Typography variant="h4">Choose region</Typography>
@@ -25,17 +36,21 @@ export default function ChooseRegion({
           variant="outlined"
           required
           fullWidth
-          defaultValue={"venezuela"}
+          value={selectedRegion}
+          onChange={handleSelectedRegion}
         >
-          <MenuItem value="venezuela">Venezuela</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {regions &&
+            regions.map((region) => (
+              <MenuItem key={region.id} value={region.id}>
+                {region.name}
+              </MenuItem>
+            ))}
         </Select>
       </Box>
       <Typography variant="subtitle2" sx={{ my: 2 }}>
         Items for the order
       </Typography>
-      <ItemsTable control={control} />
+      <ItemsTable />
     </SectionBox>
   );
 }

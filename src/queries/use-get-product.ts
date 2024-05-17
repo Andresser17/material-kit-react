@@ -1,4 +1,4 @@
-import { ProductDTO } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
@@ -6,7 +6,7 @@ import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 import { useUser } from "./use-user";
 
 interface GetProductResponse {
-  product: ProductDTO;
+  product: Product;
 }
 
 async function getProduct(
@@ -24,7 +24,7 @@ async function getProduct(
   return await response.json();
 }
 
-export function useGetProduct(product_id: string): ProductDTO | undefined {
+export function useGetProduct(product_id: string): Product | undefined {
   const { user } = useUser();
 
   const { data } = useQuery({

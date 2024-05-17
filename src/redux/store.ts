@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import modalSlice from "./slices/modal/modal-slice";
+import addExistingProduct from "./slices/add-existing-product";
 import productOptionsSlice from "./slices/product-options/product-options-slice";
 
 export const store = configureStore({
   reducer: {
     modal: modalSlice,
     productOptions: productOptionsSlice,
+    addExistingProduct: addExistingProduct,
   },
 });
 

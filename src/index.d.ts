@@ -59,10 +59,10 @@ export declare module "@medusajs/types" {
     status: ProductStatus;
     thumbnail: string;
     profile_id: string;
-    weight: string | null;
-    length: string | null;
-    height: string | null;
-    width: string | null;
+    weight: number;
+    length: number;
+    height: number;
+    width: number;
     hs_code: string | null;
     origin_country: string | null;
     mid_code: string | null;
@@ -70,11 +70,34 @@ export declare module "@medusajs/types" {
     collection_id: string;
     type_id: string;
     discountable: boolean;
+    variants: ProductVariant[];
     external_id: string | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
     metadata: { [key: string]: unknown };
+  }
+
+  interface Region {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | Date;
+    name: string;
+    currency_code: string;
+    currency: Currency;
+    tax_rate: number;
+    tax_rates: null | TaxRate[];
+    tax_code: string;
+    gift_cards_taxable: boolean;
+    automatic_taxes: boolean;
+    countries: Country[];
+    tax_provider_id: null | string;
+    tax_provider: TaxProvider;
+    payment_providers: PaymentProvider[];
+    fulfillment_providers: FulfillmentProvider[];
+    metadata: Record<string, unknown>;
+    includes_tax: boolean;
   }
 
   interface OrderDTO {
@@ -157,8 +180,8 @@ export declare module "@medusajs/types" {
     metadata: Record<string, unknown>;
     prices: {
       amount: number;
-      region_id: string;
-      currency_code: string;
+      region_id?: string;
+      currency_code?: string;
       min_quantity: number;
       max_quantity: number;
     }[];

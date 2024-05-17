@@ -7,9 +7,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Box from "@mui/material/Box";
 
 import { useAddProduct } from "src/mutations/use-add-product";
+import { ProductStatus as ProductStatusEnum } from "src/enums";
 import { useUpdateProduct } from "src/mutations/use-update-product";
 import { OrderStatus, PaymentStatus, FulfillmentStatus } from "src/enums";
-import { ProductStatus as ProductStatusEnum } from "src/queries/use-list-products";
 
 import Summary from "../summary";
 import Payment from "../payment";
@@ -24,7 +24,7 @@ export default function OrderView() {
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
   const [options, setOptions] = useState<ProductOptionDTO[]>([]);
   const location = useLocation();
-  const { handleSubmit, control, reset } = useForm<ProductDTO>({
+  const { handleSubmit, reset } = useForm<ProductDTO>({
     defaultValues: location.state?.product
       ? {
           title: location.state?.product.title,

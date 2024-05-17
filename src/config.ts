@@ -1,6 +1,7 @@
 export const QUERY_KEY = {
   user: "user",
   product: "product",
+  regions: "regions",
   list_products: "list_products",
   productType: "productType",
   productOption: "productOption",
@@ -19,6 +20,7 @@ export const MUTATION_KEY = {
   update_product_option: "update_product_option",
   delete_product_option: "delete_product_option",
   add_product_variant: "add_product_variant",
+  delete_product_variant: "delete_produdct_variant",
   create_draft_order: "create_draft_order",
 };
 

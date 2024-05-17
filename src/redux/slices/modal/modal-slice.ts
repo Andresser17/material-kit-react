@@ -22,6 +22,11 @@ const initialState = {
       open: false,
       props: null,
     } as Modal<null>,
+    {
+      id: "add-existing-product-modal",
+      open: false,
+      props: null,
+    } as Modal<null>,
   ],
 };
 

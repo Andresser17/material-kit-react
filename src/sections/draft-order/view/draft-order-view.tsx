@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Box from "@mui/material/Box";
@@ -21,8 +20,7 @@ import OrderDetails from "../order-details";
 
 export default function DraftOrderView() {
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
-  const location = useLocation();
-  const { handleSubmit, control, reset } = useForm<DraftOrderRequest>({
+  const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
       region_id: "",
