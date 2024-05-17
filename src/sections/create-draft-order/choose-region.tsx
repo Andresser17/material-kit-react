@@ -1,4 +1,5 @@
-import { useState, useEffect, SetStateAction } from "react";
+import { Region } from "@medusajs/types";
+import { Dispatch, useEffect, SetStateAction } from "react";
 
 import Box from "@mui/material/Box";
 import { Select, Divider, MenuItem, Typography } from "@mui/material";
@@ -9,19 +10,27 @@ import SectionBox from "src/components/section-box";
 
 import ItemsTable from "./items-table/items-table";
 
-export default function ChooseRegion() {
-  const [selectedRegion, setSelectedRegion] = useState("");
+interface IChooseRegion {
+  selectedRegion: Region | null;
+  setSelectedRegion: Dispatch<SetStateAction<Region | null>>;
+}
+
+export default function ChooseRegion({
+  selectedRegion,
+  setSelectedRegion,
+}: IChooseRegion) {
   const { regions } = useListRegions();
 
   const handleSelectedRegion = (e: {
     target: { value: SetStateAction<string> };
   }) => {
-    setSelectedRegion(e.target.value);
+    const found = regions.find((region) => region.id === e.target.value);
+    setSelectedRegion(found ?? null);
   };
 
   useEffect(() => {
     if (regions.length > 0) {
-      setSelectedRegion(regions[0].id);
+      setSelectedRegion(regions[0]);
     }
   }, [regions]);
 
@@ -36,7 +45,7 @@ export default function ChooseRegion() {
           variant="outlined"
           required
           fullWidth
-          value={selectedRegion}
+          value={selectedRegion?.id ?? ""}
           onChange={handleSelectedRegion}
         >
           {regions &&

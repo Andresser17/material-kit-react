@@ -10,6 +10,7 @@ export const QUERY_KEY = {
   draftOrder: "draftOrder",
   tag: "tag",
   collection: "collection",
+  shipping_options: "shipping_options",
 };
 
 export const MUTATION_KEY = {

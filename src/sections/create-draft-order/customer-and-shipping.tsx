@@ -1,4 +1,5 @@
-import { Dispatch, useState, SetStateAction } from "react";
+import { ShippingOptionDTO } from "@medusajs/types";
+import { Dispatch, useState, useEffect, SetStateAction } from "react";
 
 import {
   Box,
@@ -12,17 +13,36 @@ import {
   FormControl,
 } from "@mui/material";
 
+import { useListShippingOptions } from "src/queries/use-list-shipping-options";
+
 import SectionBox from "src/components/section-box";
 
 // ----------------------------------------------------------------------
 
-export default function ShippingMethod() {
-  const [method, setMethod] = useState("no-shipping");
+export default function ShippingMethod({
+  regionId,
+  regionName,
+}: {
+  regionId: string;
+  regionName: string;
+}) {
+  const { shipping_options } = useListShippingOptions({
+    query: { region_id: regionId, is_return: false },
+  });
+  const [selectedMethod, setSelectedMethod] =
+    useState<ShippingOptionDTO | null>(null);
   const [address, setAddress] = useState("");
 
   const handleChange = (e: { target: { value: string } }) => {
-    setMethod(e.target.value);
+    const found = shipping_options.find(
+      (shipping_option) => shipping_option.id === e.target.value,
+    );
+    setSelectedMethod(found ?? null);
   };
+
+  useEffect(() => {
+    if (shipping_options.length > 0) setSelectedMethod(shipping_options[0]);
+  }, [shipping_options]);
 
   return (
     <SectionBox
@@ -32,7 +52,7 @@ export default function ShippingMethod() {
       }}
     >
       <Typography variant="subtitle2" sx={{ fontSize: 16, mb: 3 }}>
-        Shipping method (To {`{country}`})
+        Shipping method (To {regionName})
       </Typography>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">
@@ -41,13 +61,26 @@ export default function ShippingMethod() {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={method}
+          value={selectedMethod?.id ?? ""}
           label="Choose a shipping method"
           onChange={handleChange}
         >
-          <MenuItem value="no-shipping">No shipping - 0 USD</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {shipping_options &&
+            shipping_options.map((shippingOption) => {
+              const amount = shippingOption.amount.toString().split("");
+              const amountPrint = amount
+                .slice(
+                  0,
+                  amount.length >= 3 ? amount.length - 2 : amount.length,
+                )
+                .join("");
+
+              return (
+                <MenuItem key={shippingOption.id} value={shippingOption.id}>
+                  {`${shippingOption.name} - ${amountPrint} ${shippingOption.region.currency_code.toUpperCase()}`}
+                </MenuItem>
+              );
+            })}
         </Select>
       </FormControl>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
@@ -72,7 +105,7 @@ export default function ShippingMethod() {
         <Select
           labelId="existing-customer-label"
           id="existing-customer"
-          value={method}
+          value={selectedMethod?.id ?? ""}
           label="Find existing customer"
           onChange={handleChange}
         >

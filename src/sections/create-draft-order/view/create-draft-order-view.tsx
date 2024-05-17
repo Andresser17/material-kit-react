@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Region } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Box from "@mui/material/Box";
@@ -16,6 +17,7 @@ import CustomerAndShipping from "../customer-and-shipping";
 // ----------------------------------------------------------------------
 
 export default function CreateDraftOrderView() {
+  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
@@ -101,8 +103,14 @@ export default function CreateDraftOrderView() {
             },
           }}
         >
-          <ChooseRegion />
-          <CustomerAndShipping />
+          <ChooseRegion
+            selectedRegion={selectedRegion}
+            setSelectedRegion={setSelectedRegion}
+          />
+          <CustomerAndShipping
+            regionName={selectedRegion?.name ?? ""}
+            regionId={selectedRegion?.id ?? ""}
+          />
           {floatingButtons}
         </Box>
       </Box>

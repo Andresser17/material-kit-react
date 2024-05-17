@@ -127,6 +127,11 @@ export declare module "@medusajs/types" {
     prices: MoneyAmountDTO[];
   }
 
+  interface ShippingOptionDTO {
+    amount: number;
+    region: Region;
+  }
+
   interface ProductRequest {
     title: string;
     subtitle: string;
