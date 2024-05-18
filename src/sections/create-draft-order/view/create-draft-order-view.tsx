@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Region } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  Region,
+  CustomerDTO,
+  ShippingAddress,
+  ShippingOptionDTO,
+  DraftOrderRequest,
+} from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
 import { DraftOrderStatus } from "src/enums";
-import {
-  DraftOrderRequest,
-  useCreateDraftOrder,
-} from "src/mutations/use-create-draft-order";
+import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
 
 import ChooseRegion from "../choose-region";
 import CustomerAndShipping from "../customer-and-shipping";
@@ -18,6 +21,14 @@ import CustomerAndShipping from "../customer-and-shipping";
 
 export default function CreateDraftOrderView() {
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const [selectedMethod, setSelectedMethod] =
+    useState<ShippingOptionDTO | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerDTO | null>(
+    null,
+  );
+  const [selectedAddress, setSelectedAddress] =
+    useState<ShippingAddress | null>(null);
+
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
@@ -41,7 +52,6 @@ export default function CreateDraftOrderView() {
       },
       items: [],
       discounts: [],
-      customer_id: "",
       no_notification_order: false,
       metadata: {},
     },
@@ -53,16 +63,68 @@ export default function CreateDraftOrderView() {
   };
   const createDraftOrder = useCreateDraftOrder(resetForm);
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
-    // if (location.state?.product) {
-    //   upadteProductMutation({
-    //     id: location.state?.product.id,
-    //     product: { ...data, status },
-    //     // toUpload: images,
-    //   });
-    //   return;
-    // }
     createDraftOrder({
-      newDraftOrder: { ...data, status },
+      newDraftOrder: {
+        ...data,
+        status,
+        email: selectedCustomer?.email ?? "",
+        region_id: selectedRegion?.id ?? "",
+        customer_id: selectedCustomer?.id ?? "",
+        billing_address: selectedAddress
+          ? {
+              first_name: selectedAddress.first_name,
+              last_name: selectedAddress.last_name,
+              phone: selectedAddress.phone,
+              company: selectedAddress.company,
+              address_1: selectedAddress.address_1,
+              address_2: selectedAddress.address_2,
+              city: selectedAddress.city,
+              country_code: selectedAddress.country_code,
+              province: selectedAddress.province,
+              postal_code: selectedAddress.postal_code,
+              metadata: selectedAddress.metadata,
+            }
+          : {
+              first_name: "",
+              last_name: "",
+              phone: "",
+              company: "",
+              address_1: "",
+              address_2: "",
+              city: "",
+              country_code: "ve",
+              province: "",
+              postal_code: "",
+              metadata: {},
+            },
+        shipping_address: selectedAddress
+          ? {
+              first_name: selectedAddress.first_name,
+              last_name: selectedAddress.last_name,
+              phone: selectedAddress.phone,
+              company: selectedAddress.company,
+              address_1: selectedAddress.address_1,
+              address_2: selectedAddress.address_2,
+              city: selectedAddress.city,
+              country_code: selectedAddress.country_code,
+              province: selectedAddress.province,
+              postal_code: selectedAddress.postal_code,
+              metadata: selectedAddress.metadata,
+            }
+          : {
+              first_name: "",
+              last_name: "",
+              phone: "",
+              company: "",
+              address_1: "",
+              address_2: "",
+              city: "",
+              country_code: "ve",
+              province: "",
+              postal_code: "",
+              metadata: {},
+            },
+      },
     });
   };
 
@@ -110,6 +172,12 @@ export default function CreateDraftOrderView() {
           <CustomerAndShipping
             regionName={selectedRegion?.name ?? ""}
             regionId={selectedRegion?.id ?? ""}
+            selectedCustomer={selectedCustomer}
+            setSelectedCustomer={setSelectedCustomer}
+            selectedMethod={selectedMethod}
+            setSelectedMethod={setSelectedMethod}
+            selectedAddress={selectedAddress}
+            setSelectedAddress={setSelectedAddress}
           />
           {floatingButtons}
         </Box>

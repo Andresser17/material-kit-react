@@ -1,5 +1,10 @@
-import { ShippingOptionDTO } from "@medusajs/types";
-import { Dispatch, useState, useEffect, SetStateAction } from "react";
+import { Link } from "react-router-dom";
+import { Dispatch, useEffect, SetStateAction } from "react";
+import {
+  CustomerDTO,
+  ShippingAddress,
+  ShippingOptionDTO,
+} from "@medusajs/types";
 
 import {
   Box,
@@ -13,36 +18,66 @@ import {
   FormControl,
 } from "@mui/material";
 
+import { useListCustomers } from "src/queries/use-list-customers";
 import { useListShippingOptions } from "src/queries/use-list-shipping-options";
 
 import SectionBox from "src/components/section-box";
 
 // ----------------------------------------------------------------------
 
-export default function ShippingMethod({
-  regionId,
-  regionName,
-}: {
+interface ICustomerAndShipping {
   regionId: string;
   regionName: string;
-}) {
+  selectedMethod: ShippingOptionDTO | null;
+  setSelectedMethod: Dispatch<SetStateAction<ShippingOptionDTO | null>>;
+  selectedCustomer: CustomerDTO | null;
+  setSelectedCustomer: Dispatch<SetStateAction<CustomerDTO | null>>;
+  selectedAddress: ShippingAddress | null;
+  setSelectedAddress: Dispatch<SetStateAction<ShippingAddress | null>>;
+}
+
+export default function CustomerAndShipping({
+  regionId,
+  regionName,
+  selectedMethod,
+  setSelectedMethod,
+  selectedAddress,
+  setSelectedAddress,
+  selectedCustomer,
+  setSelectedCustomer,
+}: ICustomerAndShipping) {
   const { shipping_options } = useListShippingOptions({
     query: { region_id: regionId, is_return: false },
   });
-  const [selectedMethod, setSelectedMethod] =
-    useState<ShippingOptionDTO | null>(null);
-  const [address, setAddress] = useState("");
+  const { customers } = useListCustomers();
 
-  const handleChange = (e: { target: { value: string } }) => {
+  const handleShippingOptions = (e: { target: { value: string } }) => {
     const found = shipping_options.find(
       (shipping_option) => shipping_option.id === e.target.value,
     );
     setSelectedMethod(found ?? null);
   };
 
+  const handleCustomers = (e: { target: { value: string } }) => {
+    const found = customers.find((customer) => customer.id === e.target.value);
+    setSelectedCustomer(found ?? null);
+  };
+
   useEffect(() => {
     if (shipping_options.length > 0) setSelectedMethod(shipping_options[0]);
-  }, [shipping_options]);
+    if (customers.length > 0) setSelectedCustomer(customers[0]);
+  }, [shipping_options, customers]);
+
+  useEffect(() => {
+    if (!selectedAddress) {
+      const newAddress =
+        selectedCustomer?.shipping_addresses &&
+        selectedCustomer.shipping_addresses.length > 0
+          ? selectedCustomer?.shipping_addresses[0]
+          : null;
+      setSelectedAddress(newAddress);
+    }
+  }, [selectedAddress, selectedCustomer]);
 
   return (
     <SectionBox
@@ -63,7 +98,7 @@ export default function ShippingMethod({
           id="demo-simple-select"
           value={selectedMethod?.id ?? ""}
           label="Choose a shipping method"
-          onChange={handleChange}
+          onChange={handleShippingOptions}
         >
           {shipping_options &&
             shipping_options.map((shippingOption) => {
@@ -105,85 +140,56 @@ export default function ShippingMethod({
         <Select
           labelId="existing-customer-label"
           id="existing-customer"
-          value={selectedMethod?.id ?? ""}
+          value={selectedCustomer?.id ?? ""}
           label="Find existing customer"
-          onChange={handleChange}
+          onChange={handleCustomers}
         >
-          <MenuItem value="no-shipping">No shipping - 0 USD</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {customers &&
+            customers.map((customer) => {
+              const label =
+                customer.first_name && customer.last_name
+                  ? `${customer.first_name} ${customer.last_name} (${customer.email})`
+                  : customer.email;
+
+              return (
+                <MenuItem key={customer.id} value={customer.id}>
+                  {label}
+                </MenuItem>
+              );
+            })}
         </Select>
       </FormControl>
-
       <Typography variant="subtitle2" sx={{ fontSize: 16, mb: 3 }}>
         Choose existing addresses
       </Typography>
-      <AddressCardGroup
-        name="address"
-        addresses={[
-          {
-            value: "address-1",
-            customer: "Alejandro Jose Serrano Navarro",
-            address: "Calle 26 Casa #9 Viento Colao, 6201 Maturin VE",
-          },
-          {
-            value: "address-2",
-            customer: "Alejandro Jose Serrano Navarro",
-            address: "Calle 26 Casa #9 Viento Colao, 6201 Maturin VE",
-          },
-        ]}
-        selected={address}
-        setSelected={setAddress}
-      />
+      {selectedCustomer?.shipping_addresses &&
+      selectedCustomer?.shipping_addresses.length > 0 ? (
+        selectedCustomer?.shipping_addresses.map((address) => (
+          <AddressCard
+            key={address.id}
+            address={address}
+            selected={selectedAddress}
+            setSelected={setSelectedAddress}
+          />
+        ))
+      ) : (
+        <Typography variant="subtitle2">
+          Shipping addresses not found: <Link to="#">add an address</Link>
+        </Typography>
+      )}
     </SectionBox>
   );
 }
 
-interface IAddressCardGroup {
-  name: string;
-  addresses: { value: string; customer: string; address: string }[];
-  selected: string;
-  setSelected: Dispatch<SetStateAction<string>>;
-}
-
-function AddressCardGroup({
-  name,
-  addresses,
-  selected,
-  setSelected,
-}: IAddressCardGroup) {
-  return addresses.map((address) => (
-    <AddressCard
-      key={address.value}
-      name={name}
-      value={address.value}
-      customer={address.customer}
-      address={address.address}
-      checked={address.value === selected}
-      setSelected={setSelected}
-    />
-  ));
-}
-
 interface IAddressCard {
-  name: string;
-  value: string;
-  customer: string;
-  address: string;
-  checked: boolean;
-  setSelected: Dispatch<SetStateAction<string>>;
+  address: ShippingAddress;
+  selected: ShippingAddress | null;
+  setSelected: Dispatch<SetStateAction<ShippingAddress | null>>;
 }
 
-function AddressCard({
-  name,
-  value,
-  customer,
-  address,
-  checked,
-  setSelected,
-}: IAddressCard) {
+function AddressCard({ address, selected, setSelected }: IAddressCard) {
   const handleClick = () => {
-    setSelected(value);
+    setSelected(address);
   };
 
   return (
@@ -198,11 +204,21 @@ function AddressCard({
         cursor: "pointer",
       }}
     >
-      <Radio checked={checked} name={name} value={value} sx={{ mr: 2 }} />
+      <Radio
+        checked={selected?.id === address.id}
+        name={address.id}
+        value={address}
+        sx={{ mr: 2 }}
+      />
       <Box>
-        <Typography variant="subtitle2">{customer}</Typography>
+        <Typography variant="subtitle2">
+          {address.first_name} {address.last_name}
+        </Typography>
         <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
-          {address}
+          {address.address_1}
+        </Typography>
+        <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
+          {address.address_2}
         </Typography>
       </Box>
     </Card>

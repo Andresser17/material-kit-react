@@ -1,13 +1,12 @@
 import toast from "react-hot-toast";
-import { DraftOrder } from "@medusajs/types";
 import { UseFormReset } from "react-hook-form";
+import { DraftOrder, DraftOrderRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
   UseMutateFunction,
 } from "@tanstack/react-query";
 
-import { DraftOrderStatus } from "src/enums";
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
@@ -34,40 +33,6 @@ export interface DraftOrderItem {
   variant_id: string;
   unit_price: number;
   title: string;
-  metadata: Record<string, unknown>;
-}
-
-export interface DraftOrderRequest extends DraftOrder {
-  email: string;
-  region_id: string;
-  shipping_methods: {
-    option_id: string;
-    data: {
-      name: string;
-      cedula: string;
-      phone_number: string;
-    };
-    price: number;
-  }[];
-  status: DraftOrderStatus;
-  billing_address: this["shipping_address"];
-  shipping_address: {
-    first_name: string;
-    last_name: string;
-    phone: string;
-    company: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    country_code: string;
-    province: string;
-    postal_code: string;
-    metadata: Record<string, unknown>;
-  };
-  items: DraftOrderItem[];
-  discounts: { code: string }[];
-  customer_id: string;
-  no_notification_order: boolean;
   metadata: Record<string, unknown>;
 }
 

@@ -1,4 +1,5 @@
 import {
+  AddressDTO,
   MoneyAmountDTO,
   SalesChannelDTO,
   ProductVariantDTO,
@@ -123,6 +124,15 @@ export declare module "@medusajs/types" {
     metadata: Record<string, unknown>;
   }
 
+  interface ShippingAddress extends AddressDTO {
+    first_name: string;
+    last_name: string;
+  }
+
+  interface CustomerDTO {
+    shipping_addresses: ShippingAddress[];
+  }
+
   interface ProductVariant extends ProductVariantDTO {
     prices: MoneyAmountDTO[];
   }
@@ -191,5 +201,35 @@ export declare module "@medusajs/types" {
       max_quantity: number;
     }[];
     options: string[];
+  }
+
+  export interface DraftOrderRequest
+    extends Omit<
+      DraftOrder,
+      "id",
+      "created_at",
+      "canceled_at",
+      "updated_at",
+      "deleted_at"
+    > {
+    email: string;
+    region_id: string;
+    shipping_methods: {
+      option_id: string;
+      data: {
+        name: string;
+        cedula: string;
+        phone_number: string;
+      };
+      price: number;
+    }[];
+    status: DraftOrderStatus;
+    billing_address: ShippingAddress;
+    shipping_address: ShippingAddress;
+    items: DraftOrderItem[];
+    discounts: { code: string }[];
+    customer_id: string;
+    no_notification_order: boolean;
+    metadata: Record<string, unknown>;
   }
 }
