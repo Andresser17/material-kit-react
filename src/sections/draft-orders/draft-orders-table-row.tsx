@@ -31,11 +31,11 @@ export default function DraftOrdersTableRow({ data }: IDraftOrdersTableRow) {
     >
       <TableCell sx={{ pl: 2 }} component="th" scope="row" padding="none">
         <Typography
-          sx={{ fontSize: 10, color: "#888" }}
+          sx={{ fontSize: 12, color: "#888" }}
           variant="subtitle2"
           noWrap
         >
-          #{data.id.split("").slice(7)}
+          #{data.display_id}
         </Typography>
       </TableCell>
 

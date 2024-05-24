@@ -1,4 +1,5 @@
 import { useState, MouseEvent } from "react";
+import { DraftOrderResponse } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import {
@@ -18,10 +19,10 @@ import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface IOrderDetails {
-  status: DraftOrderStatus;
+  data: DraftOrderResponse | null;
 }
 
-export default function OrderDetails({ status }: IOrderDetails) {
+export default function OrderDetails({ data }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
@@ -34,12 +35,14 @@ export default function OrderDetails({ status }: IOrderDetails) {
 
   const handleCancelOrder = () => {};
 
+  if (!data) return <div>Loading!!!</div>;
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            Order {`{#75}`}
+            Order #{data?.display_id}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
             12 April 2024 05:05 pm
@@ -47,12 +50,14 @@ export default function OrderDetails({ status }: IOrderDetails) {
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Label
-            color={status === DraftOrderStatus.COMPLETED ? "success" : "info"}
+            color={
+              data.status === DraftOrderStatus.COMPLETED ? "success" : "info"
+            }
             sx={{ mr: 1 }}
           >
-            {status}
+            {data.status}
           </Label>
-          {status === DraftOrderStatus.COMPLETED ? (
+          {data.status === DraftOrderStatus.COMPLETED ? (
             <Button>Go to order</Button>
           ) : (
             <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
@@ -63,9 +68,12 @@ export default function OrderDetails({ status }: IOrderDetails) {
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Email" value="user@example.com" />
-        <TitleValueField title="Phone" value="N/A" />
-        <TitleValueField title="Amount USD" value="$50.00" />
+        <TitleValueField title="Email" value={data.cart.email ?? "N/A"} />
+        <TitleValueField
+          title="Phone"
+          value={data.cart.customer.phone ?? "N/A"}
+        />
+        <TitleValueField title="Amount USD" value={`$${data?.cart.total}`} />
       </Box>
       <Popover
         open={open != null}

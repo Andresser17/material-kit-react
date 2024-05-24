@@ -102,6 +102,7 @@ export declare module "@medusajs/types" {
   }
 
   interface OrderDTO {
+    display_id: number;
     fulfillment_status: FulfillmentStatus;
     payment_status: PaymentStatus;
     sales_channel: SalesChannelDTO;
@@ -116,12 +117,28 @@ export declare module "@medusajs/types" {
     display_id: number;
     cart_id: string;
     cart: Cart;
+    customer: CustomerDTO;
     order_id: string;
     order: Order;
     canceled_at: string;
     completed_at: string;
     no_notification_order: boolean;
     metadata: Record<string, unknown>;
+  }
+
+  interface DraftOrderResponse {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    status: DraftOrderStatus;
+    display_id: number;
+    cart: CartDTO;
+    cart_id: string;
+    order: OrderDTO;
+    order_id: string;
+    canceled_at: string;
+    no_notification_order: boolean;
+    metadata: Record<string, unknown> | null;
   }
 
   interface ShippingAddress extends AddressDTO {

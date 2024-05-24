@@ -1,10 +1,16 @@
+import { DraftOrderResponse } from "@medusajs/types";
+
 import Box from "@mui/material/Box";
 import { Button, Divider, Typography } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
 
-export default function Payment() {
+interface IPayment {
+  data: DraftOrderResponse | null;
+}
+
+export default function Payment({ data }: IPayment) {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -16,20 +22,24 @@ export default function Payment() {
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <SummaryField
         title="Subtotal"
-        value="$50.00 USD"
+        value={`$${data?.cart.subtotal} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Shipping"
-        value="$0.00 USD"
+        value={`$${data?.cart.shipping_total} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Tax"
-        value="$0.00 USD"
+        value={`$${data?.cart.tax_total} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
-      <SummaryField title="Total to pay" value="$50.00" bold />
+      <SummaryField
+        title="Total to pay"
+        value={`$${data?.cart.total} USD`}
+        bold
+      />
       <Typography variant="body2" sx={{ color: "#888", fontSize: 11 }}>
         Payment link: Configure payment link to store settings
       </Typography>

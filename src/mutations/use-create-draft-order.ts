@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { UseFormReset } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { DraftOrder, DraftOrderRequest } from "@medusajs/types";
 import {
   useMutation,
@@ -10,10 +11,14 @@ import {
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
+interface CreateDraftOrderResponse {
+  draft_order: DraftOrder;
+}
+
 async function createDraftOrder(
   access_token: string | undefined,
   newDraftOrder: DraftOrderRequest,
-): Promise<DraftOrder> {
+): Promise<CreateDraftOrderResponse> {
   const url = new URL("/admin/draft-orders", BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
@@ -29,7 +34,7 @@ async function createDraftOrder(
 }
 
 type IUseCreateDraftOrder = UseMutateFunction<
-  DraftOrder | undefined,
+  CreateDraftOrderResponse | undefined,
   Error,
   { newDraftOrder: DraftOrderRequest },
   unknown
@@ -40,6 +45,7 @@ export function useCreateDraftOrder(
 ): IUseCreateDraftOrder {
   const queryClient = useQueryClient();
   const { user } = useUser();
+  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: async ({
@@ -57,10 +63,11 @@ export function useCreateDraftOrder(
       // call error pop up
       toast.error(err.message);
     },
-    onSuccess() {
+    onSuccess(data) {
       // call pop up
       toast.success("Draft order created successfully");
       resetForm();
+      navigate(`/draft-orders/${data.draft_order.id}`);
     },
   });
 

@@ -1,9 +1,17 @@
+import { DraftOrderResponse } from "@medusajs/types";
+
 import { Box, Card, Divider, IconButton, Typography } from "@mui/material";
 
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 
-export default function Shipping() {
+interface IShipping {
+  data: DraftOrderResponse | null;
+}
+
+export default function Shipping({ data }: IShipping) {
+  const itemsLength = data?.cart.items.length;
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Typography variant="h4">Shipping</Typography>
@@ -17,7 +25,7 @@ export default function Shipping() {
       <Box sx={{ display: "flex", mb: 2 }}>
         <Typography variant="subtitle2">Data</Typography>
         <Typography variant="subtitle2" sx={{ ml: 0.5, color: "#888" }}>
-          (1 item)
+          ({itemsLength} {itemsLength > 1 ? "items" : "item"})
         </Typography>
       </Box>
       <Card

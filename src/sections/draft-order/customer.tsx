@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, SyntheticEvent } from "react";
+import { DraftOrderResponse } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import {
@@ -14,10 +15,14 @@ import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
-export default function Customer() {
+interface ICustomer {
+  data: DraftOrderResponse | null;
+}
+
+export default function Customer({ data }: ICustomer) {
   const [open, setOpen] = useState<Element | null>(null);
 
-  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleOpenMenu = (e: SyntheticEvent) => {
     setOpen(e.currentTarget);
   };
 
@@ -50,12 +55,21 @@ export default function Customer() {
           variant="square"
           sx={{ width: 36, height: 36, mr: 2 }}
         />
-        <TitleValueField title="user@example.com" value=", Venezuela" />
+        <TitleValueField
+          title={data?.cart.customer.email}
+          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+        />
       </Box>
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Contact" value="user@example.com" />
-        <TitleValueField title="Shipping" value=", VE" />
-        <TitleValueField title="Billing" value="N/A" />
+        <TitleValueField title="Contact" value={data?.cart.customer.email} />
+        <TitleValueField
+          title="Shipping"
+          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+        />
+        <TitleValueField
+          title="Billing"
+          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+        />
       </Box>
       <Popover
         open={open != null}

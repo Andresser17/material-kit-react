@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { DraftOrderRequest } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import Box from "@mui/material/Box";
 
 import { DraftOrderStatus } from "src/enums";
-import {
-  DraftOrderRequest,
-  useCreateDraftOrder,
-} from "src/mutations/use-create-draft-order";
+import { useGetDraftOrder } from "src/queries/use-get-draft-order";
+import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
 
 import Payment from "../payment";
 import Summary from "../summary";
@@ -19,6 +19,8 @@ import OrderDetails from "../order-details";
 // ----------------------------------------------------------------------
 
 export default function DraftOrderView() {
+  const { id } = useParams();
+  const { draft_order } = useGetDraftOrder({ draft_order_id: id ?? "" });
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
@@ -54,14 +56,6 @@ export default function DraftOrderView() {
   };
   const createDraftOrder = useCreateDraftOrder(resetForm);
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
-    // if (location.state?.product) {
-    //   upadteProductMutation({
-    //     id: location.state?.product.id,
-    //     product: { ...data, status },
-    //     // toUpload: images,
-    //   });
-    //   return;
-    // }
     createDraftOrder({
       newDraftOrder: { ...data, status },
     });
@@ -85,11 +79,11 @@ export default function DraftOrderView() {
             },
           }}
         >
-          <OrderDetails status={DraftOrderStatus.OPEN} />
-          <Payment />
-          <Summary />
-          <Shipping />
-          <Customer />
+          <OrderDetails data={draft_order} />
+          <Payment data={draft_order} />
+          <Summary data={draft_order} />
+          <Shipping data={draft_order} />
+          <Customer data={draft_order} />
           <RawOrder />
         </Box>
       </Box>

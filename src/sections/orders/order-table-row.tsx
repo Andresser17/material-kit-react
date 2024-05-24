@@ -39,7 +39,7 @@ export default function OrderTableRow({ order, selectedRow }: IOrderTableRow) {
           variant="subtitle2"
           noWrap
         >
-          #{order.id.split("").slice(5)}
+          {/* #{order.id.split("").slice(5)} */}#{order.display_id}
         </Typography>
       </TableCell>
 
