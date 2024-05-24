@@ -77,17 +77,24 @@ function ProductsTable({
   const handleClick = (item: ProductVariant) => {
     const selectedIndex = selected.indexOf(item);
     let newSelected: ProductVariant[] | ((prevState: never[]) => never[]) = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, item);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+
+    switch (selectedIndex) {
+      case -1:
+        newSelected = newSelected.concat(selected, item);
+        break;
+      case 0:
+        newSelected = newSelected.concat(selected.slice(1));
+        break;
+      case selected.length - 1:
+        newSelected = newSelected.concat(selected.slice(0, -1));
+        break;
+      default:
+        // more than zero
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1),
+        );
+        break;
     }
     setSelected(newSelected);
   };

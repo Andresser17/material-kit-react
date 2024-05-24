@@ -28,14 +28,6 @@ async function createDraftOrder(
   return await response.json();
 }
 
-export interface DraftOrderItem {
-  quantity: number;
-  variant_id: string;
-  unit_price: number;
-  title: string;
-  metadata: Record<string, unknown>;
-}
-
 type IUseCreateDraftOrder = UseMutateFunction<
   DraftOrder | undefined,
   Error,

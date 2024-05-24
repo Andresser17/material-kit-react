@@ -1,4 +1,5 @@
-import { useState, SetStateAction } from "react";
+import { DraftOrderLineItem } from "@medusajs/types";
+import { useState, Dispatch, useEffect, SetStateAction } from "react";
 
 import {
   Box,
@@ -12,11 +13,8 @@ import {
 import { emptyRows } from "src/utils/table-utils";
 
 import { useModal } from "src/modals/useModal";
-import { useAppDispatch, useAppSelector } from "src/redux/hooks";
-import {
-  removeSelected,
-  getSelectedProducts,
-} from "src/redux/slices/add-existing-product/add-existing-product-slice";
+import { useAppSelector } from "src/redux/hooks";
+import { getSelectedProducts } from "src/redux/slices/add-existing-product/add-existing-product-slice";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
@@ -25,11 +23,15 @@ import TableEmptyRows from "src/components/table-empty-rows";
 import ItemsTableRow from "./items-table-row";
 import ItemsTableHead from "./items-table-head";
 
-export default function ItemsTable() {
+interface IItemsTable {
+  lineItems: DraftOrderLineItem[];
+  setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
+}
+
+export default function ItemsTable({ lineItems, setLineItems }: IItemsTable) {
   const selectedProducts = useAppSelector((state) =>
     getSelectedProducts(state),
   );
-  const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
   const { onOpen: openModal } = useModal("add-existing-product-modal");
 
@@ -48,9 +50,17 @@ export default function ItemsTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleDelete = (id: string) => {
-    dispatch(removeSelected(id));
-  };
+  useEffect(() => {
+    setLineItems(() => {
+      return selectedProducts.map((item) => ({
+        title: item.title,
+        variant_id: item.id,
+        quantity: 1,
+        unit_price: item.prices[0]?.amount ?? 0,
+        metadata: item.metadata,
+      }));
+    });
+  }, [selectedProducts]);
 
   return (
     <Box>
@@ -82,13 +92,15 @@ export default function ItemsTable() {
               {selectedProducts &&
                 selectedProducts
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((item) => (
-                    <ItemsTableRow
-                      key={item.id}
-                      data={item}
-                      handleDelete={handleDelete}
-                    />
-                  ))}
+                  .map((item) => {
+                    return (
+                      <ItemsTableRow
+                        key={item.id}
+                        data={item}
+                        setLineItems={setLineItems}
+                      />
+                    );
+                  })}
 
               <TableEmptyRows
                 height={77}

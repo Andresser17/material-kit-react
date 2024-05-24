@@ -220,6 +220,9 @@ function AddressCard({ address, selected, setSelected }: IAddressCard) {
         <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
           {address.address_2}
         </Typography>
+        <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
+          {address.city}
+        </Typography>
       </Box>
     </Card>
   );

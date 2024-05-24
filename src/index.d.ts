@@ -226,10 +226,18 @@ export declare module "@medusajs/types" {
     status: DraftOrderStatus;
     billing_address: ShippingAddress;
     shipping_address: ShippingAddress;
-    items: DraftOrderItem[];
+    items: DraftOrderLineItem[];
     discounts: { code: string }[];
     customer_id: string;
     no_notification_order: boolean;
     metadata: Record<string, unknown>;
+  }
+
+  interface DraftOrderLineItem {
+    quantity: number;
+    variant_id: string;
+    unit_price: number;
+    title: string;
+    metadata?: Record<string, unknown> | null;
   }
 }

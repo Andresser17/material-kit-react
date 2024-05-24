@@ -1,5 +1,5 @@
-import { useState, ChangeEvent } from "react";
-import { ProductVariant } from "@medusajs/types";
+import { ProductVariant, DraftOrderLineItem } from "@medusajs/types";
+import { useState, Dispatch, ChangeEvent, SetStateAction } from "react";
 
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -12,16 +12,40 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useAppDispatch } from "src/redux/hooks";
+import { removeSelected } from "src/redux/slices/add-existing-product";
+
 import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 interface IItemsTableRow {
   data: ProductVariant;
-  handleDelete: (id: string) => void;
+  setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
 }
 
-export default function ItemsTableRow({ data, handleDelete }: IItemsTableRow) {
+export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
+  const dispatch = useAppDispatch();
+
+  const handleChange = (newQuantity: number) => {
+    setLineItems((prev) => {
+      return prev.map((lineItem) => {
+        if (lineItem.variant_id === data.id) {
+          return { ...lineItem, quantity: newQuantity };
+        }
+
+        return lineItem;
+      });
+    });
+  };
+
+  const handleDelete = () => {
+    dispatch(removeSelected(data.id));
+    setLineItems((prev) => {
+      return prev.filter((lineItem) => lineItem.variant_id != data.id);
+    });
+  };
+
   return (
     <TableRow tabIndex={-1}>
       <TableCell>
@@ -67,14 +91,17 @@ export default function ItemsTableRow({ data, handleDelete }: IItemsTableRow) {
           >
             Max: {data.inventory_quantity}
           </Typography>
-          <StockField inventory_quantity={data.inventory_quantity} />
+          <StockField
+            handleChange={handleChange}
+            maxQuantity={data.inventory_quantity}
+          />
         </Stack>
       </TableCell>
 
       <TableCell>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography sx={{ fontSize: 14, mr: 1 }} variant="subtitle2" noWrap>
-            {data.prices[0]?.amount ?? 0}
+            {data.inventory_quantity ?? 0}
           </Typography>
           <Typography
             sx={{ fontSize: 14, color: "text.secondary" }}
@@ -87,7 +114,7 @@ export default function ItemsTableRow({ data, handleDelete }: IItemsTableRow) {
       </TableCell>
 
       <TableCell>
-        <IconButton onClick={() => handleDelete(data.id)}>
+        <IconButton onClick={handleDelete}>
           <Iconify icon="lets-icons:trash" />
         </IconButton>
       </TableCell>
@@ -95,21 +122,34 @@ export default function ItemsTableRow({ data, handleDelete }: IItemsTableRow) {
   );
 }
 
-function StockField({ inventory_quantity }: { inventory_quantity: number }) {
-  const [stock, setStock] = useState(0);
+function StockField({
+  handleChange,
+  maxQuantity,
+}: {
+  handleChange: (newQuantity: number) => void;
+  maxQuantity: number;
+}) {
+  const [stock, setStock] = useState(1);
 
   const handleMinus = () => {
-    if (inventory_quantity === stock) return;
-    setStock((prev) => prev - 1);
+    if (maxQuantity === stock) return;
+    setStock((prev) => {
+      handleChange(prev - 1);
+      return prev - 1;
+    });
   };
 
   const handlePlus = () => {
-    if (inventory_quantity === stock) return;
-    setStock((prev) => prev + 1);
+    if (maxQuantity === stock) return;
+    setStock((prev) => {
+      handleChange(prev + 1);
+      return prev + 1;
+    });
   };
 
   const handleStock = (e: ChangeEvent<HTMLInputElement>) => {
-    if (inventory_quantity === stock) return;
+    if (maxQuantity === stock) return;
+    handleChange(Number(e.target.value));
     setStock(Number(e.target.value));
   };
 

@@ -6,6 +6,7 @@ import {
   ShippingAddress,
   ShippingOptionDTO,
   DraftOrderRequest,
+  DraftOrderLineItem,
 } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
@@ -30,6 +31,7 @@ export default function CreateDraftOrderView() {
     useState<ShippingAddress | null>(null);
 
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
+  const [lineItems, setLineItems] = useState<DraftOrderLineItem[]>([]);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
@@ -70,6 +72,7 @@ export default function CreateDraftOrderView() {
         email: selectedCustomer?.email ?? "",
         region_id: selectedRegion?.id ?? "",
         customer_id: selectedCustomer?.id ?? "",
+        items: lineItems,
         billing_address: selectedAddress
           ? {
               first_name: selectedAddress.first_name,
@@ -166,6 +169,8 @@ export default function CreateDraftOrderView() {
           }}
         >
           <ChooseRegion
+            lineItems={lineItems}
+            setLineItems={setLineItems}
             selectedRegion={selectedRegion}
             setSelectedRegion={setSelectedRegion}
           />
