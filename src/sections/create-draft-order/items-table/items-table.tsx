@@ -24,11 +24,10 @@ import ItemsTableRow from "./items-table-row";
 import ItemsTableHead from "./items-table-head";
 
 interface IItemsTable {
-  lineItems: DraftOrderLineItem[];
   setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
 }
 
-export default function ItemsTable({ lineItems, setLineItems }: IItemsTable) {
+export default function ItemsTable({ setLineItems }: IItemsTable) {
   const selectedProducts = useAppSelector((state) =>
     getSelectedProducts(state),
   );

@@ -169,7 +169,6 @@ export default function CreateDraftOrderView() {
           }}
         >
           <ChooseRegion
-            lineItems={lineItems}
             setLineItems={setLineItems}
             selectedRegion={selectedRegion}
             setSelectedRegion={setSelectedRegion}

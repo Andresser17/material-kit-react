@@ -11,14 +11,12 @@ import SectionBox from "src/components/section-box";
 import ItemsTable from "./items-table/items-table";
 
 interface IChooseRegion {
-  lineItems: DraftOrderLineItem[];
   setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
   selectedRegion: Region | null;
   setSelectedRegion: Dispatch<SetStateAction<Region | null>>;
 }
 
 export default function ChooseRegion({
-  lineItems,
   setLineItems,
   selectedRegion,
   setSelectedRegion,
@@ -63,7 +61,7 @@ export default function ChooseRegion({
       <Typography variant="subtitle2" sx={{ my: 2 }}>
         Items for the order
       </Typography>
-      <ItemsTable lineItems={lineItems} setLineItems={setLineItems} />
+      <ItemsTable setLineItems={setLineItems} />
     </SectionBox>
   );
 }
