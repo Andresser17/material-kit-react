@@ -4,9 +4,9 @@ import {
   Region,
   CustomerDTO,
   ShippingAddress,
-  ShippingOptionDTO,
   DraftOrderRequest,
   DraftOrderLineItem,
+  DraftOrderShippingMethod,
 } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
@@ -23,7 +23,7 @@ import CustomerAndShipping from "../customer-and-shipping";
 export default function CreateDraftOrderView() {
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [selectedMethod, setSelectedMethod] =
-    useState<ShippingOptionDTO | null>(null);
+    useState<DraftOrderShippingMethod | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerDTO | null>(
     null,
   );
@@ -73,6 +73,22 @@ export default function CreateDraftOrderView() {
         region_id: selectedRegion?.id ?? "",
         customer_id: selectedCustomer?.id ?? "",
         items: lineItems,
+        shipping_methods: selectedMethod
+          ? [
+              {
+                ...selectedMethod,
+                data: {
+                  first_name: selectedCustomer?.first_name,
+                  last_name: selectedCustomer?.last_name,
+                  document: selectedCustomer?.id, // replace with selectedCustomer?.document on future
+                  phone: selectedCustomer?.phone,
+                  destination_agency: "Zoom MRW Tealca Placeholder",
+                  destination_city: "Placeholder",
+                  destination_state: "Placeholder",
+                },
+              },
+            ]
+          : [],
         billing_address: selectedAddress
           ? {
               first_name: selectedAddress.first_name,

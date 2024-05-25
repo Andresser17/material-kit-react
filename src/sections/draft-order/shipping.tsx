@@ -20,7 +20,7 @@ export default function Shipping({ data }: IShipping) {
         Shipping Method
       </Typography>
       <Typography variant="body2" sx={{ mb: 2 }}>
-        Pickup in Person
+        {data?.cart.shipping_methods[0].shipping_option.name}
       </Typography>
       <Box sx={{ display: "flex", mb: 2 }}>
         <Typography variant="subtitle2">Data</Typography>

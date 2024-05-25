@@ -3,7 +3,7 @@ import { Dispatch, useEffect, SetStateAction } from "react";
 import {
   CustomerDTO,
   ShippingAddress,
-  ShippingOptionDTO,
+  DraftOrderShippingMethod,
 } from "@medusajs/types";
 
 import {
@@ -28,8 +28,8 @@ import SectionBox from "src/components/section-box";
 interface ICustomerAndShipping {
   regionId: string;
   regionName: string;
-  selectedMethod: ShippingOptionDTO | null;
-  setSelectedMethod: Dispatch<SetStateAction<ShippingOptionDTO | null>>;
+  selectedMethod: DraftOrderShippingMethod | null;
+  setSelectedMethod: Dispatch<SetStateAction<DraftOrderShippingMethod | null>>;
   selectedCustomer: CustomerDTO | null;
   setSelectedCustomer: Dispatch<SetStateAction<CustomerDTO | null>>;
   selectedAddress: ShippingAddress | null;
@@ -55,7 +55,12 @@ export default function CustomerAndShipping({
     const found = shipping_options.find(
       (shipping_option) => shipping_option.id === e.target.value,
     );
-    setSelectedMethod(found ?? null);
+    if (found)
+      setSelectedMethod({
+        option_id: found.id,
+        data: found.data ?? {},
+        price: found.amount,
+      });
   };
 
   const handleCustomers = (e: { target: { value: string } }) => {
@@ -64,7 +69,15 @@ export default function CustomerAndShipping({
   };
 
   useEffect(() => {
-    if (shipping_options.length > 0) setSelectedMethod(shipping_options[0]);
+    if (shipping_options.length > 0) {
+      const option = shipping_options[0];
+      if (option)
+        setSelectedMethod({
+          option_id: option.id,
+          data: option.data ?? {},
+          price: option.amount,
+        });
+    }
     if (customers.length > 0) setSelectedCustomer(customers[0]);
   }, [shipping_options, customers]);
 
@@ -96,7 +109,7 @@ export default function CustomerAndShipping({
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={selectedMethod?.id ?? ""}
+          value={selectedMethod?.option_id ?? ""}
           label="Choose a shipping method"
           onChange={handleShippingOptions}
         >

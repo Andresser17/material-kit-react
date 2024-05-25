@@ -84,7 +84,7 @@ export default function DraftOrderView() {
           <Summary data={draft_order} />
           <Shipping data={draft_order} />
           <Customer data={draft_order} />
-          <RawOrder />
+          <RawOrder data={draft_order} />
         </Box>
       </Box>
     </form>

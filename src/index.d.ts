@@ -233,11 +233,7 @@ export declare module "@medusajs/types" {
     region_id: string;
     shipping_methods: {
       option_id: string;
-      data: {
-        name: string;
-        cedula: string;
-        phone_number: string;
-      };
+      data: Record<string, unknown>;
       price: number;
     }[];
     status: DraftOrderStatus;
@@ -256,5 +252,21 @@ export declare module "@medusajs/types" {
     unit_price: number;
     title: string;
     metadata?: Record<string, unknown> | null;
+  }
+
+  interface ShippingMethodData {
+    first_name: string;
+    last_name: string;
+    document: string;
+    phone: string;
+    destination_agency: string;
+    destination_city: string;
+    destination_state: string;
+  }
+
+  interface DraftOrderShippingMethod {
+    option_id: string;
+    data: Record<string, unknown>;
+    price: number;
   }
 }
