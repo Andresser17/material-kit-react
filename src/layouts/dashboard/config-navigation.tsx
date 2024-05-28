@@ -43,6 +43,11 @@ export const navSections: Array<NavSection> = [
         path: "/draft-orders/create",
         icon: icon("ic_analytics"),
       },
+      {
+        title: "Create Lot",
+        path: "/lots/create",
+        icon: icon("ic_analytics"),
+      },
     ],
   },
   {
@@ -51,6 +56,11 @@ export const navSections: Array<NavSection> = [
       {
         title: "Products",
         path: "/products",
+        icon: icon("ic_analytics"),
+      },
+      {
+        title: "Lots",
+        path: "/lots",
         icon: icon("ic_analytics"),
       },
       {

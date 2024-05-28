@@ -7,7 +7,7 @@ import {
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
-import { DraftOrderStatus } from "./enums";
+import { LotStatus, DraftOrderStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
 
 export declare module "@mui/material/styles" {
@@ -76,7 +76,7 @@ export declare module "@medusajs/types" {
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
-    metadata: { [key: string]: unknown };
+    metadata: Record<string, unknown>;
   }
 
   interface Region {
@@ -268,5 +268,57 @@ export declare module "@medusajs/types" {
     option_id: string;
     data: Record<string, unknown>;
     price: number;
+  }
+
+  interface Lot {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    description: string | null;
+    status: LotStatus;
+    cost: {
+      amount: number;
+      currency: string;
+      payment: {
+        method: string;
+        fee: {
+          amount: number;
+          currency: string;
+        };
+      };
+    } | null;
+    items: {
+      quantity: number;
+      cost_per_item: number;
+    };
+    courier: {
+      company: string;
+      weight: {
+        amount: number;
+        unit: string;
+      };
+      cost: {
+        amount: number;
+        currency: string;
+      };
+      payment: {
+        method: string;
+        fee: {
+          amount: number;
+          currency: string;
+        };
+      };
+    };
+    ownership: [
+      {
+        name: string | null;
+        investment: {
+          amount: number;
+          currency: string;
+        };
+      },
+    ];
+    products: Product[];
   }
 }

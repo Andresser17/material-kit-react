@@ -40,3 +40,11 @@ export enum DraftOrderStatus {
   OPEN = "open",
   COMPLETED = "completed",
 }
+
+export enum LotStatus {
+  ON_STOCK = "on_stock",
+  OUT_OF_STOCK = "out_of_stock",
+  WAITING_DELIVERY = "waiting_delivery",
+  ORDER_PROBLEM = "order_problem",
+  FUTURE_PURCHASE = "future_purchase",
+}

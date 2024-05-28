@@ -8,6 +8,7 @@ export const QUERY_KEY = {
   productVariant: "productVariant",
   order: "order",
   draftOrder: "draftOrder",
+  lot: "lot",
   tag: "tag",
   collection: "collection",
   shipping_options: "shipping_options",
