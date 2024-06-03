@@ -72,7 +72,7 @@ export default function LotsView() {
         justifyContent="space-between"
         mb={5}
       >
-        <Typography variant="h4">Orders</Typography>
+        <Typography variant="h4">Lots</Typography>
       </Stack>
 
       <Card>

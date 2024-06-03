@@ -24,6 +24,7 @@ export const MUTATION_KEY = {
   add_product_variant: "add_product_variant",
   delete_product_variant: "delete_produdct_variant",
   create_draft_order: "create_draft_order",
+  add_lot_product: "add_lot_product",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

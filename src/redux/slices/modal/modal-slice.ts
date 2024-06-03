@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "src/redux/store";
 import { Modal } from "src/modals/modal-provider";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
+import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
 
 // Define a type for the slice state
 export interface ModalState<T> {
@@ -27,6 +28,11 @@ const initialState = {
       open: false,
       props: null,
     } as Modal<null>,
+    {
+      id: "add-product-to-lot-modal",
+      open: false,
+      props: {},
+    } as Modal<IAddProductToLotModal>,
   ],
 };
 

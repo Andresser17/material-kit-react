@@ -47,6 +47,29 @@ const BaseModal = memo((props: IBaseModal) => {
     }
   };
 
+  const footerSection = footer ? (
+    footer
+  ) : !footer && onSubmit ? (
+    <>
+      <Button
+        form={modalId}
+        type="submit"
+        variant="contained"
+        color="success"
+        size="medium"
+        sx={{ mr: 2 }}
+        onClick={onSubmit}
+      >
+        Save
+      </Button>
+      <Button onClick={onClose} variant="text" size="small" color="error">
+        Cancel
+      </Button>
+    </>
+  ) : (
+    <div></div>
+  );
+
   return createPortal(
     <Modal
       aria-labelledby="modal-modal-title"
@@ -72,6 +95,7 @@ const BaseModal = memo((props: IBaseModal) => {
           },
           maxWidth: "660px",
           minHeight: 250,
+          maxHeight: "90%",
           backgroundColor: "background.default",
           p: 3,
           borderRadius: 1,
@@ -95,35 +119,12 @@ const BaseModal = memo((props: IBaseModal) => {
         </Box>
 
         <div className="modal-content">{children}</div>
+
         <Box
           className="modal-footer"
           sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}
         >
-          {footer ? (
-            footer
-          ) : (
-            <>
-              <Button
-                form={modalId}
-                type="submit"
-                variant="contained"
-                color="success"
-                size="medium"
-                sx={{ mr: 2 }}
-                onClick={onSubmit}
-              >
-                Save
-              </Button>
-              <Button
-                onClick={onClose}
-                variant="text"
-                size="small"
-                color="error"
-              >
-                Cancel
-              </Button>
-            </>
-          )}
+          {footerSection}
         </Box>
       </Box>
     </Modal>,

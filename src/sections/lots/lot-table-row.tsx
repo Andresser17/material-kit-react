@@ -5,9 +5,7 @@ import { Typography } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 
-import { LotStatus } from "src/enums";
-
-import Label from "src/components/label";
+import LotStatusLabel from "src/components/lot-status-label";
 
 // ----------------------------------------------------------------------
 
@@ -47,25 +45,8 @@ export default function LotTableRow({ lot, selectedRow }: ILotTableRow) {
       <TableCell>{lot.cost?.amount}</TableCell>
 
       <TableCell>
-        <StatusLabel status={lot.status} />
+        <LotStatusLabel status={lot.status} />
       </TableCell>
     </TableRow>
   );
 }
-
-const StatusLabel = ({ status }: { status: LotStatus }) => {
-  switch (status) {
-    case LotStatus.ON_STOCK:
-      return <Label color="success">On Stock</Label>;
-    case LotStatus.OUT_OF_STOCK:
-      return <Label color="error">Out of Stock</Label>;
-    case LotStatus.WAITING_DELIVERY:
-      return <Label color="info">Waiting Delivery</Label>;
-    case LotStatus.ORDER_PROBLEM:
-      return <Label color="warning">Order Problem</Label>;
-    case LotStatus.FUTURE_PURCHASE:
-      return <Label color="secondary">Future Purchase</Label>;
-    default:
-      return <Label color="secondary">Future Purchase</Label>;
-  }
-};

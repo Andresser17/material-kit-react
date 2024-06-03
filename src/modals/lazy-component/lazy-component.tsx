@@ -11,7 +11,7 @@ export default function LazyComponent({ id }: ILazyComponentProps) {
   const handleModalClose = () =>
     console.warn("Hereby I promise to close this modal!");
 
-  const Component = lazy(() => import(`../${id}.tsx`));
+  const Component = lazy(() => import(`../${id}` /* @vite-ignore */));
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
