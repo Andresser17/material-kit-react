@@ -58,7 +58,7 @@ export default function ItemsTable({ lot }: IItemsTable) {
             return (
               <AccordionTable
                 key={product.id}
-                head={<ItemsTableRowProduct data={product} />}
+                head={<ItemsTableRowProduct lot_id={lot.id} data={product} />}
               >
                 {product.variants.map((variant) => (
                   <ItemsTableRowVariant key={variant.id} data={variant} />

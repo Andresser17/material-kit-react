@@ -34,7 +34,7 @@ export function useGetLot({ lot_id }: IGetLot): GetLotResponse {
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.draftOrder, user?.access_token, lot_id],
+    queryKey: [QUERY_KEY.get_lot, user?.access_token, lot_id],
     queryFn: async ({ queryKey }): Promise<GetLotResponse | null> =>
       getLot({
         access_token: queryKey[1] as string,

@@ -9,6 +9,7 @@ export const QUERY_KEY = {
   order: "order",
   draftOrder: "draftOrder",
   lot: "lot",
+  get_lot: "get_lot",
   tag: "tag",
   collection: "collection",
   shipping_options: "shipping_options",
@@ -25,6 +26,7 @@ export const MUTATION_KEY = {
   delete_product_variant: "delete_produdct_variant",
   create_draft_order: "create_draft_order",
   add_lot_product: "add_lot_product",
+  remove_lot_product: "remove_lot_product",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

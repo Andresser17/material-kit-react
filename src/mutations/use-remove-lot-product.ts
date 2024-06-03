@@ -9,14 +9,14 @@ import {
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-async function addLotProducts(
+async function removeLotProduct(
   access_token: string | undefined,
   lot_id: string,
   product_id: string,
 ): Promise<Lot> {
   const url = new URL(`/admin/lots/${lot_id}/product`, BACKEND_URL);
   const response = await fetch(url, {
-    method: "POST",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
@@ -25,7 +25,7 @@ async function addLotProducts(
       product_id,
     }),
   });
-  if (!response.ok) throw new Error("Failed on adding product to lot");
+  if (!response.ok) throw new Error("Failed on removing product from lot");
 
   return await response.json();
 }
@@ -37,7 +37,7 @@ type IUseAddLotProducts = UseMutateFunction<
   unknown
 >;
 
-export function useAddLotProduct(): [IUseAddLotProducts, boolean] {
+export function useRemoveLotProduct(): [IUseAddLotProducts, boolean] {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
@@ -49,9 +49,9 @@ export function useAddLotProduct(): [IUseAddLotProducts, boolean] {
       lot_id: string;
       product_id: string;
     }) => {
-      return addLotProducts(user?.access_token, lot_id, product_id);
+      return removeLotProduct(user?.access_token, lot_id, product_id);
     },
-    mutationKey: [MUTATION_KEY.add_lot_product],
+    mutationKey: [MUTATION_KEY.remove_lot_product],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.get_lot] }),
     onError: (err) => {
@@ -61,7 +61,7 @@ export function useAddLotProduct(): [IUseAddLotProducts, boolean] {
     },
     onSuccess() {
       // call pop up
-      toast.success("Product added to lot successfully");
+      toast.success("Product removed from lot successfully");
     },
   });
 

@@ -4,22 +4,25 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import { Box, Avatar, IconButton, Typography } from "@mui/material";
 
-import { useAppDispatch } from "src/redux/hooks";
-import { removeSelected } from "src/redux/slices/add-existing-product";
+import { useRemoveLotProduct } from "src/mutations/use-remove-lot-product";
 
 import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 interface IItemsTableRowProduct {
+  lot_id: string;
   data: Product;
 }
 
-export default function ItemsTableRowProduct({ data }: IItemsTableRowProduct) {
-  const dispatch = useAppDispatch();
+export default function ItemsTableRowProduct({
+  lot_id,
+  data,
+}: IItemsTableRowProduct) {
+  const [removeLotProductMutation] = useRemoveLotProduct();
 
   const handleDelete = () => {
-    dispatch(removeSelected(data.id));
+    removeLotProductMutation({ lot_id, product_id: data.id });
   };
 
   return (
