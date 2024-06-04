@@ -10,6 +10,7 @@ interface Props {
   icon: IconifyIcon | string;
   sx?: SxProps<Theme>;
   width?: number;
+  onClick?: () => void;
 }
 
 export default forwardRef<typeof Box, Props>(

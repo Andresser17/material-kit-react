@@ -30,10 +30,16 @@ async function addLotProducts(
   return await response.json();
 }
 
+interface MutateFunctionVars {
+  lot_id: string;
+  product_id: string;
+  onSuccess?: () => void;
+}
+
 type IUseAddLotProducts = UseMutateFunction<
   Lot | undefined,
   Error,
-  { lot_id: string; product_id: string },
+  MutateFunctionVars,
   unknown
 >;
 
@@ -42,13 +48,7 @@ export function useAddLotProduct(): [IUseAddLotProducts, boolean] {
   const { user } = useUser();
 
   const { mutate, isSuccess } = useMutation({
-    mutationFn: async ({
-      lot_id,
-      product_id,
-    }: {
-      lot_id: string;
-      product_id: string;
-    }) => {
+    mutationFn: async ({ lot_id, product_id }: MutateFunctionVars) => {
       return addLotProducts(user?.access_token, lot_id, product_id);
     },
     mutationKey: [MUTATION_KEY.add_lot_product],
@@ -59,9 +59,10 @@ export function useAddLotProduct(): [IUseAddLotProducts, boolean] {
       // call error pop up
       toast.error(err.message);
     },
-    onSuccess() {
+    onSuccess(_result, variables) {
       // call pop up
       toast.success("Product added to lot successfully");
+      if (variables.onSuccess) variables.onSuccess();
     },
   });
 

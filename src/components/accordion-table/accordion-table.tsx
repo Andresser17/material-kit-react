@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { useState, ReactNode } from "react";
 
 import {
   Table,
@@ -20,10 +20,34 @@ export interface IAccordionTable {
 }
 
 export default function AccordionTable({ head, children }: IAccordionTable) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <Accordion>
+    <Accordion
+      sx={{
+        "& .MuiAccordionSummary-root:hover:not(.Mui-disabled)": {
+          cursor: "default",
+        },
+      }}
+      expanded={expanded}
+    >
       <AccordionSummary
-        expandIcon={<Iconify icon="ep:arrow-down-bold" />}
+        expandIcon={
+          <Iconify
+            icon="ep:arrow-down-bold"
+            sx={{
+              width: "28px",
+              height: "28px",
+              cursor: "pointer",
+              padding: "5px",
+              "&:hover": {
+                backgroundColor: "action.hover",
+                borderRadius: "100%",
+              },
+            }}
+            onClick={() => setExpanded((prev) => !prev)}
+          />
+        }
         // aria-controls={`${product.id}-content`}
         // id={`${product.id}-header`}
       >

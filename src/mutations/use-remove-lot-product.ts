@@ -30,10 +30,16 @@ async function removeLotProduct(
   return await response.json();
 }
 
+interface MutateFunctionVars {
+  lot_id: string;
+  product_id: string;
+  onSuccess?: () => void;
+}
+
 type IUseAddLotProducts = UseMutateFunction<
   Lot | undefined,
   Error,
-  { lot_id: string; product_id: string },
+  MutateFunctionVars,
   unknown
 >;
 
@@ -42,13 +48,7 @@ export function useRemoveLotProduct(): [IUseAddLotProducts, boolean] {
   const { user } = useUser();
 
   const { mutate, isSuccess } = useMutation({
-    mutationFn: async ({
-      lot_id,
-      product_id,
-    }: {
-      lot_id: string;
-      product_id: string;
-    }) => {
+    mutationFn: async ({ lot_id, product_id }: MutateFunctionVars) => {
       return removeLotProduct(user?.access_token, lot_id, product_id);
     },
     mutationKey: [MUTATION_KEY.remove_lot_product],
@@ -59,9 +59,10 @@ export function useRemoveLotProduct(): [IUseAddLotProducts, boolean] {
       // call error pop up
       toast.error(err.message);
     },
-    onSuccess() {
+    onSuccess(_result, variables) {
       // call pop up
       toast.success("Product removed from lot successfully");
+      if (variables.onSuccess) variables.onSuccess();
     },
   });
 
