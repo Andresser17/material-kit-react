@@ -2,13 +2,7 @@ import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
-import {
-  Divider,
-  SxProps,
-  Typography,
-  Autocomplete,
-  createFilterOptions,
-} from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 
 import { Tag, useListTags } from "src/queries/use-list-tags";
 import {
@@ -22,6 +16,7 @@ import {
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
+import ControlledSelect from "src/components/controlled-select";
 
 export default function GeneralInfo({
   control,
@@ -63,7 +58,7 @@ export default function GeneralInfo({
       </Box>
       <ControlledField
         control={control}
-        id="description="
+        id="description"
         label="Description"
         variant="outlined"
         multiline
@@ -75,26 +70,27 @@ export default function GeneralInfo({
         Organize Product
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-        <AddSelect<ProductType>
+        <ControlledSelect<ProductType, ProductRequest>
           control={control}
           id="type"
           label="Choose a Type"
           options={types}
           sx={{ width: "48%" }}
         />
-        <AddSelect<Collection>
+        <ControlledSelect<Collection, ProductRequest>
           control={control}
           label="Choose a collection"
           id="collection"
           options={collections}
           sx={{ width: "48%" }}
         />
-        <AddSelect<Tag>
+        <ControlledSelect<Tag, ProductRequest>
           control={control}
           label="Tags"
           id="tags"
           placeholder="Select most used tags or add a new one"
           options={tags}
+          multiple
           sx={{ width: "48%" }}
         />
       </Box>
@@ -102,70 +98,5 @@ export default function GeneralInfo({
         Metadata
       </Typography>
     </SectionBox>
-  );
-}
-
-interface IAddSelect<T> {
-  control: Control<ProductRequest>;
-  id: string;
-  label: string;
-  placeholder?: string;
-  options: T[];
-  sx: SxProps;
-}
-
-function AddSelect<
-  T extends { inputValue: string; id: string; value?: string; title?: string },
->({ control, id, label, placeholder, options, sx }: IAddSelect<T>) {
-  const filter = createFilterOptions<T>();
-
-  return (
-    <Autocomplete
-      multiple
-      limitTags={2}
-      id="multiple-limit-tags"
-      options={options}
-      filterOptions={(options, params) => {
-        const filtered = filter(options, params);
-
-        const { inputValue } = params;
-        // Suggest the creation of a new value
-        const isExisting = options.some(
-          (option) => inputValue === option.value,
-        );
-        if (inputValue !== "" && !isExisting) {
-          const newValue = {
-            inputValue,
-            value: `Add "${inputValue}"`,
-          } as T;
-          filtered.push(newValue);
-        }
-
-        return filtered;
-      }}
-      getOptionLabel={(option) => {
-        // Value selected with enter, right from the input
-        if (typeof option === "string") {
-          return option;
-        }
-        // Add "xxx" option created dynamically
-        if (option.inputValue) {
-          return option.inputValue;
-        }
-
-        if (option.value) return option.value;
-        if (option.title) return option.title;
-        // Regular option
-        return "";
-      }}
-      renderInput={(params) => (
-        <ControlledField
-          {...params}
-          control={control}
-          {...{ id, label, placeholder }}
-        />
-      )}
-      sx={sx}
-    />
   );
 }

@@ -19,6 +19,7 @@ export const DraftOrderDetailsPage = lazy(
 );
 export const LotsPage = lazy(() => import("src/pages/lots"));
 export const LotPage = lazy(() => import("src/pages/lot"));
+export const CreateLotPage = lazy(() => import("src/pages/create-lot"));
 export const LoginPage = lazy(() => import("src/pages/login"));
 export const ErrorPage = lazy(() => import("src/pages/error-page"));
 
@@ -52,7 +53,7 @@ export function createRouter(isLoggedIn: boolean) {
         { path: "draft-orders/create", element: <CreateDraftOrderPage /> },
         { path: "draft-orders/:id", element: <DraftOrderDetailsPage /> },
         { path: "lots", element: <LotsPage /> },
-        { path: "lots/create", element: <CreateDraftOrderPage /> },
+        { path: "lots/create", element: <CreateLotPage /> },
         { path: "lots/:id", element: <LotPage /> },
       ],
       errorElement: <ErrorPage />,
