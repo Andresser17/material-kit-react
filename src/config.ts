@@ -25,6 +25,7 @@ export const MUTATION_KEY = {
   add_product_variant: "add_product_variant",
   delete_product_variant: "delete_produdct_variant",
   create_draft_order: "create_draft_order",
+  create_lot: "create_lot",
   add_lot_product: "add_lot_product",
   remove_lot_product: "remove_lot_product",
 };

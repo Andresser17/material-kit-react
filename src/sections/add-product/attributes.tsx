@@ -81,7 +81,7 @@ export default function Attributes({
           variant="outlined"
           sx={{ width: 96 }}
           InputProps={{
-            endAdornment: <InputAdornment position="start">cm</InputAdornment>,
+            endAdornment: <InputAdornment position="end">cm</InputAdornment>,
           }}
         />
       </Box>
@@ -102,7 +102,7 @@ export default function Attributes({
           variant="outlined"
           sx={{ width: 96 }}
           InputProps={{
-            endAdornment: <InputAdornment position="start">kg</InputAdornment>,
+            endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
         />
       </Box>

@@ -1,7 +1,7 @@
 import { Lot } from "@medusajs/types";
 import { Control } from "react-hook-form";
 
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, Typography, InputAdornment } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
@@ -33,6 +33,20 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
       title: "Banco de Venezuela",
       metadata: {},
     },
+    { inputValue: "", id: "bnc", title: "BNC", metadata: {} },
+    { inputValue: "", id: "zinli", title: "Zinli", metadata: {} },
+    { inputValue: "", id: "zelle", title: "Zelle", metadata: {} },
+  ];
+
+  const couriers = [
+    { inputValue: "", id: "zoom", title: "Zoom", metadata: {} },
+    {
+      inputValue: "",
+      id: "liberty-express",
+      title: "Liberty Express",
+      metadata: {},
+    },
+    { inputValue: "", id: "ock21", title: "Oceanika 21", metadata: {} },
   ];
 
   return (
@@ -51,24 +65,30 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         />
         <ControlledField
           control={control}
-          id="items"
-          label="items"
+          id="items.quantity"
+          label="Items Quantity"
           variant="outlined"
           sx={{ width: "48%" }}
         />
         <ControlledField
           control={control}
-          id="cost_per_item"
-          label="Cost per item"
+          id="items.cost_per_item"
+          label="Cost Per Item (USD)"
           variant="outlined"
           sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
         />
         <ControlledField
           control={control}
-          id="cost"
-          label="Total Cost USD"
+          id="cost.amount"
+          label="Total Cost (USD)"
           variant="outlined"
           sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
         />
       </Box>
       <ControlledField
@@ -82,15 +102,101 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         sx={{ mt: 4 }}
       />
       <Typography variant="subtitle2" sx={{ my: 2 }}>
-        Organize Product
+        Payment
       </Typography>
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
         <ControlledSelect<PaymentMethodType, Lot>
           control={control}
-          id="type"
+          id="payment-method"
           label="Choose Payment Method"
           options={paymentMethods}
           sx={{ width: "48%" }}
+        />
+        <ControlledField
+          control={control}
+          id="cost.payment.fee.amount"
+          label="Fee (USD)"
+          variant="outlined"
+          type="number"
+          sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
+        />
+      </Box>
+      <Typography variant="subtitle2" sx={{ my: 2 }}>
+        Courier
+      </Typography>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        <ControlledSelect<PaymentMethodType, Lot>
+          control={control}
+          id="courier"
+          label="Choose Courier"
+          options={couriers}
+          sx={{ width: "48%" }}
+        />
+        <ControlledField
+          control={control}
+          id="courier.cost.amount"
+          label="Cost (USD)"
+          variant="outlined"
+          type="number"
+          sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
+        />
+        <ControlledField
+          control={control}
+          type="number"
+          id="courier.weight.amount"
+          label="Weight"
+          variant="outlined"
+          sx={{ width: "48%" }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+          }}
+        />
+        <ControlledSelect<PaymentMethodType, Lot>
+          control={control}
+          id="courier-payment-method"
+          label="Choose Courier Payment Method"
+          options={paymentMethods}
+          sx={{ width: "48%" }}
+        />
+        <ControlledField
+          control={control}
+          id="courier.payment.fee.amount"
+          label="Fee (USD)"
+          variant="outlined"
+          type="number"
+          sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
+        />
+      </Box>
+      <Typography variant="subtitle2" sx={{ my: 2 }}>
+        Ownership
+      </Typography>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        <ControlledField
+          control={control}
+          id="ownership[0].name"
+          label="Name"
+          variant="outlined"
+          sx={{ width: "48%" }}
+        />
+        <ControlledField
+          control={control}
+          id="ownership[0].investment.amount"
+          label="Investment"
+          variant="outlined"
+          type="number"
+          sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
         />
       </Box>
     </SectionBox>

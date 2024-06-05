@@ -1,150 +1,63 @@
-import { useState } from "react";
+import { Lot } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  Lot,
-  Region,
-  CustomerDTO,
-  ShippingAddress,
-  DraftOrderRequest,
-  DraftOrderLineItem,
-  DraftOrderShippingMethod,
-} from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
-import { DraftOrderStatus } from "src/enums";
-import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
+import { useCreateLot } from "src/mutations/use-create-lot";
 
 import GeneralInfo from "../general-info";
 
 // ----------------------------------------------------------------------
 
 export default function CreateDraftOrderView() {
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [selectedMethod, setSelectedMethod] =
-    useState<DraftOrderShippingMethod | null>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<CustomerDTO | null>(
-    null,
-  );
-  const [selectedAddress, setSelectedAddress] =
-    useState<ShippingAddress | null>(null);
-
-  const [status, setStatus] = useState(DraftOrderStatus.OPEN);
-  const [lineItems, setLineItems] = useState<DraftOrderLineItem[]>([]);
   const { handleSubmit, reset, control } = useForm<Lot>({
     defaultValues: {
-      email: "",
-      region_id: "",
-      shipping_methods: [],
-      status: DraftOrderStatus.OPEN,
-      billing_address: {},
-      shipping_address: {
-        first_name: "",
-        last_name: "",
-        phone: "",
-        company: "",
-        address_1: "",
-        address_2: "",
-        city: "",
-        country_code: "ve",
-        province: "",
-        postal_code: "",
-        metadata: {},
+      name: "",
+      description: "",
+      cost: {
+        amount: 0,
+        currency: "USD",
+        payment: {
+          method: "",
+          fee: {
+            amount: 0,
+            currency: "USD",
+          },
+        },
       },
-      items: [],
-      discounts: [],
-      no_notification_order: false,
-      metadata: {},
+      items: {
+        quantity: 0,
+        cost_per_item: 0,
+      },
+      courier: {
+        company: "",
+        weight: {
+          amount: 0,
+          unit: "",
+        },
+        cost: {
+          amount: 0,
+          currency: "USD",
+        },
+        payment: {
+          method: "",
+          fee: {
+            amount: 0,
+            currency: "USD",
+          },
+        },
+      },
+      ownership: [{ name: "", investment: { amount: 0, currency: "USD" } }],
     },
     mode: "onChange",
   });
   const resetForm = () => {
     reset();
-    setStatus(DraftOrderStatus.OPEN);
   };
-  const createDraftOrder = useCreateDraftOrder(resetForm);
-  const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
-    createDraftOrder({
-      newDraftOrder: {
-        ...data,
-        status,
-        email: selectedCustomer?.email ?? "",
-        region_id: selectedRegion?.id ?? "",
-        customer_id: selectedCustomer?.id ?? "",
-        items: lineItems,
-        shipping_methods: selectedMethod
-          ? [
-              {
-                ...selectedMethod,
-                data: {
-                  first_name: selectedCustomer?.first_name,
-                  last_name: selectedCustomer?.last_name,
-                  document: selectedCustomer?.id, // replace with selectedCustomer?.document on future
-                  phone: selectedCustomer?.phone,
-                  destination_agency: "Zoom MRW Tealca Placeholder",
-                  destination_city: "Placeholder",
-                  destination_state: "Placeholder",
-                },
-              },
-            ]
-          : [],
-        billing_address: selectedAddress
-          ? {
-              first_name: selectedAddress.first_name,
-              last_name: selectedAddress.last_name,
-              phone: selectedAddress.phone,
-              company: selectedAddress.company,
-              address_1: selectedAddress.address_1,
-              address_2: selectedAddress.address_2,
-              city: selectedAddress.city,
-              country_code: selectedAddress.country_code,
-              province: selectedAddress.province,
-              postal_code: selectedAddress.postal_code,
-              metadata: selectedAddress.metadata,
-            }
-          : {
-              first_name: "",
-              last_name: "",
-              phone: "",
-              company: "",
-              address_1: "",
-              address_2: "",
-              city: "",
-              country_code: "ve",
-              province: "",
-              postal_code: "",
-              metadata: {},
-            },
-        shipping_address: selectedAddress
-          ? {
-              first_name: selectedAddress.first_name,
-              last_name: selectedAddress.last_name,
-              phone: selectedAddress.phone,
-              company: selectedAddress.company,
-              address_1: selectedAddress.address_1,
-              address_2: selectedAddress.address_2,
-              city: selectedAddress.city,
-              country_code: selectedAddress.country_code,
-              province: selectedAddress.province,
-              postal_code: selectedAddress.postal_code,
-              metadata: selectedAddress.metadata,
-            }
-          : {
-              first_name: "",
-              last_name: "",
-              phone: "",
-              company: "",
-              address_1: "",
-              address_2: "",
-              city: "",
-              country_code: "ve",
-              province: "",
-              postal_code: "",
-              metadata: {},
-            },
-      },
-    });
+  const createLot = useCreateLot(resetForm);
+  const onSubmit: SubmitHandler<Lot> = (data) => {
+    createLot({ lot: data });
   };
 
   const floatingButtons = (
@@ -185,21 +98,6 @@ export default function CreateDraftOrderView() {
           }}
         >
           <GeneralInfo control={control} />
-          {/* <ChooseRegion
-            setLineItems={setLineItems}
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-          />
-          <CustomerAndShipping
-            regionName={selectedRegion?.name ?? ""}
-            regionId={selectedRegion?.id ?? ""}
-            selectedCustomer={selectedCustomer}
-            setSelectedCustomer={setSelectedCustomer}
-            selectedMethod={selectedMethod}
-            setSelectedMethod={setSelectedMethod}
-            selectedAddress={selectedAddress}
-            setSelectedAddress={setSelectedAddress}
-          /> */}
           {floatingButtons}
         </Box>
       </Box>
