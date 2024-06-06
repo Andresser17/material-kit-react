@@ -1,17 +1,20 @@
-import { Control, FieldValues } from "react-hook-form";
+import { Control, Controller, FieldValues } from "react-hook-form";
 
-import { SxProps, Autocomplete, createFilterOptions } from "@mui/material";
+import {
+  SxProps,
+  TextField,
+  Autocomplete,
+  FilterOptionsState,
+  createFilterOptions,
+} from "@mui/material";
 
-import ControlledField from "../controlled-field";
-
-interface Options {
+export interface Option {
   inputValue: string;
   id: string;
-  value?: string;
-  title?: string;
+  label: string;
 }
 
-export interface IControlledSelect<T extends Options, Y extends FieldValues> {
+export interface IControlledSelect<T extends Option, Y extends FieldValues> {
   control: Control<Y>;
   id: string;
   label: string;
@@ -19,10 +22,11 @@ export interface IControlledSelect<T extends Options, Y extends FieldValues> {
   options: T[];
   sx: SxProps;
   multiple?: boolean;
+  dinamicOptions?: boolean;
 }
 
 export default function ControlledSelect<
-  T extends Options,
+  T extends Option,
   Y extends FieldValues,
 >({
   control,
@@ -32,56 +36,82 @@ export default function ControlledSelect<
   options,
   sx,
   multiple,
+  dinamicOptions,
 }: IControlledSelect<T, Y>) {
   const filter = createFilterOptions<T>();
 
+  const handleFilterOptions = (options: T[], params: FilterOptionsState<T>) => {
+    const filtered = filter(options, params);
+
+    const { inputValue } = params;
+
+    if (dinamicOptions) {
+      // Suggest the creation of a new value
+      const isExisting = options.some((option) => inputValue === option.label);
+      if (inputValue !== "" && !isExisting) {
+        const newValue = {
+          inputValue,
+          label: `Add "${inputValue}"`,
+        } as T;
+        filtered.push(newValue);
+      }
+    }
+
+    return filtered;
+  };
+
+  const handleGetOptionLabel = (option: T) => {
+    // Value selected with enter, right from the input
+    if (typeof option === "string") {
+      return option;
+    }
+    // Add option created dynamically
+    if (option.inputValue) {
+      return option.inputValue;
+    }
+
+    if (option.label) {
+      // onChange(option.id);
+      return option.label;
+    }
+    // Regular option
+    return "";
+  };
+
   return (
-    <Autocomplete
-      multiple={multiple}
-      limitTags={2}
-      id="multiple-limit-tags"
-      options={options}
-      filterOptions={(options, params) => {
-        const filtered = filter(options, params);
-
-        const { inputValue } = params;
-        // Suggest the creation of a new value
-        const isExisting = options.some(
-          (option) => inputValue === option.value,
+    <Controller
+      name={id}
+      control={control}
+      render={({
+        field: { onChange },
+        fieldState: { error },
+        //formState,
+      }) => {
+        return (
+          <Autocomplete
+            limitTags={2}
+            defaultValue={options.find((option) => {
+              if (option.id === control._defaultValues[id]) return option.label;
+            })}
+            {...{ sx, multiple, id, options, placeholder }}
+            onChange={(_event: unknown, newValue: Option) => {
+              if (newValue?.id) onChange(newValue.id);
+            }}
+            // onInputChange={}
+            filterOptions={handleFilterOptions}
+            getOptionLabel={handleGetOptionLabel}
+            renderInput={(params) => (
+              <TextField
+                className="controlled-field"
+                helperText={error ? error.message : null}
+                error={!!error}
+                label={label}
+                {...params}
+              />
+            )}
+          />
         );
-        if (inputValue !== "" && !isExisting) {
-          const newValue = {
-            inputValue,
-            value: `Add "${inputValue}"`,
-          } as T;
-          filtered.push(newValue);
-        }
-
-        return filtered;
       }}
-      getOptionLabel={(option) => {
-        // Value selected with enter, right from the input
-        if (typeof option === "string") {
-          return option;
-        }
-        // Add "xxx" option created dynamically
-        if (option.inputValue) {
-          return option.inputValue;
-        }
-
-        if (option.value) return option.value;
-        if (option.title) return option.title;
-        // Regular option
-        return "";
-      }}
-      renderInput={(params) => (
-        <ControlledField
-          {...params}
-          control={control}
-          {...{ id, label, placeholder }}
-        />
-      )}
-      sx={sx}
     />
   );
 }

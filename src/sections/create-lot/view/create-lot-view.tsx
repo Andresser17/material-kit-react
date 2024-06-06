@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
+import { LotStatus } from "src/enums";
 import { useCreateLot } from "src/mutations/use-create-lot";
 
 import GeneralInfo from "../general-info";
@@ -15,6 +16,7 @@ export default function CreateDraftOrderView() {
     defaultValues: {
       name: "",
       description: "",
+      status: LotStatus.FUTURE_PURCHASE,
       cost: {
         amount: 0,
         currency: "USD",
@@ -57,7 +59,8 @@ export default function CreateDraftOrderView() {
   };
   const createLot = useCreateLot(resetForm);
   const onSubmit: SubmitHandler<Lot> = (data) => {
-    createLot({ lot: data });
+    console.log({ data });
+    // createLot({ lot: data });
   };
 
   const floatingButtons = (

@@ -3,16 +3,13 @@ import { Control } from "react-hook-form";
 
 import { Box, Divider, Typography, InputAdornment } from "@mui/material";
 
+import { LotStatus } from "src/enums";
+
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
-import ControlledSelect from "src/components/controlled-select/controlled-select";
-
-export type PaymentMethodType = {
-  inputValue: string;
-  id: string;
-  title: string;
-  metadata: Record<string, unknown>;
-};
+import ControlledSelect, {
+  Option,
+} from "src/components/controlled-select/controlled-select";
 
 interface IGeneralInfo {
   control: Control<Lot>;
@@ -20,33 +17,55 @@ interface IGeneralInfo {
 
 export default function GeneralInfo({ control }: IGeneralInfo) {
   const paymentMethods = [
-    { inputValue: "", id: "bancamiga", title: "Bancamiga", metadata: {} },
+    { inputValue: "", id: "pago-movil", label: "Pago Movil" },
+    { inputValue: "", id: "bancamiga", label: "Bancamiga" },
     {
       inputValue: "",
       id: "exterior",
-      title: "Banco Exterior",
-      metadata: {},
+      label: "Banco Exterior",
     },
     {
       inputValue: "",
       id: "venezuela",
-      title: "Banco de Venezuela",
-      metadata: {},
+      label: "Banco de Venezuela",
     },
-    { inputValue: "", id: "bnc", title: "BNC", metadata: {} },
-    { inputValue: "", id: "zinli", title: "Zinli", metadata: {} },
-    { inputValue: "", id: "zelle", title: "Zelle", metadata: {} },
+    { inputValue: "", id: "bnc", label: "BNC" },
+    { inputValue: "", id: "zinli", label: "Zinli" },
+    { inputValue: "", id: "zelle", label: "Zelle" },
   ];
 
   const couriers = [
-    { inputValue: "", id: "zoom", title: "Zoom", metadata: {} },
+    { inputValue: "", id: "zoom", label: "Zoom" },
     {
       inputValue: "",
       id: "liberty-express",
-      title: "Liberty Express",
-      metadata: {},
+      label: "Liberty Express",
     },
-    { inputValue: "", id: "ock21", title: "Oceanika 21", metadata: {} },
+    { inputValue: "", id: "ock21", label: "Oceanika 21" },
+  ];
+
+  const status = [
+    { inputValue: "", id: LotStatus.ON_STOCK, label: "On Stock" },
+    {
+      inputValue: "",
+      id: LotStatus.OUT_OF_STOCK,
+      label: "Out of Stock",
+    },
+    {
+      inputValue: "",
+      id: LotStatus.WAITING_DELIVERY,
+      label: "Waiting Delivery",
+    },
+    {
+      inputValue: "",
+      id: LotStatus.ORDER_PROBLEM,
+      label: "Order Problem",
+    },
+    {
+      inputValue: "",
+      id: LotStatus.FUTURE_PURCHASE,
+      label: "Future Purchase",
+    },
   ];
 
   return (
@@ -90,6 +109,13 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
         />
+        <ControlledSelect<Option, Lot>
+          control={control}
+          id="status"
+          label="Status"
+          options={status}
+          sx={{ width: "48%" }}
+        />
       </Box>
       <ControlledField
         control={control}
@@ -105,9 +131,9 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Payment
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<PaymentMethodType, Lot>
+        <ControlledSelect<Option, Lot>
           control={control}
-          id="payment-method"
+          id="cost.payment.method"
           label="Choose Payment Method"
           options={paymentMethods}
           sx={{ width: "48%" }}
@@ -128,10 +154,10 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Courier
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<PaymentMethodType, Lot>
+        <ControlledSelect<Option, Lot>
           control={control}
-          id="courier"
-          label="Choose Courier"
+          id="courier.company"
+          label="Courier Company"
           options={couriers}
           sx={{ width: "48%" }}
         />
@@ -157,10 +183,10 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
         />
-        <ControlledSelect<PaymentMethodType, Lot>
+        <ControlledSelect<Option, Lot>
           control={control}
-          id="courier-payment-method"
-          label="Choose Courier Payment Method"
+          id="courier.payment.method"
+          label="Payment Method"
           options={paymentMethods}
           sx={{ width: "48%" }}
         />
