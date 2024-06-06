@@ -1,4 +1,4 @@
-import { SetStateAction } from "react";
+import { useEffect, SetStateAction } from "react";
 
 import Tooltip from "@mui/material/Tooltip";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,7 +7,11 @@ import IconButton from "@mui/material/IconButton";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 
+import { useModal } from "src/modals/useModal";
+import { useAppSelector } from "src/redux/hooks";
+import { getCallAction } from "src/redux/slices/confirm-action";
 import { useDeleteProduct } from "src/mutations/use-delete-product";
+import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 
 import Iconify from "src/components/iconify";
 
@@ -26,12 +30,22 @@ export default function ProductTableToolbar({
   filterName,
   onFilterName,
 }: IProductTableToolbar) {
+  const { onOpen: openModal } = useModal<IConfirmActionModal>(
+    "confirm-action-modal",
+  );
+  const callAction = useAppSelector((state) => getCallAction(state));
   const deleteProductMutation = useDeleteProduct();
 
   const handleDelete = () => {
     selected.forEach((id) => deleteProductMutation({ id }));
     setSelected([]);
   };
+
+  useEffect(() => {
+    if (callAction) {
+      handleDelete();
+    }
+  }, [callAction]);
 
   return (
     <Toolbar
@@ -67,7 +81,15 @@ export default function ProductTableToolbar({
       )}
 
       {selected.length > 0 ? (
-        <Tooltip title="Delete" onClick={handleDelete}>
+        <Tooltip
+          title="Delete"
+          onClick={() =>
+            openModal({
+              title: `Confirm Product Delete`,
+              message: `Are you sure you want to delete ${selected.length} selected ${selected.length > 1 ? "products" : "product"}?`,
+            })
+          }
+        >
           <IconButton>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>

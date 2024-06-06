@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-query";
 
 import { useUser } from "src/queries/use-user";
+import { useAppDispatch } from "src/redux/hooks";
+import { setCallAction } from "src/redux/slices/confirm-action";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 export type DeleteProductRes = {
@@ -26,30 +28,36 @@ async function deleteProduct(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on sign in request");
+  if (!response.ok) throw new Error("Failed on deleted product");
 
   return await response.json();
+}
+
+interface UseDeleteProductParams {
+  id: string;
 }
 
 type IUseDeleteProduct = UseMutateFunction<
   DeleteProductRes,
   Error,
-  { id: string },
+  UseDeleteProductParams,
   unknown
 >;
 
 export function useDeleteProduct(): IUseDeleteProduct {
+  const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate: deleteProductMutation } = useMutation({
-    mutationFn: ({ id }: { id: string }) =>
+  const { mutate } = useMutation({
+    mutationFn: ({ id }: UseDeleteProductParams) =>
       deleteProduct(user?.access_token ?? "", id),
     mutationKey: [MUTATION_KEY.delete_product],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_products] }),
     onSuccess: () => {
       toast.success("Product deleted sucessfully");
+      dispatch(setCallAction(false));
     },
     onError: (err) => {
       console.log(err);
@@ -57,5 +65,5 @@ export function useDeleteProduct(): IUseDeleteProduct {
     },
   });
 
-  return deleteProductMutation;
+  return mutate;
 }

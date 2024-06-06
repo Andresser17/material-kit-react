@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "src/redux/store";
 import { Modal } from "src/modals/modal-provider";
+import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
 
@@ -33,6 +34,11 @@ const initialState = {
       open: false,
       props: {},
     } as Modal<IAddProductToLotModal>,
+    {
+      id: "confirm-action-modal",
+      open: false,
+      props: {},
+    } as Modal<IConfirmActionModal>,
   ],
 };
 
