@@ -7,12 +7,14 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { SortableImageType } from "src/sections/add-product/add-images";
 
-import uploadImages, { UploadedFile } from "./uploadImages";
+import uploadImages, { UploadedFile } from "./upload-images";
 
 async function addProduct(
   access_token: string | undefined,
@@ -37,7 +39,8 @@ async function addProduct(
       images: images ? images : undefined,
     }),
   });
-  if (!response.ok) throw new Error("Failed on creating new product");
+  if (!response.ok)
+    throw new HTTPError("Failed on creating new product", response);
 
   return await response.json();
 }

@@ -7,6 +7,7 @@ import {
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
+import HTTPError from "./utils/http-error";
 import { LotStatus, DraftOrderStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
 
@@ -46,6 +47,12 @@ export declare module "@mui/material/styles" {
   interface ThemeOptions {
     shadows?: string[];
     customShadows?: Theme.customShadows;
+  }
+}
+
+export declare module "@tanstack/react-query" {
+  interface Register {
+    defaultError: HTTPError;
   }
 }
 
@@ -185,6 +192,41 @@ export declare module "@medusajs/types" {
     mid_code: string;
     material: string;
     metadata: Record<string, unknown>;
+  }
+
+  interface ProductType {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at?: Date;
+    value: string;
+    metadata: Record<string, unknown>;
+  }
+
+  interface ProductCollection {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at?: Date;
+    title: string;
+    handle: string;
+    products: Product[];
+    metadata: Record<string, unknown>;
+  }
+
+  interface ProductTag {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at?: Date;
+    value: string;
+    metadata: Record<string, unknown>;
+  }
+
+  interface MostUsedProductTag {
+    id: string;
+    usage_count: number;
+    value: string;
   }
 
   interface ProductOptionRequest {

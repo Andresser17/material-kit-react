@@ -1,6 +1,8 @@
 import { Product } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { useUser } from "./use-user";
@@ -27,38 +29,11 @@ async function listProducts({
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get products request");
+  if (!response.ok)
+    throw new HTTPError("Failed on get products request", response);
 
   return await response.json();
 }
-
-// export type Product = {
-//   id: string;
-//   title: string;
-//   subtitle: string | null;
-//   description: string | null;
-//   handle: string;
-//   is_giftcard: boolean;
-//   status: ProductStatus;
-//   thumbnail: string;
-//   profile_id: string;
-//   weight: string | null;
-//   length: string | null;
-//   height: string | null;
-//   width: string | null;
-//   hs_code: string | null;
-//   origin_country: string | null;
-//   mid_code: string | null;
-//   material: string | null;
-//   collection_id: string;
-//   type_id: string;
-//   discountable: boolean;
-//   external_id: string | null;
-//   created_at: string;
-//   updated_at: string;
-//   deleted_at: string | null;
-//   metadata: { [key: string]: unknown };
-// };
 
 interface ProductsList {
   products: Product[] | null;

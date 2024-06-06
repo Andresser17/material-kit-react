@@ -6,6 +6,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
@@ -23,7 +25,8 @@ async function addProductVariant(
     },
     body: JSON.stringify(newProductVariant),
   });
-  if (!response.ok) throw new Error("Failed on creating new product variant");
+  if (!response.ok)
+    throw new HTTPError("Failed on creating new product variant", response);
 
   return await response.json();
 }
@@ -55,7 +58,7 @@ export function useAddProductVariant(): IUseAddProductVariant {
     },
     mutationKey: [MUTATION_KEY.add_product_variant],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.productVariant] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product_variant] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

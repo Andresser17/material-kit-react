@@ -5,6 +5,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { User } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL } from "src/config";
 
@@ -16,25 +18,25 @@ async function signIn(email: string, password: string): Promise<User> {
     },
     body: JSON.stringify({ email, password }),
   });
-  if (!response.ok) throw new Error("Failed on sign in request");
+  if (!response.ok) throw new HTTPError("Failed on sign in request", response);
 
   return await response.json();
 }
 
-type IUseSignIn = UseMutateFunction<
-  User,
-  Error,
-  { email: string; password: string },
-  unknown
->;
+interface useSignInParams {
+  email: string;
+  password: string;
+}
+
+type IUseSignIn = UseMutateFunction<User, Error, useSignInParams, unknown>;
 
 export function useSignIn(): IUseSignIn {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   // const { enqueueSnackbar } = useSnackbar();
 
-  const { mutate: signInMutation } = useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
+  const { mutate } = useMutation({
+    mutationFn: ({ email, password }: useSignInParams) =>
       signIn(email, password),
     onSuccess: (data) => {
       queryClient.setQueryData([QUERY_KEY.user], data);
@@ -48,7 +50,7 @@ export function useSignIn(): IUseSignIn {
     },
   });
 
-  return signInMutation;
+  return mutate;
 }
 
 // function useSnackbar(): {

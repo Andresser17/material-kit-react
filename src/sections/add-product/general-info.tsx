@@ -4,19 +4,13 @@ import { ProductRequest } from "@medusajs/types";
 import Box from "@mui/material/Box";
 import { Divider, Typography } from "@mui/material";
 
-import { Tag, useListTags } from "src/queries/use-list-tags";
-import {
-  Collection,
-  useListCollections,
-} from "src/queries/use-list-collections";
-import {
-  ProductType,
-  useListProductTypes,
-} from "src/queries/use-list-product-types";
+import { useListTags } from "src/queries/use-list-tags";
+import { useListCollections } from "src/queries/use-list-collections";
+import { useListProductTypes } from "src/queries/use-list-product-types";
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
-import ControlledSelect from "src/components/controlled-select";
+import ControlledSelect, { Option } from "src/components/controlled-select";
 
 export default function GeneralInfo({
   control,
@@ -70,26 +64,38 @@ export default function GeneralInfo({
         Organize Product
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-        <ControlledSelect<ProductType, ProductRequest>
+        <ControlledSelect<Option, ProductRequest>
           control={control}
           id="type"
           label="Choose a Type"
-          options={types}
+          options={types.map((type) => ({
+            inputValue: "",
+            id: type.id,
+            label: type.value,
+          }))}
           sx={{ width: "48%" }}
         />
-        <ControlledSelect<Collection, ProductRequest>
+        <ControlledSelect<Option, ProductRequest>
           control={control}
           label="Choose a collection"
-          id="collection"
-          options={collections}
+          id="collection-id"
+          options={collections.map((collection) => ({
+            inputValue: "",
+            id: collection.id,
+            label: collection.title,
+          }))}
           sx={{ width: "48%" }}
         />
-        <ControlledSelect<Tag, ProductRequest>
+        <ControlledSelect<Option, ProductRequest>
           control={control}
           label="Tags"
           id="tags"
           placeholder="Select most used tags or add a new one"
-          options={tags}
+          options={tags.map((tag) => ({
+            inputValue: "",
+            id: tag.id,
+            label: tag.value,
+          }))}
           multiple
           sx={{ width: "48%" }}
         />

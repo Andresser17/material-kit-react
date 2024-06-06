@@ -46,6 +46,9 @@ export default function AddProductView() {
       mid_code: "",
       material: "",
       discountable: false,
+      collection_id: "",
+      tags: [],
+      type: {},
     },
     mode: "onChange",
   });

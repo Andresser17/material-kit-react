@@ -1,4 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { MostUsedProductTag } from "@medusajs/types";
+
+import HTTPError from "src/utils/http-error";
 
 import { QUERY_KEY, BACKEND_URL } from "src/config";
 
@@ -15,20 +18,14 @@ async function listTags({
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get product types request");
+  if (!response.ok)
+    throw new HTTPError("Failed on get product types request", response);
 
   return await response.json();
 }
 
-export type Tag = {
-  inputValue: string;
-  id: string;
-  usage_count: number;
-  value: string;
-};
-
 interface IListTags {
-  tags: Tag[];
+  tags: MostUsedProductTag[];
 }
 
 export function useListTags(): IListTags {

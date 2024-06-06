@@ -1,4 +1,7 @@
+import { ProductType } from "@medusajs/types";
 import { useQuery } from "@tanstack/react-query";
+
+import HTTPError from "src/utils/http-error";
 
 import { QUERY_KEY, BACKEND_URL } from "src/config";
 
@@ -15,17 +18,11 @@ async function listProductTypes({
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get product types request");
+  if (!response.ok)
+    throw new HTTPError("Failed on get product types request", response);
 
   return await response.json();
 }
-
-export type ProductType = {
-  inputValue: string;
-  id: string;
-  value: string;
-  metadata: string;
-};
 
 interface ProductTypesList {
   types: ProductType[];
@@ -35,7 +32,7 @@ export function useListProductTypes(): ProductTypesList {
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.productType, user?.access_token],
+    queryKey: [QUERY_KEY.product_type, user?.access_token],
     queryFn: async ({ queryKey }): Promise<ProductTypesList | null> =>
       listProductTypes({
         access_token: queryKey[1] as string,

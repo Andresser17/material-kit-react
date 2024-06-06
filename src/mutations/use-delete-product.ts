@@ -5,6 +5,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { useAppDispatch } from "src/redux/hooks";
 import { setCallAction } from "src/redux/slices/confirm-action";
@@ -28,7 +30,7 @@ async function deleteProduct(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on deleted product");
+  if (!response.ok) throw new HTTPError("Failed on deleted product", response);
 
   return await response.json();
 }

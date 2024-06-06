@@ -2,6 +2,8 @@ import toast from "react-hot-toast";
 import { CustomerDTO } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { useUser } from "./use-user";
@@ -20,7 +22,8 @@ async function getCustomerById(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get customer by id");
+  if (!response.ok)
+    throw new HTTPError("Failed on get customer by id", response);
 
   return await response.json();
 }

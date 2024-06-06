@@ -1,4 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { ProductCollection } from "@medusajs/types";
+
+import HTTPError from "src/utils/http-error";
 
 import { QUERY_KEY, BACKEND_URL } from "src/config";
 
@@ -15,23 +18,14 @@ async function listCollections({
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get product types request");
+  if (!response.ok)
+    throw new HTTPError("Failed on get collection of products", response);
 
   return await response.json();
 }
 
-export type Collection = {
-  inputValue: string;
-  id: string;
-  title: string;
-  handle: string;
-  metadata: {
-    [key: string]: unknown;
-  };
-};
-
 interface IListCollections {
-  collections: Collection[];
+  collections: ProductCollection[];
 }
 
 export function useListCollections(): IListCollections {

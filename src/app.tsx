@@ -12,39 +12,13 @@ import "src/global.css";
 import AppRoutes from "src/routes";
 
 import { store } from "./redux/store";
-import { BACKEND_URL } from "./config";
 import ThemeProvider from "./theme/index";
-import { getUser } from "./utils/user-local-storage";
+import { removeUser } from "./utils/user-local-storage";
 import ModalProvider from "./modals/modal-provider/modal-provider";
 
 // ----------------------------------------------------------------------
 
 export default function App() {
-  const user = getUser();
-  const [refreshingToken, setRefreshingToken] = useState(false);
-
-  const refreshAuthToken = async () => {
-    if (!refreshingToken && user?.access_token) {
-      try {
-        setRefreshingToken(true);
-        const url = new URL(`/admin/auth`, BACKEND_URL);
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${user?.access_token}}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) throw new Error("Unauthorized");
-      } catch {
-        // If refreshing token fails, redirect back to the home page
-        window.location.href = "/login";
-      } finally {
-        setRefreshingToken(false);
-      }
-    }
-  };
-
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -53,10 +27,7 @@ export default function App() {
             staleTime: 30000, // 30 seconds
             retry: (failureCount, error) => {
               // Don't retry for certain error responses
-              if (
-                error?.response?.status === 400 ||
-                error?.response?.status === 401
-              ) {
+              if (error?.status === 400 || error?.status === 401) {
                 return false;
               }
 
@@ -67,12 +38,9 @@ export default function App() {
         },
         queryCache: new QueryCache({
           onError: (error) => {
-            console.log({ error });
-            if (
-              error?.response?.status === 400 ||
-              error?.response?.status === 401
-            ) {
-              refreshAuthToken();
+            if (error?.status === 400 || error?.status === 401) {
+              removeUser();
+              window.location.href = "/login";
             }
           },
         }),

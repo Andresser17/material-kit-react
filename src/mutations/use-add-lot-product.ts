@@ -6,6 +6,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
@@ -25,7 +27,8 @@ async function addLotProducts(
       product_id,
     }),
   });
-  if (!response.ok) throw new Error("Failed on adding product to lot");
+  if (!response.ok)
+    throw new HTTPError("Failed on adding product to lot", response);
 
   return await response.json();
 }

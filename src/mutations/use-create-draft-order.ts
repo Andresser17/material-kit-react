@@ -8,6 +8,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
@@ -28,7 +30,8 @@ async function createDraftOrder(
     },
     body: JSON.stringify(newDraftOrder),
   });
-  if (!response.ok) throw new Error("Failed on creating new draft order");
+  if (!response.ok)
+    throw new HTTPError("Failed on creating new draft order", response);
 
   return await response.json();
 }
@@ -57,7 +60,7 @@ export function useCreateDraftOrder(
     },
     mutationKey: [MUTATION_KEY.create_draft_order],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draftOrder] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draft - order] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

@@ -1,3 +1,5 @@
+import HTTPError from "src/utils/http-error";
+
 import { BACKEND_URL } from "src/config";
 
 import { SortableImageType } from "src/sections/add-product/add-images";
@@ -26,7 +28,7 @@ export default async function uploadImages(
     },
     body,
   });
-  if (!response.ok) throw new Error("Failed uploading files");
+  if (!response.ok) throw new HTTPError("Failed uploading files", response);
 
   const { uploads } = await response.json();
 

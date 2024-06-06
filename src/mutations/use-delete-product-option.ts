@@ -6,6 +6,8 @@ import {
   UseMutateFunction,
 } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
@@ -32,7 +34,8 @@ async function deleteProductOption(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on deleting product option");
+  if (!response.ok)
+    throw new HTTPError("Failed on deleting product option", response);
 
   return await response.json();
 }
@@ -60,7 +63,7 @@ export function useDeleteProductOption(): IUseDeleteProductOption {
     },
     mutationKey: [MUTATION_KEY.delete_product_option],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.productOption] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product_option] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
 import { account } from "src/_mock/account";
-import { useSignOut } from "src/mutations/useSignOut";
+import { useSignOut } from "src/mutations/use-sign-out";
 
 // ----------------------------------------------------------------------
 

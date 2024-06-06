@@ -1,6 +1,8 @@
 import { DraftOrder } from "@medusajs/types";
 import { useQuery, useMutationState } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
+
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { useUser } from "./use-user";
@@ -31,7 +33,8 @@ async function listDraftOrders({
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new Error("Failed on get draft orders request");
+  if (!response.ok)
+    throw new HTTPError("Failed on get draft orders request", response);
 
   return await response.json();
 }
@@ -42,7 +45,7 @@ export function useListDraftOrders({
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.draftOrder, user?.access_token, query],
+    queryKey: [QUERY_KEY.draft - order, user?.access_token, query],
     queryFn: async ({ queryKey }): Promise<DraftOrdersResponse | null> =>
       listDraftOrders({
         access_token: queryKey[1] as string,

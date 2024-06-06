@@ -12,7 +12,7 @@ import { alpha, useTheme } from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import { bgGradient } from "src/theme/css";
-import { useSignIn } from "src/mutations/useSignIn";
+import { useSignIn } from "src/mutations/use-sign-in";
 
 import Logo from "src/components/logo";
 import Iconify from "src/components/iconify";
@@ -28,8 +28,8 @@ export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = () => {
-    signInMutation(fields)
-  }
+    signInMutation(fields);
+  };
 
   const renderForm = (
     <>

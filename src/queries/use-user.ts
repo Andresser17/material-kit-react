@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+import HTTPError from "src/utils/http-error";
 // utils
 import * as userLocalStorage from "src/utils/user-local-storage";
 
@@ -13,7 +14,7 @@ async function getUser(user: User | null | undefined): Promise<User | null> {
       "x-medusa-access-token": user.access_token,
     },
   });
-  if (!response.ok) throw new Error("Failed on get user request");
+  if (!response.ok) throw new HTTPError("Failed on get user request", response);
 
   return await response.json();
 }
