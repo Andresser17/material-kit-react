@@ -1,19 +1,24 @@
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldValues } from "react-hook-form";
 
 import { SxProps, TextField, TextFieldProps } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export interface IControlledField extends Omit<TextFieldProps, "variant"> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+export interface IControlledField<T extends FieldValues>
+  extends Omit<TextFieldProps, "variant"> {
+  control: Control<T>;
   id: string;
   variant?: "outlined";
   rules?: { required: boolean };
   sx?: SxProps;
 }
 
-function ControlledField({ id, control, label, ...props }: IControlledField) {
+function ControlledField<T extends FieldValues>({
+  id,
+  control,
+  label,
+  ...props
+}: IControlledField<T>) {
   return (
     <Controller
       name={id}

@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { ProductRequest } from "@medusajs/types";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Product, ProductRequest } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 
 import { useAppSelector } from "src/redux/hooks";
 import { useGetProduct } from "src/queries/use-get-product";
-import { useAddProduct } from "src/mutations/use-add-product";
 import { ProductStatus as ProductStatusEnum } from "src/enums";
 import { useUpdateProduct } from "src/mutations/use-update-product";
 import { getOptions } from "src/redux/slices/product-options/product-options-slice";
@@ -22,10 +21,8 @@ import AddImages, { SortableImageType } from "../add-images";
 
 // ----------------------------------------------------------------------
 
-export default function AddProductView() {
+export default function ProductView() {
   const { id: product_id } = useParams();
-  const getProductResponse = useGetProduct(product_id ?? "");
-  const [product, setProduct] = useState<Product | undefined>(undefined);
   const [images, setImages] = useState<SortableImageType[]>([]);
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
   const options = useAppSelector((state) => getOptions(state));
@@ -42,41 +39,25 @@ export default function AddProductView() {
       height: 0,
       width: 0,
       hs_code: "",
-      origin_country: "",
+      origin_country: "china",
       mid_code: "",
       material: "",
       discountable: false,
       collection_id: "",
+      collection: {},
       tags: [],
-      type: {},
+      type: null,
     },
     mode: "onChange",
   });
-  const resetForm = () => {
-    // reset();
-    // setImages([]);
-    // setStatus(ProductStatusEnum.DRAFT);
-  };
-  const { data: productData, mutate: addProductMutation } =
-    useAddProduct(resetForm);
+  const product = useGetProduct(product_id ?? "");
   const updateProductMutation = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
-    if (!product) {
-      addProductMutation({
-        newProduct: {
-          ...data,
-          status,
-        },
-        options,
-        toUpload: images,
-      });
-    } else {
-      updateProductMutation({
-        id: product.id,
-        product: data,
-        toUpload: images,
-      });
-    }
+    updateProductMutation({
+      id: product_id ?? "",
+      product: { ...data, status },
+      toUpload: images,
+    });
   };
 
   const floatingButtons = (
@@ -97,32 +78,35 @@ export default function AddProductView() {
   );
 
   useEffect(() => {
-    if (productData) {
-      setProduct(productData);
-    } else if (getProductResponse) {
-      setProduct(getProductResponse);
-      setValue("title", getProductResponse.title);
-      setValue("subtitle", getProductResponse.subtitle as string);
-      setValue("handle", getProductResponse.handle as string);
-      setValue("status", getProductResponse.status);
-      setValue("weight", getProductResponse.weight);
-      setValue("length", getProductResponse.length);
-      setValue("height", getProductResponse.height);
-      setValue("width", getProductResponse.width);
-      setValue("hs_code", getProductResponse.hs_code as string);
-      setValue("origin_country", getProductResponse.origin_country as string);
-      setValue("mid_code", getProductResponse.mid_code as string);
-      setValue("material", getProductResponse.material as string);
-      setValue("discountable", getProductResponse.discountable as boolean);
+    if (product) {
+      setValue("title", product.title);
+      setValue("subtitle", product.subtitle ?? "");
+      setValue("description", product.description ?? "");
+      setValue("handle", product.handle);
+      setValue("status", product.status);
+      setValue("weight", product.weight);
+      setValue("length", product.length);
+      setValue("height", product.height);
+      setValue("width", product.width);
+      setValue("hs_code", product.hs_code ?? "");
+      setValue("origin_country", product.origin_country ?? "");
+      setValue("mid_code", product.mid_code ?? "");
+      setValue("material", product.material ?? "");
+      setValue("discountable", product.discountable);
+      if (product.collection_id)
+        setValue("collection_id", product.collection_id);
+      // setValue("tags", product.tags);
+      // setValue("type", product.type);
+      setStatus(product.status);
     }
-  }, [productData, getProductResponse]);
+  }, [product]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box sx={{ display: "flex", gap: 3, p: 2 }}>
         <Box sx={{ w: "60%" }}>
           <GeneralInfo control={control} />
-          <Variants product={getProductResponse} options={options} />
+          <Variants product={product} options={options} />
           <Attributes control={control} />
           <RawProduct />
         </Box>

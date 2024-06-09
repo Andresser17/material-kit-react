@@ -83,20 +83,27 @@ export default function ControlledSelect<
       name={id}
       control={control}
       render={({
-        field: { onChange },
+        field: { onChange, value },
         fieldState: { error },
         //formState,
       }) => {
+        const valueOption = options.find((option) => {
+          if (option.id === value) return option;
+        });
+
         return (
           <Autocomplete
             limitTags={2}
-            defaultValue={options.find((option) => {
-              if (option.id === control._defaultValues[id]) return option.label;
-            })}
+            // defaultValue={options.find((option) => {
+            //   // console.log({ value: control._formValues });
+            //   // if (option.id === control._formValues[id]) return option.label;
+            //   return "default";
+            // })}
             {...{ sx, multiple, id, options, placeholder }}
             onChange={(_event: unknown, newValue: Option) => {
               if (newValue?.id) onChange(newValue.id);
             }}
+            value={valueOption ? valueOption.label : value}
             // onInputChange={}
             filterOptions={handleFilterOptions}
             getOptionLabel={handleGetOptionLabel}

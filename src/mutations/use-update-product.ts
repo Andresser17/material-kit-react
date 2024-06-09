@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { ProductDTO, ProductRequest } from "@medusajs/types";
+import { Product, ProductRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -21,8 +21,11 @@ async function updateProduct(
   product: ProductRequest,
   thumbnail: UploadedFile | undefined,
   images: Array<UploadedFile> | undefined,
-): Promise<ProductDTO> {
+): Promise<Product> {
   const url = new URL(`/admin/products/${id}`, BACKEND_URL);
+  const { collection, ...newProduct } = product;
+  const { id: collection_id } = collection;
+  console.log({ collection_id, product });
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -30,7 +33,7 @@ async function updateProduct(
       Authorization: `Bearer ${access_token}`,
     },
     body: JSON.stringify({
-      ...product,
+      ...newProduct,
       thumbnail: thumbnail ? thumbnail.url : undefined,
       images: images ? images : undefined,
     }),
@@ -41,7 +44,7 @@ async function updateProduct(
 }
 
 type IUseUpdateProduct = UseMutateFunction<
-  ProductDTO,
+  Product,
   Error,
   {
     id: string;

@@ -78,7 +78,7 @@ export default function GeneralInfo({
         <ControlledSelect<Option, ProductRequest>
           control={control}
           label="Choose a collection"
-          id="collection-id"
+          id="collection_id"
           options={collections.map((collection) => ({
             inputValue: "",
             id: collection.id,

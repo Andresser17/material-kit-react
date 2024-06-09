@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { RootState } from "src/redux/store";
 import { Modal } from "src/modals/modal-provider";
+import { IAddProductModal } from "src/modals/add-product-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
@@ -39,6 +40,11 @@ const initialState = {
       open: false,
       props: {},
     } as Modal<IConfirmActionModal>,
+    {
+      id: "add-product-modal",
+      open: false,
+      props: { redirect_url: "" },
+    } as Modal<IAddProductModal>,
   ],
 };
 
@@ -59,18 +65,41 @@ export const modalSlice = createSlice({
         state.modals[index].props = action.payload.props;
       }
     },
-    closeModal: (state, action: PayloadAction<string>) => {
+    closeModal(
+      state,
+      action: PayloadAction<{ id: string; resetState: boolean }>,
+    ) {
       const index = state.modals.findIndex(
-        (modal) => modal.id === action.payload,
+        (modal) => modal.id === action.payload.id,
       );
       if (index != -1) {
-        state.modals[index].open = false;
+        const modal = state.modals[index];
+        // reset modal props
+        if (modal.props && action.payload.resetState) {
+          const originalState = initialState.modals.find(
+            (modal) => modal.id === action.payload.id,
+          );
+          if (originalState && originalState.props)
+            modal.props = originalState.props;
+        }
+        modal.open = false;
+      }
+    },
+    updateProps<T>(
+      state: ModalState<T>,
+      action: PayloadAction<{ id: string; props?: T }>,
+    ) {
+      const index = state.modals.findIndex(
+        (modal) => modal.id === action.payload.id,
+      );
+      if (index != -1) {
+        state.modals[index].props = action.payload.props;
       }
     },
   },
 });
 
-export const { openModal, closeModal } = modalSlice.actions;
+export const { openModal, closeModal, updateProps } = modalSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const getModalsList = (state: RootState) =>

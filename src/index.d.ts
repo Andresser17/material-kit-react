@@ -9,6 +9,7 @@ import { Theme as OriginalTheme } from "@mui/material/styles";
 
 import HTTPError from "./utils/http-error";
 import { LotStatus, DraftOrderStatus } from "./enums";
+import { Option } from "./components/controlled-select";
 import ProductStatus from "./sections/add-product/product-status";
 
 export declare module "@mui/material/styles" {
@@ -75,7 +76,8 @@ export declare module "@medusajs/types" {
     origin_country: string | null;
     mid_code: string | null;
     material: string | null;
-    collection_id: string;
+    collection_id: string | null;
+    collection: ProductCollection | null;
     type_id: string;
     discountable: boolean;
     variants: ProductVariant[];
@@ -176,8 +178,9 @@ export declare module "@medusajs/types" {
     thumbnail: string;
     handle: string;
     status: ProductStatus;
-    type: { value: string; id: string };
-    collection_id: string;
+    type: { value: string; id: string } | null;
+    collection: Option;
+    collection_id: string | null;
     tags: { value: string; id: string }[];
     sales_channels: { id: string }[];
     categories: { id: string }[];

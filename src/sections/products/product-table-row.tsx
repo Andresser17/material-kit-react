@@ -1,4 +1,4 @@
-import { ProductDTO } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import { useNavigate } from "react-router-dom";
 import { useState, ChangeEvent, SetStateAction } from "react";
 
@@ -19,7 +19,7 @@ import Iconify from "src/components/iconify";
 // ----------------------------------------------------------------------
 
 interface IProductTableRow {
-  product: ProductDTO;
+  product: Product;
   selectedRow: boolean;
   handleClick: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }

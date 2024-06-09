@@ -5,6 +5,7 @@ import {
   openModal,
   closeModal,
   isModalOpen,
+  updateProps,
   getModalProps,
 } from "src/redux/slices/modal";
 
@@ -15,17 +16,28 @@ export function useModal<T>(id: string) {
   const isOpen = useAppSelector((state) => isModalOpen(state, id));
 
   const onOpen = useCallback(
-    (props?: T) => {
-      dispatch(openModal({ id, props: props ? props : {} }));
+    (newProps?: T) => {
+      dispatch(openModal({ id, props: { ...props, ...newProps } }));
     },
     [id],
   );
-  const onClose = useCallback(() => dispatch(closeModal(id)), [id]);
+  const onClose = useCallback(
+    (resetState: boolean) => dispatch(closeModal({ id, resetState })),
+    [id],
+  );
+
+  const onUpdate = useCallback(
+    (newProps?: T) => {
+      dispatch(updateProps({ id, props: { ...props, ...newProps } }));
+    },
+    [id],
+  );
 
   return {
     props,
     isOpen,
     onOpen,
     onClose,
+    onUpdate,
   };
 }

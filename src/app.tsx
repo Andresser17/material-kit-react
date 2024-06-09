@@ -13,8 +13,8 @@ import AppRoutes from "src/routes";
 
 import { store } from "./redux/store";
 import ThemeProvider from "./theme/index";
+import ModalProvider from "./modals/modal-provider";
 import { removeUser } from "./utils/user-local-storage";
-import ModalProvider from "./modals/modal-provider/modal-provider";
 
 // ----------------------------------------------------------------------
 

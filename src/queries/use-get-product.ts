@@ -21,7 +21,6 @@ async function getProduct(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  console.log({ response });
   if (!response.ok)
     throw new HTTPError("Failed on get product request", response);
 

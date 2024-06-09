@@ -1,8 +1,7 @@
 import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
 
-import Box from "@mui/material/Box";
-import { Divider, MenuItem, Typography, InputAdornment } from "@mui/material";
+import { Box, Divider, Typography, InputAdornment } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
@@ -21,7 +20,6 @@ export default function Attributes({
       <Typography variant="h6" sx={{ mb: 2 }}>
         Dimensions
       </Typography>
-
       <Box
         sx={{
           display: "flex",
@@ -31,7 +29,7 @@ export default function Attributes({
         }}
       >
         <Typography>Height</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="height"
@@ -43,6 +41,7 @@ export default function Attributes({
           }}
         />
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -52,7 +51,7 @@ export default function Attributes({
         }}
       >
         <Typography>Width</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="width"
@@ -64,6 +63,7 @@ export default function Attributes({
           }}
         />
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -73,7 +73,7 @@ export default function Attributes({
         }}
       >
         <Typography>Length</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="length"
@@ -85,6 +85,7 @@ export default function Attributes({
           }}
         />
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -94,7 +95,7 @@ export default function Attributes({
         }}
       >
         <Typography>Weight</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="weight"
@@ -110,6 +111,7 @@ export default function Attributes({
       <Typography variant="h6" sx={{ my: 2 }}>
         Customs
       </Typography>
+
       <Box
         sx={{
           display: "flex",
@@ -119,15 +121,16 @@ export default function Attributes({
         }}
       >
         <Typography>MID Code</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
           type="string"
-          id="mid-code"
+          id="mid_code"
           label=""
           variant="outlined"
           sx={{ width: 250 }}
         />
       </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -137,16 +140,15 @@ export default function Attributes({
         }}
       >
         <Typography>HS Code</Typography>
-        <ControlledField
+        <ControlledField<ProductRequest>
           control={control}
-          type="string"
-          id="hs-code"
-          label=""
+          id="hs_code"
           variant="outlined"
           sx={{ width: 250 }}
         />
       </Box>
-      <Box
+
+      {/* <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -159,7 +161,7 @@ export default function Attributes({
           control={control}
           select
           defaultValue="china"
-          id="country-of-origin"
+          id="origin_country"
           label=""
           variant="outlined"
           sx={{ width: 250 }}
@@ -170,7 +172,7 @@ export default function Attributes({
             </MenuItem>
           ))}
         </ControlledField>
-      </Box>
+      </Box> */}
     </SectionBox>
   );
 }

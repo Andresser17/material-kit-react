@@ -42,37 +42,39 @@ async function addProduct(
   if (!response.ok)
     throw new HTTPError("Failed on creating new product", response);
 
-  return await response.json();
+  const data = await response.json();
+  return data.product;
 }
 
-type IUseAddProduct = UseMutateFunction<
-  Product | undefined,
-  Error,
-  {
-    newProduct: ProductRequest;
-    options: ProductOptionRequest[];
-    toUpload: SortableImageType[];
-  },
-  unknown
->;
+interface UseAddProductParams {
+  newProduct: ProductRequest;
+  options: ProductOptionRequest[];
+  toUpload: SortableImageType[];
+}
 
-export function useAddProduct(resetForm: UseFormReset<ProductRequest>): {
+interface UseAddProductResponse {
   data: Product | undefined;
-  mutate: IUseAddProduct;
-} {
+  mutate: UseMutateFunction<
+    Product | undefined,
+    Error,
+    UseAddProductParams,
+    unknown
+  >;
+  isSuccess: boolean;
+}
+
+export function useAddProduct(
+  resetForm: UseFormReset<ProductRequest>,
+): UseAddProductResponse {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { data, mutate } = useMutation({
+  const { data, mutate, isSuccess } = useMutation({
     mutationFn: async ({
       newProduct,
       options,
       toUpload,
-    }: {
-      newProduct: ProductRequest;
-      options: ProductOptionRequest[];
-      toUpload: SortableImageType[];
-    }) => {
+    }: UseAddProductParams) => {
       if (toUpload.length > 0) {
         const uploads = await uploadImages(user?.access_token, toUpload);
         const thumbnail = uploads[0];
@@ -96,7 +98,7 @@ export function useAddProduct(resetForm: UseFormReset<ProductRequest>): {
     },
     mutationKey: [MUTATION_KEY.add_product],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_products] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
@@ -109,5 +111,5 @@ export function useAddProduct(resetForm: UseFormReset<ProductRequest>): {
     },
   });
 
-  return { data, mutate };
+  return { data, mutate, isSuccess };
 }

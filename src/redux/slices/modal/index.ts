@@ -4,6 +4,7 @@ export {
   default,
   openModal,
   closeModal,
+  updateProps,
   isModalOpen,
   getModalProps,
   getModalsList,

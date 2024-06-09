@@ -1,4 +1,5 @@
-import { useState, SetStateAction } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect, SetStateAction } from "react";
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
@@ -10,7 +11,9 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
+import { useModal } from "src/modals/useModal";
 import { useListProducts } from "src/queries/use-list-products";
+import { IAddProductModal } from "src/modals/add-product-modal";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
@@ -24,6 +27,12 @@ import ProductTableHead, { TableOrder } from "../product-table-head";
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
+  const {
+    props: { redirect_url },
+    onOpen: openModal,
+    onUpdate: updateModal,
+  } = useModal<IAddProductModal>("add-product-modal");
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState<TableOrder>(TableOrder.ASC);
@@ -37,6 +46,8 @@ export default function ProductsView() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const { products, count } = useListProducts({});
+
+  const navigate = useNavigate();
 
   const handleSort = (_event: unknown, id: SetStateAction<string>) => {
     const isAsc = orderBy === id && order === TableOrder.ASC;
@@ -92,13 +103,13 @@ export default function ProductsView() {
     setFilterName(event.target.value);
   };
 
-  // const dataFiltered = applyFilter({
-  //   inputData: user,
-  //   comparator: getComparator(order, orderBy),
-  //   filterName,
-  // });
-
-  // const notFound = !dataFiltered.length && !!filterName;
+  // redirect to product view after created a new one
+  useEffect(() => {
+    if (redirect_url) {
+      navigate(`/products/${redirect_url}`);
+      updateModal({ redirect_url: "" });
+    }
+  }, [redirect_url]);
 
   return (
     <Container>
@@ -111,6 +122,7 @@ export default function ProductsView() {
         <Typography variant="h4">Products</Typography>
 
         <Button
+          onClick={() => openModal()}
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}

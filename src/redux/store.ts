@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import addProductSlice from "./slices/add-product";
 import modalSlice from "./slices/modal/modal-slice";
 import confirmActionSlice from "./slices/confirm-action";
 import productOptionsSlice from "./slices/product-options";
@@ -13,6 +14,7 @@ export const store = configureStore({
     addExistingProduct: addExistingProductSlice,
     addProductToLot: addProductToLotSlice,
     confirmAction: confirmActionSlice,
+    addProduct: addProductSlice,
   },
 });
 

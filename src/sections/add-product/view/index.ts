@@ -1,1 +1,1 @@
-export { default as AddProductView } from './add-product-view';
+export { default as ProductView } from "./product-view";

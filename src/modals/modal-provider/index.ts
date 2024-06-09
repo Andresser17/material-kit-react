@@ -1,2 +1,2 @@
 export { default } from "./modal-provider";
-export type { Modal, ModalMap } from "./modal-provider";
+export type { Modal } from "./modal-provider";

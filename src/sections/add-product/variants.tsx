@@ -17,9 +17,7 @@ import {
   TableContainer,
 } from "@mui/material";
 
-import { error } from "src/theme/palette";
 import { useModal } from "src/modals/useModal";
-import { useDeleteProductVariant } from "src/mutations/use-delete-product-variant";
 
 import Iconify from "src/components/iconify";
 
@@ -35,7 +33,7 @@ export default function Variants({ product, options }: IVariants) {
   // const { variants } = useListProductVariants({
   //   product_id: product?.id ?? "",
   // });
-  const deleteProductVariantMutation = useDeleteProductVariant();
+  // const deleteProductVariantMutation = useDeleteProductVariant();
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -51,8 +49,8 @@ export default function Variants({ product, options }: IVariants) {
     handleCloseMenu();
   };
 
-  const handleDelete = (product_id: string, variant_id: string) => {
-    deleteProductVariantMutation({ product_id, variant_id });
+  const handleDelete = () => {
+    // deleteProductVariantMutation({ product_id, variant_id });
     handleCloseMenu();
   };
 
@@ -76,7 +74,10 @@ export default function Variants({ product, options }: IVariants) {
               Edit
             </MenuItem>
 
-            <MenuItem onClick={() => handleDelete()} sx={{ color: error.main }}>
+            <MenuItem
+              onClick={() => handleDelete()}
+              sx={{ color: "error.main" }}
+            >
               <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
               Delete
             </MenuItem>
@@ -112,8 +113,6 @@ export default function Variants({ product, options }: IVariants) {
         borderRadius: 1,
         p: 3,
         mb: 3,
-        opacity: !product ? 0.5 : 1,
-        pointerEvents: !product ? "none" : "auto",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
