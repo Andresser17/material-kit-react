@@ -44,6 +44,7 @@ export default function AddProductModal() {
         handle: "",
         status: ProductStatus.DRAFT,
         type: null,
+        collection: null,
         collection_id: null,
         tags: [],
         sales_channels: [],
@@ -79,6 +80,7 @@ export default function AddProductModal() {
       open
       closeOnTap
       onSubmit={() => {}}
+      onClose={() => closeModal()}
     >
       <form id="add-product-modal" onSubmit={handleSubmit(onSubmit)}>
         <ControlledField

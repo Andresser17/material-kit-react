@@ -179,7 +179,7 @@ export declare module "@medusajs/types" {
     handle: string;
     status: ProductStatus;
     type: { value: string; id: string } | null;
-    collection: Option;
+    collection: Option | null;
     collection_id: string | null;
     tags: { value: string; id: string }[];
     sales_channels: { id: string }[];

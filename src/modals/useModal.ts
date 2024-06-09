@@ -22,7 +22,7 @@ export function useModal<T>(id: string) {
     [id],
   );
   const onClose = useCallback(
-    (resetState: boolean) => dispatch(closeModal({ id, resetState })),
+    (resetState?: boolean) => dispatch(closeModal({ id, resetState })),
     [id],
   );
 

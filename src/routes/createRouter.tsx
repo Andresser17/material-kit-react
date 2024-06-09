@@ -7,7 +7,7 @@ import DashboardLayout from "src/layouts/dashboard";
 export const IndexPage = lazy(() => import("src/pages/app"));
 export const UserPage = lazy(() => import("src/pages/user"));
 export const ProductsPage = lazy(() => import("src/pages/products"));
-export const AddProductPage = lazy(() => import("src/pages/add-product"));
+export const ProductPage = lazy(() => import("src/pages/product"));
 export const OrdersPage = lazy(() => import("src/pages/orders"));
 export const OrderDetailsPage = lazy(() => import("src/pages/order"));
 export const DraftOrdersPage = lazy(() => import("src/pages/draft-orders"));
@@ -45,8 +45,7 @@ export function createRouter(isLoggedIn: boolean) {
           path: "products",
           element: <ProductsPage />,
         },
-        { path: "products/add", element: <AddProductPage /> },
-        { path: "products/:id", element: <AddProductPage /> },
+        { path: "products/:id", element: <ProductPage /> },
         { path: "orders", element: <OrdersPage /> },
         { path: "orders/:id", element: <OrderDetailsPage /> },
         { path: "draft-orders", element: <DraftOrdersPage /> },
