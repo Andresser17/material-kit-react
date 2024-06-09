@@ -74,6 +74,7 @@ export default function ControlledSelect<
       // onChange(option.id);
       return option.label;
     }
+
     // Regular option
     return "";
   };
@@ -88,23 +89,22 @@ export default function ControlledSelect<
         //formState,
       }) => {
         const valueOption = options.find((option) => {
-          if (option.id === value) return option;
+          if (multiple) {
+            if (option.id === value?.id) return option;
+          } else if (option.id === value) return option;
         });
 
         return (
           <Autocomplete
             limitTags={2}
-            // defaultValue={options.find((option) => {
-            //   // console.log({ value: control._formValues });
-            //   // if (option.id === control._formValues[id]) return option.label;
-            //   return "default";
-            // })}
             {...{ sx, multiple, id, options, placeholder }}
-            onChange={(_event: unknown, newValue: Option) => {
-              if (newValue?.id) onChange(newValue.id);
+            onChange={(_event: unknown, newValue: Option | Option[]) => {
+              if (multiple && Array.isArray(newValue)) {
+                onChange(newValue);
+              } else if (!Array.isArray(newValue) && newValue?.id)
+                onChange(newValue.id);
             }}
             value={valueOption ? valueOption.label : value}
-            // onInputChange={}
             filterOptions={handleFilterOptions}
             getOptionLabel={handleGetOptionLabel}
             renderInput={(params) => (

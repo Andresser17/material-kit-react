@@ -95,11 +95,21 @@ export default function ProductView() {
       setValue("discountable", product.discountable);
       if (product.collection_id)
         setValue("collection_id", product.collection_id);
-      // setValue("tags", product.tags);
+      if (product.tags)
+        setValue(
+          "tags",
+          product.tags.map((tag) => ({
+            inputValue: "",
+            id: tag.id,
+            label: tag.value,
+          })),
+        );
       // setValue("type", product.type);
       setStatus(product.status);
     }
   }, [product]);
+
+  // console.log({ tags: control._formValues["tags"] });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

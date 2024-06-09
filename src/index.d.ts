@@ -79,6 +79,7 @@ export declare module "@medusajs/types" {
     collection_id: string | null;
     collection: ProductCollection | null;
     type_id: string;
+    tags: ProductTag[];
     discountable: boolean;
     variants: ProductVariant[];
     external_id: string | null;
@@ -181,7 +182,7 @@ export declare module "@medusajs/types" {
     type: { value: string; id: string } | null;
     collection: Option | null;
     collection_id: string | null;
-    tags: { value: string; id: string }[];
+    tags: Option[];
     sales_channels: { id: string }[];
     categories: { id: string }[];
     options: { title: string }[];

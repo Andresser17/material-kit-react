@@ -11,7 +11,7 @@ import HTTPError from "src/utils/http-error";
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-import { SortableImageType } from "src/sections/add-product/add-images";
+import { SortableImageType } from "src/sections/product/add-images";
 
 import uploadImages, { UploadedFile } from "./upload-images";
 
@@ -23,9 +23,8 @@ async function updateProduct(
   images: Array<UploadedFile> | undefined,
 ): Promise<Product> {
   const url = new URL(`/admin/products/${id}`, BACKEND_URL);
-  const { collection, ...newProduct } = product;
-  const { id: collection_id } = collection;
-  console.log({ collection_id, product });
+  const { collection: _, ...newProduct } = product;
+
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -34,6 +33,7 @@ async function updateProduct(
     },
     body: JSON.stringify({
       ...newProduct,
+      tags: newProduct.tags.map((tag) => ({ value: tag.label, id: tag.id })),
       thumbnail: thumbnail ? thumbnail.url : undefined,
       images: images ? images : undefined,
     }),
