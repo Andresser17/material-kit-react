@@ -13,18 +13,21 @@ import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { SortableImageType } from "src/sections/product/add-images";
 
-import uploadImages, { UploadedFile } from "./upload-images";
+import uploadImages from "./upload-images";
 
 async function updateProduct(
   access_token: string | undefined,
   id: string,
   product: ProductRequest,
-  thumbnail: UploadedFile | undefined,
-  images: Array<UploadedFile> | undefined,
+  images: SortableImageType[] | undefined,
 ): Promise<Product> {
   const url = new URL(`/admin/products/${id}`, BACKEND_URL);
-  const { collection: _, ...newProduct } = product;
-
+  const { collection, ...newProduct } = product;
+  console.log(`collection key removed when updating product: ${collection}`);
+  const newImages =
+    images && images.length > 0
+      ? images?.slice(1).map((image) => image.src)
+      : [];
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -34,8 +37,8 @@ async function updateProduct(
     body: JSON.stringify({
       ...newProduct,
       tags: newProduct.tags.map((tag) => ({ value: tag.label, id: tag.id })),
-      thumbnail: thumbnail ? thumbnail.url : undefined,
-      images: images ? images : undefined,
+      thumbnail: images ? images[0].src : null,
+      images: newImages ? newImages : null,
     }),
   });
   if (!response.ok) throw new HTTPError("Failed on updating product", response);
@@ -43,14 +46,16 @@ async function updateProduct(
   return await response.json();
 }
 
+interface UseUpdateProductArgs {
+  id: string;
+  product: ProductRequest;
+  toUpload: SortableImageType[];
+}
+
 type IUseUpdateProduct = UseMutateFunction<
   Product,
   Error,
-  {
-    id: string;
-    product: ProductRequest;
-    toUpload: SortableImageType[];
-  },
+  UseUpdateProductArgs,
   unknown
 >;
 
@@ -59,35 +64,13 @@ export function useUpdateProduct(): IUseUpdateProduct {
   const { user } = useUser();
 
   const { mutate } = useMutation({
-    mutationFn: async ({
-      id,
-      product,
-      toUpload,
-    }: {
-      id: string;
-      product: ProductRequest;
-      toUpload: SortableImageType[];
-    }) => {
+    mutationFn: async ({ id, product, toUpload }: UseUpdateProductArgs) => {
       if (toUpload.length > 0) {
         const uploads = await uploadImages(user?.access_token, toUpload);
-        const thumbnail = uploads[0];
-        const images = uploads.slice(1);
-        return updateProduct(
-          user?.access_token,
-          id,
-          product,
-          thumbnail,
-          images,
-        );
+        return updateProduct(user?.access_token, id, product, uploads);
       }
 
-      return updateProduct(
-        user?.access_token,
-        id,
-        product,
-        undefined,
-        undefined,
-      );
+      return updateProduct(user?.access_token, id, product, undefined);
     },
     mutationKey: [MUTATION_KEY.update_product],
     onMutate: async (data) => {

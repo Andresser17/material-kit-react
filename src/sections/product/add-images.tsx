@@ -25,13 +25,12 @@ export type SortableImageType = {
   title: string;
 };
 
-export default function AddImages({
-  images,
-  setImages,
-}: {
+interface IAddImages {
   images: SortableImageType[];
   setImages: Dispatch<SetStateAction<SortableImageType[]>>;
-}) {
+}
+
+export default function AddImages({ images, setImages }: IAddImages) {
   const theme = useTheme();
   const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -147,6 +146,15 @@ export default function AddImages({
   );
 }
 
+interface ISortableImage {
+  src: string;
+  title: string;
+  id: UniqueIdentifier;
+  isCover: boolean;
+  theme: Theme;
+  setImages: Dispatch<SetStateAction<SortableImageType[]>>;
+}
+
 function SortableImage({
   src,
   title,
@@ -154,14 +162,7 @@ function SortableImage({
   isCover,
   theme,
   setImages,
-}: {
-  src: string;
-  title: string;
-  id: UniqueIdentifier;
-  isCover: boolean;
-  theme: Theme;
-  setImages: Dispatch<SetStateAction<SortableImageType[]>>;
-}) {
+}: ISortableImage) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id,

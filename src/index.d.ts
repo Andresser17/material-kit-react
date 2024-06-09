@@ -67,6 +67,7 @@ export declare module "@medusajs/types" {
     is_giftcard: boolean;
     status: ProductStatus;
     thumbnail: string;
+    images: Image[];
     profile_id: string;
     weight: number;
     length: number;
@@ -86,6 +87,15 @@ export declare module "@medusajs/types" {
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
+    metadata: Record<string, unknown>;
+  }
+
+  interface Image {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | Date;
+    url: string;
     metadata: Record<string, unknown>;
   }
 

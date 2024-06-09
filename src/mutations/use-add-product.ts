@@ -12,7 +12,7 @@ import HTTPError from "src/utils/http-error";
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-import { SortableImageType } from "src/sections/add-product/add-images";
+import { SortableImageType } from "src/sections/product/add-images";
 
 import uploadImages, { UploadedFile } from "./upload-images";
 

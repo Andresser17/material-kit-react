@@ -33,7 +33,6 @@ export default function ProductView() {
       description: "",
       handle: "",
       status: ProductStatusEnum.DRAFT,
-      //thumbnail: string;
       weight: 0,
       length: 0,
       height: 0,
@@ -55,7 +54,11 @@ export default function ProductView() {
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
     updateProductMutation({
       id: product_id ?? "",
-      product: { ...data, status },
+      product: {
+        ...data,
+        status,
+        // images: images.filter((image) => !image.img).map((image) => image.src),
+      },
       toUpload: images,
     });
   };
@@ -109,7 +112,25 @@ export default function ProductView() {
     }
   }, [product]);
 
-  // console.log({ tags: control._formValues["tags"] });
+  useEffect(() => {
+    if (product?.thumbnail && product.images) {
+      const thumbnail = {
+        id: "thumbnail",
+        title: "thumbnail",
+        img: null,
+        src: product.thumbnail,
+      };
+      const images = product.images
+        .filter((image) => image.url != thumbnail.src)
+        .map((image) => ({
+          id: image.id,
+          title: image.id,
+          img: null,
+          src: image.url,
+        }));
+      setImages([thumbnail, ...images]);
+    }
+  }, [product]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

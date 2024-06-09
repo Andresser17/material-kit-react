@@ -2,17 +2,17 @@ import HTTPError from "src/utils/http-error";
 
 import { BACKEND_URL } from "src/config";
 
-import { SortableImageType } from "src/sections/add-product/add-images";
+import { SortableImageType } from "src/sections/product/add-images";
 
-export type UploadedFile = {
-  url: string;
+interface UploadedFile {
   key: string;
-};
+  url: string;
+}
 
 export default async function uploadImages(
   access_token: string | undefined,
   images: SortableImageType[],
-): Promise<Array<UploadedFile>> {
+): Promise<SortableImageType[]> {
   const body = new FormData();
   images.forEach((image) => {
     if (image.img) {
@@ -32,5 +32,16 @@ export default async function uploadImages(
 
   const { uploads } = await response.json();
 
-  return uploads;
+  return images.map((image) => {
+    const found = uploads.find((upload: UploadedFile) => {
+      const key = upload.key.split("-")[1];
+      if (image.id === key) return upload;
+    });
+
+    if (found) {
+      return { id: found.key, img: null, src: found.url, title: found.key };
+    }
+
+    return image;
+  });
 }
