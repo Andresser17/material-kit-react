@@ -58,7 +58,17 @@ export default function ProductView() {
         ...data,
         status,
       },
-      toUpload: images,
+      toUpload: images.map((image) => {
+        if (image.img) {
+          return {
+            ...image,
+            img: new File([image.img], image.img.name.replaceAll("-", "_"), {
+              type: image.img.type,
+            }),
+          };
+        }
+        return image;
+      }),
     });
   };
 
@@ -118,15 +128,17 @@ export default function ProductView() {
         id: "thumbnail",
         title: "thumbnail",
         img: null,
-        src: product.thumbnail,
+        url: product.thumbnail,
+        toUpload: false,
       };
       const images = product.images
-        .filter((image) => image.url != thumbnail.src)
+        .filter((image) => image.url != thumbnail.url)
         .map((image) => ({
           id: image.id,
           title: image.id,
           img: null,
-          src: image.url,
+          url: image.url,
+          toUpload: false,
         }));
       setImages([thumbnail, ...images]);
     }

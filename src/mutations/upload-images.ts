@@ -32,16 +32,24 @@ export default async function uploadImages(
 
   const { uploads } = await response.json();
 
-  return images.map((image) => {
+  const result = images.map((image) => {
     const found = uploads.find((upload: UploadedFile) => {
       const key = upload.key.split("-")[1];
       if (image.id === key) return upload;
     });
 
     if (found) {
-      return { id: found.key, img: null, src: found.url, title: found.key };
+      return {
+        id: found.key,
+        img: null,
+        url: found.url,
+        title: found.key,
+        toUpload: true,
+      };
     }
 
     return image;
   });
+
+  return result;
 }

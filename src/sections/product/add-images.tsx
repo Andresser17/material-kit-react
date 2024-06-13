@@ -21,8 +21,9 @@ import VisuallyHiddenInput from "src/components/visually-hidden-input";
 export type SortableImageType = {
   id: UniqueIdentifier;
   img: File | null;
-  src: string;
+  url: string;
   title: string;
+  toUpload: boolean;
 };
 
 interface IAddImages {
@@ -36,14 +37,18 @@ export default function AddImages({ images, setImages }: IAddImages) {
     if (e.target.files && e.target.files.length > 0) {
       const { files } = e.target;
       const updateImages = (e: ProgressEvent<FileReader>, file: File) => {
+        const newName = file.name.replaceAll("-", "_");
         setImages((prev) => {
           return [
             ...prev,
             {
-              id: file.name,
-              img: file,
-              src: e.target?.result as string,
+              id: newName,
+              img: new File([file], newName, {
+                type: file.type,
+              }),
+              url: e.target?.result as string,
               title: file.name,
+              toUpload: true,
             },
           ];
         });
@@ -131,7 +136,7 @@ export default function AddImages({ images, setImages }: IAddImages) {
               images.map((image, i) => (
                 <SortableImage
                   key={image.id}
-                  src={image.src}
+                  src={image.url}
                   title={image.title}
                   id={image.id}
                   isCover={i === 0}

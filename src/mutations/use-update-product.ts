@@ -22,11 +22,10 @@ async function updateProduct(
   images: SortableImageType[] | undefined,
 ): Promise<Product> {
   const url = new URL(`/admin/products/${id}`, BACKEND_URL);
-  const { collection, ...newProduct } = product;
-  console.log(`collection key removed when updating product: ${collection}`);
+
   const newImages =
     images && images.length > 0
-      ? images?.slice(1).map((image) => image.src)
+      ? images?.slice(1).map((image) => image.url)
       : [];
   const response = await fetch(url, {
     method: "POST",
@@ -35,12 +34,12 @@ async function updateProduct(
       Authorization: `Bearer ${access_token}`,
     },
     body: JSON.stringify({
-      ...newProduct,
-      tags: newProduct.tags.map((tag) => ({ value: tag.label, id: tag.id })),
-      type: newProduct.type
-        ? { value: newProduct.type?.value, id: newProduct.type?.id }
-        : newProduct.type,
-      thumbnail: images ? images[0].src : null,
+      ...product,
+      tags: product.tags.map((tag) => ({ value: tag.label, id: tag.id })),
+      type: product.type
+        ? { value: product.type?.value, id: product.type?.id }
+        : product.type,
+      thumbnail: images ? images[0].url : null,
       images: newImages ? newImages : null,
     }),
   });
