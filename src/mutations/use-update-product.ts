@@ -37,6 +37,9 @@ async function updateProduct(
     body: JSON.stringify({
       ...newProduct,
       tags: newProduct.tags.map((tag) => ({ value: tag.label, id: tag.id })),
+      type: newProduct.type
+        ? { value: newProduct.type?.value, id: newProduct.type?.id }
+        : newProduct.type,
       thumbnail: images ? images[0].src : null,
       images: newImages ? newImages : null,
     }),

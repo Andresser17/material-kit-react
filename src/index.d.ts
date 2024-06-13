@@ -80,6 +80,7 @@ export declare module "@medusajs/types" {
     collection_id: string | null;
     collection: ProductCollection | null;
     type_id: string;
+    type: ProductType | null;
     tags: ProductTag[];
     discountable: boolean;
     variants: ProductVariant[];
@@ -189,6 +190,7 @@ export declare module "@medusajs/types" {
     thumbnail: string;
     handle: string;
     status: ProductStatus;
+    type_id: string | null;
     type: { value: string; id: string } | null;
     collection: Option | null;
     collection_id: string | null;

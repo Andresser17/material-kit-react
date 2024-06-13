@@ -14,21 +14,24 @@ export interface Option {
   label: string;
 }
 
-export interface IControlledSelect<T extends Option, Y extends FieldValues> {
+export interface IControlledSelect<Y extends FieldValues> {
   control: Control<Y>;
   id: string;
   label: string;
   placeholder?: string;
-  options: T[];
+  options: Option[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapControlValueToOption?: (value: any) => Option;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleSelectOption?: (option: any) => unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleSelectMultiOption?: (option: any[]) => unknown;
   sx: SxProps;
   multiple?: boolean;
   dinamicOptions?: boolean;
 }
 
-export default function ControlledSelect<
-  T extends Option,
-  Y extends FieldValues,
->({
+export default function ControlledSelect<Y extends FieldValues>({
   control,
   id,
   label,
@@ -36,11 +39,36 @@ export default function ControlledSelect<
   options,
   sx,
   multiple,
+  mapControlValueToOption,
+  handleSelectOption,
+  handleSelectMultiOption,
   dinamicOptions,
-}: IControlledSelect<T, Y>) {
-  const filter = createFilterOptions<T>();
+}: IControlledSelect<Y>) {
+  const filter = createFilterOptions<Option>();
 
-  const handleFilterOptions = (options: T[], params: FilterOptionsState<T>) => {
+  const handleChange = (
+    controlOnChange: {
+      (...event: unknown[]): void;
+      (arg0: string | Option[]): void;
+    },
+    newValue: Option | Option[],
+  ) => {
+    if (
+      multiple &&
+      Array.isArray(newValue) &&
+      handleSelectMultiOption &&
+      newValue
+    )
+      controlOnChange(handleSelectMultiOption(newValue));
+    else if (handleSelectOption && !Array.isArray(newValue) && newValue)
+      controlOnChange(handleSelectOption(newValue));
+    else controlOnChange(newValue);
+  };
+
+  const handleFilterOptions = (
+    options: Option[],
+    params: FilterOptionsState<Option>,
+  ) => {
     const filtered = filter(options, params);
 
     const { inputValue } = params;
@@ -51,8 +79,9 @@ export default function ControlledSelect<
       if (inputValue !== "" && !isExisting) {
         const newValue = {
           inputValue,
+          id: "new-option",
           label: `Add "${inputValue}"`,
-        } as T;
+        };
         filtered.push(newValue);
       }
     }
@@ -60,22 +89,9 @@ export default function ControlledSelect<
     return filtered;
   };
 
-  const handleGetOptionLabel = (option: T) => {
-    // Value selected with enter, right from the input
-    if (typeof option === "string") {
-      return option;
-    }
-    // Add option created dynamically
-    if (option.inputValue) {
-      return option.inputValue;
-    }
+  const handleGetOptionLabel = (option: Option) => {
+    if (option.label) return option.label;
 
-    if (option.label) {
-      // onChange(option.id);
-      return option.label;
-    }
-
-    // Regular option
     return "";
   };
 
@@ -84,27 +100,24 @@ export default function ControlledSelect<
       name={id}
       control={control}
       render={({
-        field: { onChange, value },
+        field: { onChange: controlOnChange, value },
         fieldState: { error },
         //formState,
       }) => {
-        const valueOption = options.find((option) => {
-          if (multiple) {
-            if (option.id === value?.id) return option;
-          } else if (option.id === value) return option;
-        });
+        const newValue =
+          mapControlValueToOption && value
+            ? mapControlValueToOption(value)
+            : value;
 
         return (
           <Autocomplete
             limitTags={2}
             {...{ sx, multiple, id, options, placeholder }}
-            onChange={(_event: unknown, newValue: Option | Option[]) => {
-              if (multiple && Array.isArray(newValue)) {
-                onChange(newValue);
-              } else if (!Array.isArray(newValue) && newValue?.id)
-                onChange(newValue.id);
+            onChange={(_e, newValue) => {
+              if (newValue) handleChange(controlOnChange, newValue);
             }}
-            value={valueOption ? valueOption.label : value}
+            value={newValue}
+            // clearOnBlur
             filterOptions={handleFilterOptions}
             getOptionLabel={handleGetOptionLabel}
             renderInput={(params) => (

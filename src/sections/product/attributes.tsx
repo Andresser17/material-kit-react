@@ -1,10 +1,9 @@
 import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
 
-import { Box, Divider, Typography, InputAdornment } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
-import ControlledField from "src/components/controlled-field";
 
 export default function Attributes({
   control,
@@ -29,7 +28,7 @@ export default function Attributes({
         }}
       >
         <Typography>Height</Typography>
-        <ControlledField<ProductRequest>
+        {/* <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="height"
@@ -39,7 +38,7 @@ export default function Attributes({
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
           }}
-        />
+        /> */}
       </Box>
 
       <Box
@@ -51,7 +50,7 @@ export default function Attributes({
         }}
       >
         <Typography>Width</Typography>
-        <ControlledField<ProductRequest>
+        {/* <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="width"
@@ -61,7 +60,7 @@ export default function Attributes({
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
           }}
-        />
+        /> */}
       </Box>
 
       <Box
@@ -73,7 +72,7 @@ export default function Attributes({
         }}
       >
         <Typography>Length</Typography>
-        <ControlledField<ProductRequest>
+        {/* <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="length"
@@ -83,7 +82,7 @@ export default function Attributes({
           InputProps={{
             endAdornment: <InputAdornment position="end">cm</InputAdornment>,
           }}
-        />
+        /> */}
       </Box>
 
       <Box
@@ -95,7 +94,7 @@ export default function Attributes({
         }}
       >
         <Typography>Weight</Typography>
-        <ControlledField<ProductRequest>
+        {/* <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="weight"
@@ -105,14 +104,14 @@ export default function Attributes({
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
-        />
+        /> */}
       </Box>
 
       <Typography variant="h6" sx={{ my: 2 }}>
         Customs
       </Typography>
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -129,9 +128,9 @@ export default function Attributes({
           variant="outlined"
           sx={{ width: 250 }}
         />
-      </Box>
+      </Box> */}
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -146,7 +145,7 @@ export default function Attributes({
           variant="outlined"
           sx={{ width: 250 }}
         />
-      </Box>
+      </Box> */}
 
       {/* <Box
         sx={{

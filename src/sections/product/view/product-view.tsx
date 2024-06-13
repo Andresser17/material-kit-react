@@ -43,7 +43,6 @@ export default function ProductView() {
       material: "",
       discountable: false,
       collection_id: "",
-      collection: {},
       tags: [],
       type: null,
     },
@@ -52,12 +51,12 @@ export default function ProductView() {
   const product = useGetProduct(product_id ?? "");
   const updateProductMutation = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
+    console.log({ data });
     updateProductMutation({
       id: product_id ?? "",
       product: {
         ...data,
         status,
-        // images: images.filter((image) => !image.img).map((image) => image.src),
       },
       toUpload: images,
     });
@@ -107,7 +106,8 @@ export default function ProductView() {
             label: tag.value,
           })),
         );
-      // setValue("type", product.type);
+      // if (product.type_id) setValue("type_id", product.type_id);
+      if (product.type) setValue("type", product.type);
       setStatus(product.status);
     }
   }, [product]);

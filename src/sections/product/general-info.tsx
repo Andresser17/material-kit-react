@@ -10,7 +10,7 @@ import { useListProductTypes } from "src/queries/use-list-product-types";
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
-import ControlledSelect, { Option } from "src/components/controlled-select";
+import ControlledSelect from "src/components/controlled-select";
 
 export default function GeneralInfo({
   control,
@@ -64,7 +64,7 @@ export default function GeneralInfo({
         Organize Product
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-        <ControlledSelect<Option, ProductRequest>
+        <ControlledSelect<ProductRequest>
           control={control}
           id="type"
           label="Choose a Type"
@@ -73,9 +73,16 @@ export default function GeneralInfo({
             id: type.id,
             label: type.value,
           }))}
+          mapControlValueToOption={(value: { value: string; id: string }) => {
+            return { inputValue: "", label: value.value, id: value.id };
+          }}
+          handleSelectOption={(option): { value: string; id: string } => {
+            return { value: option.inputValue, id: option.id };
+          }}
+          dinamicOptions
           sx={{ width: "48%" }}
         />
-        <ControlledSelect<Option, ProductRequest>
+        <ControlledSelect<ProductRequest>
           control={control}
           label="Choose a collection"
           id="collection_id"
@@ -84,9 +91,22 @@ export default function GeneralInfo({
             id: collection.id,
             label: collection.title,
           }))}
+          mapControlValueToOption={(value: string) => {
+            const collection = collections.find(
+              (collection) => collection.id === value,
+            );
+            return {
+              inputValue: "",
+              label: collection?.title ?? value,
+              id: value,
+            };
+          }}
+          handleSelectOption={(option): { value: string; id: string } => {
+            return option.id;
+          }}
           sx={{ width: "48%" }}
         />
-        <ControlledSelect<Option, ProductRequest>
+        <ControlledSelect<ProductRequest>
           control={control}
           label="Tags"
           id="tags"
