@@ -35,6 +35,7 @@ async function updateProduct(
     },
     body: JSON.stringify({
       ...product,
+      ...{ collection_id: product.collection_id ?? null },
       tags: product.tags.map((tag) => ({ value: tag.label, id: tag.id })),
       type: product.type
         ? { value: product.type?.value, id: product.type?.id }
