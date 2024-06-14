@@ -1,24 +1,49 @@
+import { useState, MouseEventHandler } from "react";
+
+import { SxProps } from "@mui/material";
+
 import { LotStatus } from "src/enums";
 
 import Label from "src/components/label";
 
+import { Color } from "../label";
+
 export interface ILotStatusLabel {
   status: LotStatus;
+  onClick?: MouseEventHandler;
+  sx?: SxProps;
 }
 
-export default function LotStatusLabel({ status }: ILotStatusLabel) {
+export default function LotStatusLabel({ status, ...props }: ILotStatusLabel) {
+  const [color, setColor] = useState<Color>("secondary");
+  const [label, setLabel] = useState("Future Purchase");
+
   switch (status) {
     case LotStatus.ON_STOCK:
-      return <Label color="success">On Stock</Label>;
+      setColor("success");
+      setLabel("On Stock");
+      break;
     case LotStatus.OUT_OF_STOCK:
-      return <Label color="error">Out of Stock</Label>;
+      setColor("error");
+      setLabel("Out of Stock");
+      break;
     case LotStatus.WAITING_DELIVERY:
-      return <Label color="info">Waiting Delivery</Label>;
+      setColor("info");
+      setLabel("Waiting Delivery");
+      break;
     case LotStatus.ORDER_PROBLEM:
-      return <Label color="warning">Order Problem</Label>;
+      setColor("warning");
+      setLabel("Order Problem");
+      break;
     case LotStatus.FUTURE_PURCHASE:
-      return <Label color="secondary">Future Purchase</Label>;
-    default:
-      return <Label color="secondary">Future Purchase</Label>;
+      setColor("secondary");
+      setLabel("Future Purchase");
+      break;
   }
+
+  return (
+    <Label color={color} {...props}>
+      {label}
+    </Label>
+  );
 }

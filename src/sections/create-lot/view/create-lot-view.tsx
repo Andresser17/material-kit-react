@@ -59,6 +59,7 @@ export default function CreateDraftOrderView() {
   };
   const createLot = useCreateLot(resetForm);
   const onSubmit: SubmitHandler<Lot> = (data) => {
+    // console.log({ data });
     createLot({ lot: data });
   };
 

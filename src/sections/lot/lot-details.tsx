@@ -1,8 +1,12 @@
 import { Lot } from "@medusajs/types";
+import { useState, SetStateAction } from "react";
 
 import Box from "@mui/material/Box";
-import { Divider, Typography } from "@mui/material";
+import { Divider, Popover, MenuItem, Typography } from "@mui/material";
 
+import { useDeleteLot } from "src/mutations/use-delete-lot";
+
+import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import LotStatusLabel from "src/components/lot-status-label/LotStatusLabel";
@@ -12,10 +16,31 @@ interface ILotDetails {
 }
 
 export default function LotDetails({ lot }: ILotDetails) {
+  const [open, setOpen] = useState<Element | null>(null);
+  const deleteLotMutation = useDeleteLot();
   const costAmount =
     (lot.cost?.amount ?? 0) +
     (lot.cost?.payment.fee.amount ?? 0) +
     (lot.courier?.cost.amount ?? 0);
+
+  const handleOpenMenu = (event: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
+  const handleEdit = () => {
+    handleCloseMenu();
+  };
+
+  const handleDelete = () => {
+    deleteLotMutation({ lot_id: lot.id });
+    handleCloseMenu();
+  };
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
@@ -29,7 +54,11 @@ export default function LotDetails({ lot }: ILotDetails) {
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <LotStatusLabel status={lot.status} />
+          <LotStatusLabel
+            onClick={handleOpenMenu}
+            status={lot.status}
+            sx={{ cursor: "pointer" }}
+          />
         </Box>
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
@@ -47,6 +76,29 @@ export default function LotDetails({ lot }: ILotDetails) {
           value={lot.items?.quantity.toString() ?? "N/A"}
         />
       </Box>
+      <Popover
+        open={open != null}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ mt: 1 }}
+      >
+        <MenuItem onClick={handleEdit}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Update Status
+        </MenuItem>
+
+        <MenuItem onClick={handleEdit}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Edit Lot
+        </MenuItem>
+
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          Delete Lot
+        </MenuItem>
+      </Popover>
     </SectionBox>
   );
 }

@@ -40,15 +40,12 @@ export function useListLots({ query }: IUseListOrders): LotsResponse {
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.lot, user?.access_token, query],
+    queryKey: [QUERY_KEY.list_lots, user?.access_token, query],
     queryFn: async ({ queryKey }): Promise<LotsResponse | null> =>
       listLots({
         access_token: queryKey[1] as string,
         query: queryKey[2] as IUseListOrders["query"],
       }),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     throwOnError: (error) => {
       console.log(error);
       return false;

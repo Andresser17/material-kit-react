@@ -1,7 +1,5 @@
 import toast from "react-hot-toast";
-import { UseFormReset } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { Lot, DraftOrder } from "@medusajs/types";
+import { Lot } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -13,24 +11,24 @@ import HTTPError from "src/utils/http-error";
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-interface CreateLotResponse {
+interface UpdateLotResponse {
   lot: Lot;
 }
 
-async function createLot(
+async function updateLot(
   access_token: string | undefined,
   lot: Lot,
-): Promise<CreateLotResponse> {
+): Promise<UpdateLotResponse> {
   const url = new URL("/admin/lots", BACKEND_URL);
   const response = await fetch(url, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
     body: JSON.stringify(lot),
   });
-  if (!response.ok) throw new HTTPError("Failed on creating new lot", response);
+  if (!response.ok) throw new HTTPError("Failed on updating lot", response);
 
   return await response.json();
 }
@@ -40,36 +38,31 @@ interface UseCreateLotArgs {
 }
 
 type IUseCreateLot = UseMutateFunction<
-  CreateLotResponse | undefined,
+  UpdateLotResponse | undefined,
   Error,
   UseCreateLotArgs,
   unknown
 >;
 
-export function useCreateLot(
-  resetForm: UseFormReset<DraftOrder>,
-): IUseCreateLot {
+export function useCreateLot(): IUseCreateLot {
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: async ({ lot }: UseCreateLotArgs) => {
-      return createLot(user?.access_token, lot);
+      return updateLot(user?.access_token, lot);
     },
-    mutationKey: [MUTATION_KEY.create_lot],
+    mutationKey: [MUTATION_KEY.update_lot],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_lots] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.get_lot] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
       toast.error(err.message);
     },
-    onSuccess(data) {
+    onSuccess() {
       // call pop up
-      toast.success("Lot created successfully");
-      resetForm();
-      navigate(`/lots/${data.lot.id}`);
+      toast.success("Lot updated successfully");
     },
   });
 

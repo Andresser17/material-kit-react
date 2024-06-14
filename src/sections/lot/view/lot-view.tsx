@@ -1,4 +1,4 @@
-import { ProductDTO } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import { useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -16,7 +16,7 @@ import ProductsCard from "../products-card";
 export default function LotView() {
   const { id } = useParams();
   const { lot } = useGetLot({ lot_id: id ?? "" });
-  const { handleSubmit } = useForm<ProductDTO>({
+  const { handleSubmit } = useForm<Product>({
     defaultValues: {
       title: "",
       subtitle: "",
@@ -41,7 +41,7 @@ export default function LotView() {
   //   setStatus(ProductStatusEnum.DRAFT);
   //   setOptions([]);
   // };
-  const onSubmit: SubmitHandler<ProductDTO> = (data) => {
+  const onSubmit: SubmitHandler<Product> = (data) => {
     console.log(data);
   };
 
@@ -56,7 +56,7 @@ export default function LotView() {
           p: 2,
         }}
       >
-        <Box sx={{ maxWidth: "660px" }}>
+        <Box sx={{ width: "100%", maxWidth: "600px" }}>
           <LotDetails lot={lot} />
           <Summary lot={lot} />
           <ProductsCard lot={lot} />

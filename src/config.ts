@@ -8,7 +8,7 @@ export const QUERY_KEY = {
   product_variant: "productVariant",
   order: "order",
   draft_order: "draftOrder",
-  lot: "lot",
+  list_lots: "list_lots",
   get_lot: "get_lot",
   tag: "tag",
   collection: "collection",
@@ -26,6 +26,8 @@ export const MUTATION_KEY = {
   delete_product_variant: "delete_produdct_variant",
   create_draft_order: "create_draft_order",
   create_lot: "create_lot",
+  delete_lot: "delete_lot",
+  update_lot: "update_lot",
   add_lot_product: "add_lot_product",
   remove_lot_product: "remove_lot_product",
 };

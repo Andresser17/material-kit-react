@@ -7,9 +7,7 @@ import { LotStatus } from "src/enums";
 
 import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
-import ControlledSelect, {
-  Option,
-} from "src/components/controlled-select/controlled-select";
+import ControlledSelect from "src/components/controlled-select/controlled-select";
 
 interface IGeneralInfo {
   control: Control<Lot>;
@@ -109,11 +107,17 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
         />
-        <ControlledSelect<Option, Lot>
+        <ControlledSelect<Lot>
           control={control}
           id="status"
           label="Status"
           options={status}
+          mapControlValueToOption={(value: string) => {
+            const found = status.find((st) => st.id === value);
+            if (found) return found;
+            else return { inputValue: "", id: value, label: value };
+          }}
+          handleSelectOption={(option): string => option.id}
           sx={{ width: "48%" }}
         />
       </Box>
@@ -131,11 +135,17 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Payment
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<Option, Lot>
+        <ControlledSelect<Lot>
           control={control}
           id="cost.payment.method"
           label="Choose Payment Method"
           options={paymentMethods}
+          mapControlValueToOption={(value: string) => {
+            const found = paymentMethods.find((st) => st.id === value);
+            if (found) return found;
+            else return { inputValue: "", id: value, label: value };
+          }}
+          handleSelectOption={(option): string => option.id}
           sx={{ width: "48%" }}
         />
         <ControlledField
@@ -154,11 +164,17 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Courier
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<Option, Lot>
+        <ControlledSelect<Lot>
           control={control}
           id="courier.company"
           label="Courier Company"
           options={couriers}
+          mapControlValueToOption={(value: string) => {
+            const found = couriers.find((st) => st.id === value);
+            if (found) return found;
+            else return { inputValue: "", id: value, label: value };
+          }}
+          handleSelectOption={(option): string => option.id}
           sx={{ width: "48%" }}
         />
         <ControlledField
@@ -183,11 +199,17 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
         />
-        <ControlledSelect<Option, Lot>
+        <ControlledSelect<Lot>
           control={control}
           id="courier.payment.method"
           label="Payment Method"
           options={paymentMethods}
+          mapControlValueToOption={(value: string) => {
+            const found = paymentMethods.find((st) => st.id === value);
+            if (found) return found;
+            else return { inputValue: "", id: value, label: value };
+          }}
+          handleSelectOption={(option): string => option.id}
           sx={{ width: "48%" }}
         />
         <ControlledField
