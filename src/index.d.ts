@@ -194,7 +194,7 @@ export declare module "@medusajs/types" {
     type: { value: string; id: string } | null;
     collection: Option | null;
     collection_id: string | null;
-    tags: Option[];
+    tags: { id: string; value: string }[];
     sales_channels: { id: string }[];
     categories: { id: string }[];
     options: { title: string }[];

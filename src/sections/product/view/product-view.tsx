@@ -107,15 +107,7 @@ export default function ProductView() {
       setValue("discountable", product.discountable);
       if (product.collection_id)
         setValue("collection_id", product.collection_id);
-      if (product.tags)
-        setValue(
-          "tags",
-          product.tags.map((tag) => ({
-            inputValue: "",
-            id: tag.id,
-            label: tag.value,
-          })),
-        );
+      if (product.tags) setValue("tags", product.tags);
       // if (product.type_id) setValue("type_id", product.type_id);
       if (product.type) setValue("type", product.type);
       setStatus(product.status);

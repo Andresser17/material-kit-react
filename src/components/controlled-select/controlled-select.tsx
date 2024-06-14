@@ -23,6 +23,8 @@ export interface IControlledSelect<Y extends FieldValues> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mapControlValueToOption?: (value: any) => Option;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapMultiControlValueToOption?: (value: any[]) => Option[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSelectOption?: (option: any) => unknown;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSelectMultiOption?: (option: any[]) => unknown;
@@ -40,6 +42,7 @@ export default function ControlledSelect<Y extends FieldValues>({
   sx,
   multiple,
   mapControlValueToOption,
+  mapMultiControlValueToOption,
   handleSelectOption,
   handleSelectMultiOption,
   dinamicOptions,
@@ -104,10 +107,15 @@ export default function ControlledSelect<Y extends FieldValues>({
         fieldState: { error },
         //formState,
       }) => {
-        const newValue =
-          mapControlValueToOption && value
-            ? mapControlValueToOption(value)
-            : value;
+        let newValue: Option | Option[];
+
+        if (mapControlValueToOption && value) {
+          newValue = mapControlValueToOption(value);
+        } else if (mapMultiControlValueToOption && value) {
+          newValue = mapMultiControlValueToOption(value);
+        } else {
+          newValue = value;
+        }
 
         return (
           <Autocomplete

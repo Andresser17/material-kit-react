@@ -12,11 +12,11 @@ import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
 import ControlledSelect from "src/components/controlled-select";
 
-export default function GeneralInfo({
-  control,
-}: {
+interface IGeneralInfo {
   control: Control<ProductRequest>;
-}) {
+}
+
+export default function GeneralInfo({ control }: IGeneralInfo) {
   const { types } = useListProductTypes();
   const { tags } = useListTags();
   const { collections } = useListCollections();
@@ -117,6 +117,32 @@ export default function GeneralInfo({
             label: tag.value,
           }))}
           multiple
+          mapMultiControlValueToOption={(
+            options: { value: string; id: string }[],
+          ) => {
+            return options.map((option) => ({
+              inputValue: "",
+              label: option.value,
+              id: option.id,
+            }));
+          }}
+          handleSelectMultiOption={(
+            options,
+          ): { value: string; id: string }[] => {
+            return options.map((option) => {
+              if (option.inputValue)
+                return {
+                  value: option.inputValue,
+                  id: option.id,
+                };
+
+              return {
+                value: option.label,
+                id: option.id,
+              };
+            });
+          }}
+          dinamicOptions
           sx={{ width: "48%" }}
         />
       </Box>
