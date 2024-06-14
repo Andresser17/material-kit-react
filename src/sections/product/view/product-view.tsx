@@ -51,7 +51,6 @@ export default function ProductView() {
   const product = useGetProduct(product_id ?? "");
   const updateProductMutation = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
-    console.log({ data });
     updateProductMutation({
       id: product_id ?? "",
       product: {

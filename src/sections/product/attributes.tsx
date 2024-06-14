@@ -1,16 +1,17 @@
 import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
 
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, Typography, InputAdornment } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
+import ControlledField from "src/components/controlled-field";
 
-export default function Attributes({
-  control,
-}: {
+interface IAttributes {
   control: Control<ProductRequest>;
-}) {
-  const options = [{ value: "china", label: "China" }];
+}
+
+export default function Attributes({ control }: IAttributes) {
+  // const options = [{ value: "china", label: "China" }];
 
   return (
     <SectionBox>
@@ -28,7 +29,7 @@ export default function Attributes({
         }}
       >
         <Typography>Height</Typography>
-        {/* <ControlledField<ProductRequest>
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="height"
@@ -38,7 +39,7 @@ export default function Attributes({
           InputProps={{
             endAdornment: <InputAdornment position="start">cm</InputAdornment>,
           }}
-        /> */}
+        />
       </Box>
 
       <Box

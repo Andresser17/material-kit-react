@@ -41,6 +41,10 @@ async function updateProduct(
         : product.type,
       thumbnail: images ? images[0].url : null,
       images: newImages ? newImages : null,
+      tags: product.tags.map((tag) => {
+        if (tag.id === "new-option") return { id: null, value: tag.value };
+        return { id: tag.id, value: tag.value };
+      }),
     }),
   });
   if (!response.ok) throw new HTTPError("Failed on updating product", response);
