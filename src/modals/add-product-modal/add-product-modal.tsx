@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { ProductStatus } from "src/enums";
 import { useAddProduct } from "src/mutations/use-add-product";
 
 import ControlledField from "src/components/controlled-field";
@@ -35,34 +34,7 @@ export default function AddProductModal() {
     addProductMutation({
       newProduct: {
         title: data.product_title,
-        subtitle: "",
-        description: "",
-        is_giftcard: false,
-        discountable: false,
-        images: [],
-        thumbnail: "",
-        handle: "",
-        status: ProductStatus.DRAFT,
-        type: null,
-        collection: null,
-        collection_id: null,
-        tags: [],
-        sales_channels: [],
-        categories: [],
-        options: [],
-        variants: [],
-        weight: 0,
-        length: 0,
-        height: 0,
-        width: 0,
-        hs_code: "",
-        origin_country: "",
-        mid_code: "",
-        material: "",
-        metadata: {},
       },
-      options: [],
-      toUpload: [],
     });
   };
 

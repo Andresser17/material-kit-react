@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { UseFormReset } from "react-hook-form";
-import { Product, ProductRequest, ProductOptionRequest } from "@medusajs/types";
+import { Product, ProductRequest } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
@@ -12,32 +12,19 @@ import HTTPError from "src/utils/http-error";
 import { useUser } from "src/queries/use-user";
 import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
-import { SortableImageType } from "src/sections/product/add-images";
-
-import uploadImages, { UploadedFile } from "./upload-images";
-
 async function addProduct(
   access_token: string | undefined,
-  newProduct: ProductRequest,
-  options: ProductOptionRequest[],
-  thumbnail: UploadedFile | undefined,
-  images: Array<UploadedFile> | undefined,
+  newProduct: { title: string },
 ): Promise<Product> {
   const url = new URL("/admin/products", BACKEND_URL);
+
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify({
-      ...newProduct,
-      options: options
-        .filter((option) => option.id.split("_")[0] === "default")
-        .map((option) => ({ title: option.title })),
-      thumbnail: thumbnail ? thumbnail.url : undefined,
-      images: images ? images : undefined,
-    }),
+    body: JSON.stringify(newProduct),
   });
   if (!response.ok)
     throw new HTTPError("Failed on creating new product", response);
@@ -47,9 +34,7 @@ async function addProduct(
 }
 
 interface UseAddProductParams {
-  newProduct: ProductRequest;
-  options: ProductOptionRequest[];
-  toUpload: SortableImageType[];
+  newProduct: { title: string };
 }
 
 interface UseAddProductResponse {
@@ -70,31 +55,8 @@ export function useAddProduct(
   const { user } = useUser();
 
   const { data, mutate, isSuccess } = useMutation({
-    mutationFn: async ({
-      newProduct,
-      options,
-      toUpload,
-    }: UseAddProductParams) => {
-      if (toUpload.length > 0) {
-        const uploads = await uploadImages(user?.access_token, toUpload);
-        const thumbnail = uploads[0];
-        const images = uploads.slice(1);
-        return addProduct(
-          user?.access_token,
-          newProduct,
-          options,
-          thumbnail,
-          images,
-        );
-      }
-
-      return addProduct(
-        user?.access_token,
-        newProduct,
-        options,
-        undefined,
-        undefined,
-      );
+    mutationFn: async ({ newProduct }: UseAddProductParams) => {
+      return addProduct(user?.access_token, newProduct);
     },
     mutationKey: [MUTATION_KEY.add_product],
     onSettled: () =>
