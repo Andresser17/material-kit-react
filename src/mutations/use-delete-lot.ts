@@ -28,7 +28,7 @@ async function deleteLot(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new HTTPError("Failed on deletinglot", response);
+  if (!response.ok) throw new HTTPError("Failed on deleting lot", response);
 
   return await response.json();
 }

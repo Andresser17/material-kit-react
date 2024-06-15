@@ -49,7 +49,7 @@ const BaseModal = memo((props: IBaseModal) => {
 
   const footerSection = footer ? (
     footer
-  ) : !footer && onSubmit ? (
+  ) : !footer ? (
     <>
       <Button
         form={modalId}

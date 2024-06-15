@@ -4,6 +4,7 @@ import addProductSlice from "./slices/add-product";
 import modalSlice from "./slices/modal/modal-slice";
 import confirmActionSlice from "./slices/confirm-action";
 import productOptionsSlice from "./slices/product-options";
+import updateLotStatusSlice from "./slices/update-lot-status";
 import addProductToLotSlice from "./slices/add-product-to-lot";
 import addExistingProductSlice from "./slices/add-existing-product";
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     addProductToLot: addProductToLotSlice,
     confirmAction: confirmActionSlice,
     addProduct: addProductSlice,
+    updateLotStatus: updateLotStatusSlice,
   },
 });
 

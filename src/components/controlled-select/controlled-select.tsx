@@ -28,7 +28,7 @@ export interface IControlledSelect<Y extends FieldValues> {
   handleSelectOption?: (option: any) => unknown;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSelectMultiOption?: (option: any[]) => unknown;
-  sx: SxProps;
+  sx?: SxProps;
   multiple?: boolean;
   dinamicOptions?: boolean;
 }

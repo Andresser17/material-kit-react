@@ -17,9 +17,10 @@ interface UpdateLotResponse {
 
 async function updateLot(
   access_token: string | undefined,
+  lot_id: string,
   lot: Lot,
 ): Promise<UpdateLotResponse> {
-  const url = new URL("/admin/lots", BACKEND_URL);
+  const url = new URL(`/admin/lots/${lot_id}`, BACKEND_URL);
   const response = await fetch(url, {
     method: "PUT",
     headers: {
@@ -33,24 +34,25 @@ async function updateLot(
   return await response.json();
 }
 
-interface UseCreateLotArgs {
+interface useUpdateLotArgs {
+  lot_id: string;
   lot: Lot;
 }
 
-type IUseCreateLot = UseMutateFunction<
+type IUseUpdateLot = UseMutateFunction<
   UpdateLotResponse | undefined,
   Error,
-  UseCreateLotArgs,
+  useUpdateLotArgs,
   unknown
 >;
 
-export function useCreateLot(): IUseCreateLot {
+export function useUpdateLot(): IUseUpdateLot {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
   const { mutate } = useMutation({
-    mutationFn: async ({ lot }: UseCreateLotArgs) => {
-      return updateLot(user?.access_token, lot);
+    mutationFn: async ({ lot_id, lot }: useUpdateLotArgs) => {
+      return updateLot(user?.access_token, lot_id, lot);
     },
     mutationKey: [MUTATION_KEY.update_lot],
     onSettled: () =>

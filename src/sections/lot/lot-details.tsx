@@ -4,6 +4,7 @@ import { useState, SetStateAction } from "react";
 import Box from "@mui/material/Box";
 import { Divider, Popover, MenuItem, Typography } from "@mui/material";
 
+import { useModal } from "src/modals/useModal";
 import { useDeleteLot } from "src/mutations/use-delete-lot";
 
 import Iconify from "src/components/iconify";
@@ -16,6 +17,7 @@ interface ILotDetails {
 }
 
 export default function LotDetails({ lot }: ILotDetails) {
+  const { onOpen: openModal } = useModal("update-lot-status-modal");
   const [open, setOpen] = useState<Element | null>(null);
   const deleteLotMutation = useDeleteLot();
   const costAmount =
@@ -34,6 +36,7 @@ export default function LotDetails({ lot }: ILotDetails) {
   };
 
   const handleEdit = () => {
+    openModal({ currentStatus: lot.status, lot_id: lot.id });
     handleCloseMenu();
   };
 
@@ -87,11 +90,6 @@ export default function LotDetails({ lot }: ILotDetails) {
         <MenuItem onClick={handleEdit}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Update Status
-        </MenuItem>
-
-        <MenuItem onClick={handleEdit}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit Lot
         </MenuItem>
 
         <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
