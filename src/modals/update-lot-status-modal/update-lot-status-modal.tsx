@@ -50,7 +50,7 @@ export default function UpdateLotStatusModal() {
     },
     mode: "onChange",
   });
-  const updateLotMutation = useUpdateLot();
+  const { mutate: updateLotMutation, isSuccess } = useUpdateLot();
   const onSubmit: SubmitHandler<Lot> = (data) => {
     updateLotMutation({
       lot_id,
@@ -71,6 +71,8 @@ export default function UpdateLotStatusModal() {
       open
       closeOnTap
       onClose={closeModal}
+      closeOnSave
+      delayClose={isSuccess}
     >
       <form id="update-lot-status-modal" onSubmit={handleSubmit(onSubmit)}>
         <ControlledSelect<Lot>

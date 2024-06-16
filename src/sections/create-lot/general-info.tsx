@@ -141,11 +141,13 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           label="Choose Payment Method"
           options={paymentMethods}
           mapControlValueToOption={(value: string) => {
-            const found = paymentMethods.find((st) => st.id === value);
+            const found = paymentMethods.find(
+              (method) => method.label === value,
+            );
             if (found) return found;
             else return { inputValue: "", id: value, label: value };
           }}
-          handleSelectOption={(option): string => option.id}
+          handleSelectOption={(option): string => option.label}
           sx={{ width: "48%" }}
         />
         <ControlledField
@@ -170,11 +172,11 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           label="Courier Company"
           options={couriers}
           mapControlValueToOption={(value: string) => {
-            const found = couriers.find((st) => st.id === value);
+            const found = couriers.find((courier) => courier.label === value);
             if (found) return found;
             else return { inputValue: "", id: value, label: value };
           }}
-          handleSelectOption={(option): string => option.id}
+          handleSelectOption={(option): string => option.label}
           sx={{ width: "48%" }}
         />
         <ControlledField
@@ -205,11 +207,13 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           label="Payment Method"
           options={paymentMethods}
           mapControlValueToOption={(value: string) => {
-            const found = paymentMethods.find((st) => st.id === value);
+            const found = paymentMethods.find(
+              (method) => method.label === value,
+            );
             if (found) return found;
             else return { inputValue: "", id: value, label: value };
           }}
-          handleSelectOption={(option): string => option.id}
+          handleSelectOption={(option): string => option.label}
           sx={{ width: "48%" }}
         />
         <ControlledField

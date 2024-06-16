@@ -3,7 +3,7 @@ import { Lot } from "@medusajs/types";
 import {
   useMutation,
   useQueryClient,
-  UseMutateFunction,
+  UseMutationResult,
 } from "@tanstack/react-query";
 
 import HTTPError from "src/utils/http-error";
@@ -39,18 +39,25 @@ interface useUpdateLotArgs {
   lot: Lot;
 }
 
-type IUseUpdateLot = UseMutateFunction<
-  UpdateLotResponse | undefined,
-  Error,
+// type IUseUpdateLot = UseMutateFunction<
+//   UpdateLotResponse | undefined,
+//   Error,
+//   useUpdateLotArgs,
+//   unknown
+// >;
+
+// interface UseUpdateLotResponse {}
+
+export function useUpdateLot(): UseMutationResult<
+  UpdateLotResponse,
+  HTTPError,
   useUpdateLotArgs,
   unknown
->;
-
-export function useUpdateLot(): IUseUpdateLot {
+> {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn: async ({ lot_id, lot }: useUpdateLotArgs) => {
       return updateLot(user?.access_token, lot_id, lot);
     },
@@ -67,6 +74,4 @@ export function useUpdateLot(): IUseUpdateLot {
       toast.success("Lot updated successfully");
     },
   });
-
-  return mutate;
 }

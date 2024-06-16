@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import {
@@ -21,6 +21,8 @@ export interface IBaseModal {
   closeOnTap?: boolean;
   onSubmit?: () => void;
   onClose?: () => void;
+  closeOnSave?: boolean;
+  delayClose?: boolean;
 }
 
 const BaseModal = memo((props: IBaseModal) => {
@@ -33,6 +35,8 @@ const BaseModal = memo((props: IBaseModal) => {
     onClose,
     onSubmit,
     children,
+    closeOnSave,
+    delayClose,
   } = props;
 
   const root = document.getElementById("root");
@@ -58,7 +62,10 @@ const BaseModal = memo((props: IBaseModal) => {
         color="success"
         size="medium"
         sx={{ mr: 2 }}
-        onClick={onSubmit}
+        onClick={() => {
+          if (onSubmit) onSubmit();
+          if (delayClose === undefined && closeOnSave && onClose) onClose();
+        }}
       >
         Save
       </Button>
@@ -69,6 +76,10 @@ const BaseModal = memo((props: IBaseModal) => {
   ) : (
     <div></div>
   );
+
+  useEffect(() => {
+    if (delayClose && onClose) onClose();
+  }, [delayClose]);
 
   return createPortal(
     <Modal
