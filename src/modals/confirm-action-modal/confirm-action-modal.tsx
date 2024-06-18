@@ -1,25 +1,24 @@
 import { Box, Button, Typography } from "@mui/material";
 
-import { useAppDispatch } from "src/redux/hooks";
-import { setCallAction } from "src/redux/slices/confirm-action";
-
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
 export interface IConfirmActionModal {
+  callAction?: boolean;
   title: string;
   message: string;
 }
 
 export default function ConfirmActionModal() {
   const {
+    props,
     props: { title, message },
     onClose: closeModal,
+    onUpdate: updateProps,
   } = useModal<IConfirmActionModal>("confirm-action-modal");
-  const dispatch = useAppDispatch();
 
   const handleSave = () => {
-    dispatch(setCallAction(true));
+    updateProps({ ...props, callAction: true });
     closeModal();
   };
 
@@ -35,7 +34,7 @@ export default function ConfirmActionModal() {
       >
         Confirm
       </Button>
-      <Button variant="text" color="error" onClick={closeModal}>
+      <Button variant="text" color="error" onClick={() => closeModal()}>
         Cancel
       </Button>
     </Box>

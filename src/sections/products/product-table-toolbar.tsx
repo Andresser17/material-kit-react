@@ -1,17 +1,15 @@
-import { useEffect, SetStateAction } from "react";
+import { SetStateAction, useEffect } from "react";
 
-import Tooltip from "@mui/material/Tooltip";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 
-import { useModal } from "src/modals/useModal";
-import { useAppSelector } from "src/redux/hooks";
-import { getCallAction } from "src/redux/slices/confirm-action";
-import { useDeleteProduct } from "src/mutations/use-delete-product";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
+import { useModal } from "src/modals/useModal";
+import { useDeleteProduct } from "src/mutations/use-delete-product";
 
 import Iconify from "src/components/iconify";
 
@@ -30,10 +28,10 @@ export default function ProductTableToolbar({
   filterName,
   onFilterName,
 }: IProductTableToolbar) {
-  const { onOpen: openModal } = useModal<IConfirmActionModal>(
-    "confirm-action-modal",
-  );
-  const callAction = useAppSelector((state) => getCallAction(state));
+  const {
+    props: { callAction },
+    onOpen: openModal,
+  } = useModal<IConfirmActionModal>("confirm-action-modal");
   const deleteProductMutation = useDeleteProduct();
 
   const handleDelete = () => {

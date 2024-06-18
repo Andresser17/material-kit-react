@@ -1,22 +1,27 @@
 import { Lot } from "@medusajs/types";
-import { useState, SetStateAction } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
+import { Divider, MenuItem, Popover, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { Divider, Popover, MenuItem, Typography } from "@mui/material";
 
 import { useModal } from "src/modals/useModal";
 import { useDeleteLot } from "src/mutations/use-delete-lot";
 
 import Iconify from "src/components/iconify";
+import LotStatusLabel from "src/components/lot-status-label/LotStatusLabel";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
-import LotStatusLabel from "src/components/lot-status-label/LotStatusLabel";
+import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 
 interface ILotDetails {
   lot: Lot;
 }
 
 export default function LotDetails({ lot }: ILotDetails) {
+  const {
+    props: { callAction },
+    onOpen: openConfirmActionModal,
+  } = useModal<IConfirmActionModal>("confirm-action-modal");
   const { onOpen: openModal } = useModal("update-lot-status-modal");
   const [open, setOpen] = useState<Element | null>(null);
   const deleteLotMutation = useDeleteLot();
@@ -44,6 +49,10 @@ export default function LotDetails({ lot }: ILotDetails) {
     deleteLotMutation({ lot_id: lot.id });
     handleCloseMenu();
   };
+
+  useEffect(() => {
+    if (callAction) handleDelete();
+  }, [callAction]);
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
@@ -92,7 +101,15 @@ export default function LotDetails({ lot }: ILotDetails) {
           Update Status
         </MenuItem>
 
-        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
+        <MenuItem
+          onClick={() =>
+            openConfirmActionModal({
+              title: "Delete Lot",
+              message: "Are you sure you want to delete this lot?",
+            })
+          }
+          sx={{ color: "error.main" }}
+        >
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete Lot
         </MenuItem>

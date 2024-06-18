@@ -41,7 +41,7 @@ const initialState = {
     {
       id: "confirm-action-modal",
       open: false,
-      props: {},
+      props: { callAction: false, title: "", message: "" },
     } as Modal<IConfirmActionModal>,
     {
       id: "add-product-modal",
