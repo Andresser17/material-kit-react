@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { Lot } from "@medusajs/types";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import { LotStatus } from "src/enums";
 import { useUpdateLot } from "src/mutations/use-update-lot";
@@ -10,36 +10,14 @@ import ControlledSelect from "src/components/controlled-select";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
+import { status } from "src/layouts/lot/config-select";
+
 export interface IUpdateLotStatusModal {
   currentStatus: LotStatus;
   lot_id: string;
 }
 
 export default function UpdateLotStatusModal() {
-  const status = [
-    { inputValue: "", id: LotStatus.ON_STOCK, label: "On Stock" },
-    {
-      inputValue: "",
-      id: LotStatus.OUT_OF_STOCK,
-      label: "Out of Stock",
-    },
-    {
-      inputValue: "",
-      id: LotStatus.WAITING_DELIVERY,
-      label: "Waiting Delivery",
-    },
-    {
-      inputValue: "",
-      id: LotStatus.ORDER_PROBLEM,
-      label: "Order Problem",
-    },
-    {
-      inputValue: "",
-      id: LotStatus.FUTURE_PURCHASE,
-      label: "Future Purchase",
-    },
-  ];
-
   const {
     props: { currentStatus, lot_id },
     onClose: closeModal,
@@ -50,7 +28,7 @@ export default function UpdateLotStatusModal() {
     },
     mode: "onChange",
   });
-  const { mutate: updateLotMutation, isSuccess } = useUpdateLot();
+  const { mutate: updateLotMutation } = useUpdateLot();
   const onSubmit: SubmitHandler<Lot> = (data) => {
     updateLotMutation({
       lot_id,
@@ -58,6 +36,7 @@ export default function UpdateLotStatusModal() {
         ...data,
       },
     });
+    closeModal();
   };
 
   useEffect(() => {
@@ -71,8 +50,6 @@ export default function UpdateLotStatusModal() {
       open
       closeOnTap
       onClose={closeModal}
-      closeOnSave
-      delayClose={isSuccess}
     >
       <form id="update-lot-status-modal" onSubmit={handleSubmit(onSubmit)}>
         <ControlledSelect<Lot>

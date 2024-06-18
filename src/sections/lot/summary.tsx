@@ -1,19 +1,50 @@
 import { Lot } from "@medusajs/types";
 
-import { Box, Divider, Typography } from "@mui/material";
+import { SetStateAction, useState } from "react";
+
+import {
+  Box,
+  Divider,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from "@mui/material";
+
+import Iconify from "src/components/iconify";
 
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
+import { useModal } from "src/modals/useModal";
 
 interface ISummary {
   lot: Lot;
 }
 
 export default function Summary({ lot }: ISummary) {
+  const { onOpen: openModal } = useModal<IEditLotSummaryModal>(
+    "edit-lot-summary-modal",
+  );
+  const [open, setOpen] = useState<Element | null>(null);
+
+  const handleOpenMenu = (event: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4">Summary</Typography>
+        <IconButton onClick={handleOpenMenu}>
+          <Iconify icon="eva:more-vertical-fill" />
+        </IconButton>
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
       <Box>
@@ -76,6 +107,24 @@ export default function Summary({ lot }: ISummary) {
             />
           ))}
       </Box>
+      <Popover
+        open={open != null}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ mt: 1 }}
+      >
+        <MenuItem
+          onClick={() => {
+            openModal({ lot });
+            handleCloseMenu();
+          }}
+        >
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Edit
+        </MenuItem>
+      </Popover>
     </SectionBox>
   );
 }

@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { LotStatus } from "src/enums";
-import type { RootState } from "src/redux/store";
-import { Modal } from "src/modals/modal-provider";
 import { IAddProductModal } from "src/modals/add-product-modal";
-import { IConfirmActionModal } from "src/modals/confirm-action-modal";
-import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
-import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
+import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
+import { IConfirmActionModal } from "src/modals/confirm-action-modal";
+import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
+import { Modal } from "src/modals/modal-provider";
+import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
+import type { RootState } from "src/redux/store";
 
 // Define a type for the slice state
 export interface ModalState<T> {
@@ -52,6 +53,11 @@ const initialState = {
       open: false,
       props: { currentStatus: LotStatus.FUTURE_PURCHASE, lot_id: "" },
     } as Modal<IUpdateLotStatusModal>,
+    {
+      id: "edit-lot-summary-modal",
+      open: false,
+      props: {},
+    } as Modal<IEditLotSummaryModal>,
   ],
 };
 

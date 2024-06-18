@@ -2,34 +2,40 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
   },
-  "plugins": ["perfectionist", "unused-imports", "prettier", "@typescript-eslint", "react", "@tanstack/eslint-plugin-query"],
+  "plugins": [
+    "unused-imports",
+    "prettier",
+    "@typescript-eslint",
+    "react",
+    "@tanstack/eslint-plugin-query",
+  ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "prettier"
+    "prettier",
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
     "ecmaFeatures": {
-      "jsx": true
-    }
+      "jsx": true,
+    },
   },
   "settings": {
     "react": {
-      "version": "detect"
+      "version": "detect",
     },
     "import/resolver": {
       "alias": {
         "map": [["src", "./src"]],
-        "extensions": [".js", ".ts", ".jsx", ".tsx", ".json"]
+        "extensions": [".js", ".ts", ".jsx", ".tsx", ".json"],
       },
-      "typescript": {}
-    }
+      "typescript": {},
+    },
   },
   "rules": {
     "no-alert": 0,
@@ -57,33 +63,33 @@
     "react/jsx-no-useless-fragment": [
       1,
       {
-        "allowExpressions": true
-      }
+        "allowExpressions": true,
+      },
     ],
     "prefer-destructuring": [
       1,
       {
         "object": true,
-        "array": false
-      }
+        "array": false,
+      },
     ],
     "react/no-unstable-nested-components": [
       1,
       {
-        "allowAsProps": true
-      }
+        "allowAsProps": true,
+      },
     ],
     "no-unused-vars": [
       1,
       {
-        "args": "none"
-      }
+        "args": "none",
+      },
     ],
     "react/jsx-no-duplicate-props": [
       1,
       {
-        "ignoreCase": false
-      }
+        "ignoreCase": false,
+      },
     ],
     // unused-imports
     // https://www.npmjs.com/package/eslint-plugin-unused-imports
@@ -94,75 +100,8 @@
         "vars": "all",
         "varsIgnorePattern": "^_",
         "args": "after-used",
-        "argsIgnorePattern": "^_"
-      }
+        "argsIgnorePattern": "^_",
+      },
     ],
-    // perfectionist
-    // https://eslint-plugin-perfectionist.azat.io/
-    "perfectionist/sort-named-imports": [
-      1,
-      {
-        "order": "asc",
-        "type": "line-length"
-      }
-    ],
-    "perfectionist/sort-named-exports": [
-      1,
-      {
-        "order": "asc",
-        "type": "line-length"
-      }
-    ],
-    "perfectionist/sort-exports": [
-      1,
-      {
-        "order": "asc",
-        "type": "line-length"
-      }
-    ],
-    "perfectionist/sort-imports": [
-      1,
-      {
-        "order": "asc",
-        "type": "line-length",
-        "newlines-between": "always",
-        "groups": [
-          ["builtin", "external"],
-          "custom-mui",
-          "custom-routes",
-          "custom-hooks",
-          "custom-utils",
-          "internal",
-          "custom-components",
-          "custom-sections",
-          "custom-types",
-          ["parent", "sibling", "index"],
-          "object",
-          "unknown"
-        ],
-        "custom-groups": {
-          "value": {
-            "custom-mui": "@mui/**",
-            "custom-routes": "src/routes/**",
-            "custom-hooks": "src/hooks/**",
-            "custom-utils": "src/utils/**",
-            "custom-components": "src/components/**",
-            "custom-sections": "src/sections/**",
-            "custom-types": "src/types/**"
-          }
-        },
-        "internal-pattern": ["src/**"]
-      }
-    ]
-    // "import/extensions": [
-    //   "error",
-    //   "ignorePackages",
-    //   {
-    //     "js": "never",
-    //     "jsx": "never",
-    //     "ts": "never",
-    //     "tsx": "never"
-    //   }
-    // ]
-  }
+  },
 }

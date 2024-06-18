@@ -1,12 +1,12 @@
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { createPortal } from "react-dom";
 
 import {
   Box,
-  Modal,
   Button,
   Divider,
   IconButton,
+  Modal,
   Typography,
 } from "@mui/material";
 
@@ -21,8 +21,6 @@ export interface IBaseModal {
   closeOnTap?: boolean;
   onSubmit?: () => void;
   onClose?: () => void;
-  closeOnSave?: boolean;
-  delayClose?: boolean;
 }
 
 const BaseModal = memo((props: IBaseModal) => {
@@ -35,8 +33,6 @@ const BaseModal = memo((props: IBaseModal) => {
     onClose,
     onSubmit,
     children,
-    closeOnSave,
-    delayClose,
   } = props;
 
   const root = document.getElementById("root");
@@ -64,12 +60,18 @@ const BaseModal = memo((props: IBaseModal) => {
         sx={{ mr: 2 }}
         onClick={() => {
           if (onSubmit) onSubmit();
-          if (delayClose === undefined && closeOnSave && onClose) onClose();
         }}
       >
         Save
       </Button>
-      <Button onClick={onClose} variant="text" size="small" color="error">
+      <Button
+        onClick={() => {
+          if (onClose) onClose();
+        }}
+        variant="text"
+        size="small"
+        color="error"
+      >
         Cancel
       </Button>
     </>
@@ -77,16 +79,14 @@ const BaseModal = memo((props: IBaseModal) => {
     <div></div>
   );
 
-  useEffect(() => {
-    if (delayClose && onClose) onClose();
-  }, [delayClose]);
-
   return createPortal(
     <Modal
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        if (onClose) onClose();
+      }}
       sx={{
         p: 3,
         display: "flex",
@@ -122,7 +122,12 @@ const BaseModal = memo((props: IBaseModal) => {
             }}
           >
             <Typography variant="h4">{title}</Typography>
-            <IconButton id="section-op" onClick={onClose}>
+            <IconButton
+              id="section-op"
+              onClick={() => {
+                if (onClose) onClose();
+              }}
+            >
               <Iconify icon="eva:close-fill" width={25} />
             </IconButton>
           </Box>
