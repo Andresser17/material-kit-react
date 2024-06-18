@@ -47,37 +47,38 @@ const BaseModal = memo((props: IBaseModal) => {
     }
   };
 
-  const footerSection = footer ? (
-    footer
-  ) : !footer ? (
-    <>
-      <Button
-        form={modalId}
-        type="submit"
-        variant="contained"
-        color="success"
-        size="medium"
-        sx={{ mr: 2 }}
-        onClick={() => {
-          if (onSubmit) onSubmit();
-        }}
-      >
-        Save
-      </Button>
-      <Button
-        onClick={() => {
-          if (onClose) onClose();
-        }}
-        variant="text"
-        size="small"
-        color="error"
-      >
-        Cancel
-      </Button>
-    </>
-  ) : (
-    <div></div>
-  );
+  const footerSection =
+    typeof footer === "object" ? (
+      footer
+    ) : footer === undefined ? (
+      <>
+        <Button
+          form={modalId}
+          type="submit"
+          variant="contained"
+          color="success"
+          size="medium"
+          sx={{ mr: 2 }}
+          onClick={() => {
+            if (onSubmit) onSubmit();
+          }}
+        >
+          Save
+        </Button>
+        <Button
+          onClick={() => {
+            if (onClose) onClose();
+          }}
+          variant="text"
+          size="small"
+          color="error"
+        >
+          Cancel
+        </Button>
+      </>
+    ) : (
+      <div></div>
+    );
 
   return createPortal(
     <Modal

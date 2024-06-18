@@ -1,23 +1,23 @@
-import { useState, useEffect, SetStateAction } from "react";
 import { Lot, Product, ProductVariant } from "@medusajs/types";
+import { SetStateAction, useEffect, useState } from "react";
 
 import {
-  Card,
-  Stack,
   Avatar,
-  TableRow,
+  Card,
   Checkbox,
+  Stack,
   TableCell,
-  Typography,
   TablePagination,
+  TableRow,
+  Typography,
 } from "@mui/material";
 
-import { useListProducts } from "src/queries/use-list-products";
 import { useAddLotProduct } from "src/mutations/use-add-lot-product";
 import { useRemoveLotProduct } from "src/mutations/use-remove-lot-product";
+import { useListProducts } from "src/queries/use-list-products";
 
-import Scrollbar from "src/components/scrollbar";
 import AccordionTable from "src/components/accordion-table/accordion-table";
+import Scrollbar from "src/components/scrollbar";
 
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
@@ -36,11 +36,12 @@ export default function AddProductToLotModal() {
 
   return (
     <BaseModal
-      modalId="add-existing-product-modal"
+      modalId="add-product-to-lot-modal"
       title="Add Products"
       open
       closeOnTap
       onClose={closeModal}
+      footer={false}
     >
       <ProductsTable lot={lot} products={products ?? []} count={count} />
     </BaseModal>
