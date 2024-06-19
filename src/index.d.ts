@@ -1,6 +1,7 @@
 import {
   AddressDTO,
   MoneyAmountDTO,
+  ProductOptionValueDTO,
   ProductVariantDTO,
   SalesChannelDTO,
 } from "@medusajs/types";
@@ -82,12 +83,25 @@ export declare module "@medusajs/types" {
     type_id: string;
     type: ProductType | null;
     tags: ProductTag[];
+    options: ProductOption[];
     discountable: boolean;
     variants: ProductVariant[];
     external_id: string | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
+    metadata: Record<string, unknown>;
+  }
+
+  interface ProductOption {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: Date;
+    title: string;
+    values: ProductOptionValueDTO[];
+    product_id: string;
+    product: Product;
     metadata: Record<string, unknown>;
   }
 
@@ -172,6 +186,7 @@ export declare module "@medusajs/types" {
   }
 
   interface ProductVariant extends ProductVariantDTO {
+    product_id: string;
     prices: MoneyAmountDTO[];
   }
 

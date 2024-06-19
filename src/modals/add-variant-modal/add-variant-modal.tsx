@@ -1,33 +1,31 @@
-import { Control, useForm, SubmitHandler } from "react-hook-form";
-import { Dispatch, useState, useEffect, SetStateAction } from "react";
 import {
   ProductDTO,
   ProductOptionRequest,
   ProductOptionValueDTO,
   ProductVariantRequest,
 } from "@medusajs/types";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Control, SubmitHandler, useForm } from "react-hook-form";
 
 import {
-  Switch,
-  MenuItem,
-  InputAdornment,
-  FormControlLabel,
-} from "@mui/material";
-import {
-  Box,
   Accordion,
-  TextField,
-  Typography,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  FormControlLabel,
+  InputAdornment,
+  MenuItem,
+  Switch,
+  TextField,
+  Typography,
 } from "@mui/material";
 
-import { grey } from "src/theme/palette";
 import BaseModal from "src/modals/base-modal";
 import { useAddProductVariant } from "src/mutations/use-add-product-variant";
+import { grey } from "src/theme/palette";
 
-import Iconify from "src/components/iconify";
 import ControlledField from "src/components/controlled-field";
+import Iconify from "src/components/iconify";
 
 import { useModal } from "../useModal";
 
@@ -73,7 +71,8 @@ export default function AddVariantModal() {
   });
   const addProductVariantMutation = useAddProductVariant();
   const onSubmit: SubmitHandler<ProductVariantForm> = (data) => {
-    const { price, ...properties } = data;
+    console.log({ data });
+    const { price, stock, ...properties } = data;
     addProductVariantMutation({
       product_id: product?.id ?? "",
       newProductVariant: {
@@ -89,8 +88,6 @@ export default function AddVariantModal() {
       } as ProductVariantRequest,
     });
   };
-
-  console.log({ product, options });
 
   return (
     <BaseModal

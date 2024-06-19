@@ -1,15 +1,15 @@
-import toast from "react-hot-toast";
 import { ProductDTO, ProductOptionRequest } from "@medusajs/types";
 import {
+  UseMutateFunction,
   useMutation,
   useQueryClient,
-  UseMutateFunction,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 async function addProductOption(
   access_token: string | undefined,
@@ -33,10 +33,15 @@ async function addProductOption(
   return await response.json();
 }
 
+interface IUseAddProductOptionArgs {
+  product_id: string;
+  newProductOption: ProductOptionRequest;
+}
+
 type IUseAddProductOption = UseMutateFunction<
   ProductDTO | undefined,
   Error,
-  { product_id: string; newProductOption: ProductOptionRequest },
+  IUseAddProductOptionArgs,
   unknown
 >;
 
@@ -48,10 +53,7 @@ export function useAddProductOption(): IUseAddProductOption {
     mutationFn: async ({
       product_id,
       newProductOption,
-    }: {
-      product_id: string;
-      newProductOption: ProductOptionRequest;
-    }) => {
+    }: IUseAddProductOptionArgs) => {
       return addProductOption(user?.access_token, product_id, newProductOption);
     },
     mutationKey: [MUTATION_KEY.add_product_option],

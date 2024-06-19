@@ -1,15 +1,15 @@
-import toast from "react-hot-toast";
 import { ProductVariantDTO, ProductVariantRequest } from "@medusajs/types";
 import {
+  UseMutateFunction,
   useMutation,
   useQueryClient,
-  UseMutateFunction,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 async function addProductVariant(
   access_token: string | undefined,
@@ -31,10 +31,15 @@ async function addProductVariant(
   return await response.json();
 }
 
+interface IUseAddProductVariantArgs {
+  product_id: string;
+  newProductVariant: ProductVariantRequest;
+}
+
 type IUseAddProductVariant = UseMutateFunction<
   ProductVariantDTO | undefined,
   Error,
-  { product_id: string; newProductVariant: ProductVariantRequest },
+  IUseAddProductVariantArgs,
   unknown
 >;
 
@@ -46,10 +51,7 @@ export function useAddProductVariant(): IUseAddProductVariant {
     mutationFn: async ({
       product_id,
       newProductVariant,
-    }: {
-      product_id: string;
-      newProductVariant: ProductVariantRequest;
-    }) => {
+    }: IUseAddProductVariantArgs) => {
       return addProductVariant(
         user?.access_token,
         product_id,
@@ -58,7 +60,7 @@ export function useAddProductVariant(): IUseAddProductVariant {
     },
     mutationKey: [MUTATION_KEY.add_product_variant],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product_variant] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
@@ -66,7 +68,7 @@ export function useAddProductVariant(): IUseAddProductVariant {
     },
     onSuccess() {
       // call pop up
-      toast.success("Product variant added successfully");
+      toast.success("Variant added successfully");
     },
   });
 

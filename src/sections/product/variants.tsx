@@ -1,25 +1,26 @@
-import { useState, SetStateAction } from "react";
-import { Product, ProductOptionRequest } from "@medusajs/types";
+import { Product, ProductOptionRequest, ProductVariant } from "@medusajs/types";
+import { SetStateAction, useState } from "react";
 
 import {
   Box,
-  Table,
-  Paper,
   Divider,
-  Popover,
-  TableRow,
+  IconButton,
   MenuItem,
-  TableHead,
+  Paper,
+  Popover,
+  Table,
   TableBody,
   TableCell,
-  Typography,
-  IconButton,
   TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
 } from "@mui/material";
 
 import { useModal } from "src/modals/useModal";
 
 import Iconify from "src/components/iconify";
+import { useDeleteProductVariant } from "src/mutations/use-delete-product-variant";
 
 interface IVariants {
   product: Product | undefined;
@@ -33,7 +34,6 @@ export default function Variants({ product, options }: IVariants) {
   // const { variants } = useListProductVariants({
   //   product_id: product?.id ?? "",
   // });
-  // const deleteProductVariantMutation = useDeleteProductVariant();
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -45,65 +45,14 @@ export default function Variants({ product, options }: IVariants) {
     setOpen(null);
   };
 
-  const handleEdit = () => {
-    handleCloseMenu();
-  };
-
-  const handleDelete = () => {
-    // deleteProductVariantMutation({ product_id, variant_id });
-    handleCloseMenu();
-  };
-
   const handleEditOptions = () => {
-    openEditOptionsModal();
+    openEditOptionsModal({ product });
     handleCloseMenu();
   };
 
   const handleAddVariant = () => {
     openAddVariantModal({ product, options });
     handleCloseMenu();
-  };
-
-  const popOverItems = () => {
-    switch (open?.id) {
-      case "table-row-op":
-        return (
-          <>
-            <MenuItem onClick={handleEdit}>
-              <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-              Edit
-            </MenuItem>
-
-            <MenuItem
-              onClick={() => handleDelete()}
-              sx={{ color: "error.main" }}
-            >
-              <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-              Delete
-            </MenuItem>
-          </>
-        );
-      case "section-op":
-        return (
-          <>
-            <MenuItem onClick={handleAddVariant}>
-              <Iconify icon="eva:cube-outline" sx={{ mr: 1 }} />
-              Add Variant
-            </MenuItem>
-
-            {/* TODO */}
-            <MenuItem>
-              <Iconify icon="mingcute:receive-money-line" sx={{ mr: 1 }} />
-              Edit Prices
-            </MenuItem>
-
-            <MenuItem onClick={handleEditOptions}>
-              <Iconify icon="eva:archive-outline" sx={{ mr: 1 }} />
-              Edit Options
-            </MenuItem>
-          </>
-        );
-    }
   };
 
   return (
@@ -136,34 +85,7 @@ export default function Variants({ product, options }: IVariants) {
           <TableBody>
             {product &&
               product.variants.map((variant) => {
-                const priceAmount = variant.prices[0].amount
-                  .toString()
-                  .split("");
-                const formatedPriceAmount = priceAmount.slice(
-                  0,
-                  priceAmount.length - 2,
-                );
-                console.log(formatedPriceAmount);
-                return (
-                  <TableRow
-                    key={variant.title}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {variant.title}
-                    </TableCell>
-                    <TableCell align="right">{variant.sku}</TableCell>
-                    <TableCell align="right">${formatedPriceAmount}</TableCell>
-                    <TableCell align="right">
-                      {variant.inventory_quantity}
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton id="table-row-op" onClick={handleOpenMenu}>
-                        <Iconify icon="eva:more-vertical-fill" />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
+                return <VariantTableRow variant={variant} />;
               })}
           </TableBody>
         </Table>
@@ -174,12 +96,96 @@ export default function Variants({ product, options }: IVariants) {
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: "top", horizontal: "left" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: { width: 140 },
-        }}
       >
-        {popOverItems()}
+        <MenuItem onClick={handleAddVariant}>
+          <Iconify icon="eva:cube-outline" sx={{ mr: 1 }} />
+          Add Variant
+        </MenuItem>
+
+        {/* TODO */}
+        <MenuItem>
+          <Iconify icon="mingcute:receive-money-line" sx={{ mr: 1 }} />
+          Edit Prices
+        </MenuItem>
+
+        <MenuItem onClick={handleEditOptions}>
+          <Iconify icon="eva:archive-outline" sx={{ mr: 1 }} />
+          Edit Options
+        </MenuItem>
       </Popover>
     </Box>
+  );
+}
+
+interface IVariantTableRow {
+  variant: ProductVariant;
+}
+
+function VariantTableRow({ variant }: IVariantTableRow) {
+  const [open, setOpen] = useState<Element | null>(null);
+  const priceAmount = variant.prices[0].amount.toString().split("");
+  const formatedPriceAmount = priceAmount.slice(0, priceAmount.length - 2);
+
+  const deleteProductVariantMutation = useDeleteProductVariant();
+
+  const handleOpenMenu = (event: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
+  const handleEdit = () => {
+    handleCloseMenu();
+  };
+
+  const handleDelete = () => {
+    if (variant)
+      deleteProductVariantMutation({
+        product_id: variant.product_id,
+        variant_id: variant.id,
+      });
+    handleCloseMenu();
+  };
+
+  return (
+    <>
+      <TableRow
+        key={variant.title}
+        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      >
+        <TableCell component="th" scope="row">
+          {variant.title}
+        </TableCell>
+        <TableCell align="right">{variant.sku}</TableCell>
+        <TableCell align="right">${formatedPriceAmount}</TableCell>
+        <TableCell align="right">{variant.inventory_quantity}</TableCell>
+        <TableCell align="right">
+          <IconButton id="table-row-op" onClick={handleOpenMenu}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <Popover
+        open={open != null}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem onClick={handleEdit}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Edit
+        </MenuItem>
+
+        <MenuItem onClick={() => handleDelete()} sx={{ color: "error.main" }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          Delete
+        </MenuItem>
+      </Popover>
+    </>
   );
 }

@@ -1,26 +1,28 @@
-import { useState, useEffect } from "react";
-import { ProductOptionRequest } from "@medusajs/types";
+import { Product, ProductOptionRequest } from "@medusajs/types";
+import { useEffect, useState } from "react";
 
+import { Box, Button, IconButton, TextField } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { Box, Button, TextField, IconButton } from "@mui/material";
-
-import { useAppDispatch, useAppSelector } from "src/redux/hooks";
-import {
-  getOptions,
-  setOptions as setOptionsAction,
-} from "src/redux/slices/product-options/product-options-slice";
 
 import Iconify from "src/components/iconify";
 
+import { useAddProductOption } from "src/mutations/use-add-product-option";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
+export interface IEditOptionsModal {
+  product: Product;
+}
+
 export default function EditOptionsModal() {
-  const { onClose: closeModal } = useModal("edit-options-modal");
+  const {
+    props: { product },
+    onClose: closeModal,
+  } = useModal<IEditOptionsModal>("edit-options-modal");
   const [options, setOptions] = useState<ProductOptionRequest[]>(
-    useAppSelector((state) => getOptions(state)),
+    product.options,
   );
-  const dispatch = useAppDispatch();
+  const addProductOptionMutation = useAddProductOption();
 
   const handleAddOption = () => {
     setOptions((prev) => [
@@ -46,7 +48,14 @@ export default function EditOptionsModal() {
   };
 
   const handleSave = () => {
-    dispatch(setOptionsAction(options));
+    options.forEach((option) => {
+      const id = option.id.split("_")[0];
+      if (id === "default")
+        addProductOptionMutation({
+          product_id: product.id,
+          newProductOption: option,
+        });
+    });
 
     closeModal();
   };

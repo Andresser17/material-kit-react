@@ -1,21 +1,21 @@
-import toast from "react-hot-toast";
-import { ProductDTO } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import {
+  UseMutateFunction,
   useMutation,
   useQueryClient,
-  UseMutateFunction,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 interface DeleteVariantResponse {
   variant_id: string;
   object: string;
   deleted: boolean;
-  product: ProductDTO;
+  product: Product;
 }
 
 async function deleteProductVariant(
@@ -40,10 +40,15 @@ async function deleteProductVariant(
   return await response.json();
 }
 
+interface IUseDeleteProductVariantArgs {
+  product_id: string;
+  variant_id: string;
+}
+
 type IUseDeleteProductVariant = UseMutateFunction<
   DeleteVariantResponse | undefined,
   Error,
-  { product_id: string; variant_id: string },
+  IUseDeleteProductVariantArgs,
   unknown
 >;
 
@@ -55,15 +60,12 @@ export function useDeleteProductVariant(): IUseDeleteProductVariant {
     mutationFn: async ({
       product_id,
       variant_id,
-    }: {
-      product_id: string;
-      variant_id: string;
-    }) => {
+    }: IUseDeleteProductVariantArgs) => {
       return deleteProductVariant(user?.access_token, product_id, variant_id);
     },
     mutationKey: [MUTATION_KEY.delete_product_variant],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product_variant] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.product] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

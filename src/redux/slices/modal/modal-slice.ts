@@ -6,6 +6,7 @@ import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-p
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
+import { IEditOptionsModal } from "src/modals/edit-options-modal/edit-options-modal";
 import { Modal } from "src/modals/modal-provider";
 import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
 import type { RootState } from "src/redux/store";
@@ -26,7 +27,8 @@ const initialState = {
     {
       id: "edit-options-modal",
       open: false,
-    } as Modal<undefined>,
+      props: {},
+    } as Modal<IEditOptionsModal>,
     {
       id: "add-existing-product-modal",
       open: false,
