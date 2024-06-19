@@ -1,10 +1,10 @@
 import { Control, Controller, FieldValues } from "react-hook-form";
 
 import {
-  SxProps,
-  TextField,
   Autocomplete,
   FilterOptionsState,
+  SxProps,
+  TextField,
   createFilterOptions,
 } from "@mui/material";
 
@@ -20,13 +20,9 @@ export interface IControlledSelect<Y extends FieldValues> {
   label: string;
   placeholder?: string;
   options: Option[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mapControlValueToOption?: (value: any) => Option;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mapMultiControlValueToOption?: (value: any[]) => Option[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSelectOption?: (option: any) => unknown;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSelectMultiOption?: (option: any[]) => unknown;
   sx?: SxProps;
   multiple?: boolean;

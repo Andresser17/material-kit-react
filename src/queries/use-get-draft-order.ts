@@ -1,9 +1,9 @@
 import { DraftOrderResponse } from "@medusajs/types";
-import { useQuery, useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
 
 import HTTPError from "src/utils/http-error";
 
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
@@ -39,7 +39,7 @@ export function useGetDraftOrder({
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.draft - order, user?.access_token, draft_order_id],
+    queryKey: [QUERY_KEY.draft_order, user?.access_token, draft_order_id],
     queryFn: async ({ queryKey }): Promise<GetDraftOrderResponse | null> =>
       getDraftOrder({
         access_token: queryKey[1] as string,

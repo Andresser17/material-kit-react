@@ -1,17 +1,17 @@
-import toast from "react-hot-toast";
-import { UseFormReset } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { DraftOrder, DraftOrderRequest } from "@medusajs/types";
 import {
+  UseMutateFunction,
   useMutation,
   useQueryClient,
-  UseMutateFunction,
 } from "@tanstack/react-query";
+import { UseFormReset } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 interface CreateDraftOrderResponse {
   draft_order: DraftOrder;
@@ -60,7 +60,7 @@ export function useCreateDraftOrder(
     },
     mutationKey: [MUTATION_KEY.create_draft_order],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draft - order] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draft_order] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

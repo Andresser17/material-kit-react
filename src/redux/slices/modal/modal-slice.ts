@@ -26,13 +26,11 @@ const initialState = {
     {
       id: "edit-options-modal",
       open: false,
-      props: null,
-    } as Modal<null>,
+    } as Modal<undefined>,
     {
       id: "add-existing-product-modal",
       open: false,
-      props: null,
-    } as Modal<null>,
+    } as Modal<undefined>,
     {
       id: "add-product-to-lot-modal",
       open: false,
@@ -67,7 +65,7 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     openModal<T>(
-      state: ModalState<T>,
+      state: { modals: any[] },
       action: PayloadAction<{ id: string; props?: T }>,
     ) {
       const index = state.modals.findIndex(
@@ -99,7 +97,7 @@ export const modalSlice = createSlice({
       }
     },
     updateProps<T>(
-      state: ModalState<T>,
+      state: { modals: any[] },
       action: PayloadAction<{ id: string; props?: T }>,
     ) {
       const index = state.modals.findIndex(

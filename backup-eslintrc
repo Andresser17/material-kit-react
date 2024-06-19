@@ -1,0 +1,40 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+  },
+  "plugins": [
+    "unused-imports",
+    "prettier",
+    "@typescript-eslint",
+    "react",
+    "@tanstack/eslint-plugin-query",
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "prettier",
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+    },
+  },
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+    "import/resolver": {
+      "alias": {
+        "map": [["src", "./src"]],
+        "extensions": [".js", ".ts", ".jsx", ".tsx", ".json"],
+      },
+      "typescript": {},
+    },
+  },
+}

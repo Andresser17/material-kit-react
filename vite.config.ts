@@ -1,16 +1,15 @@
-import path from 'path';
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import checker from 'vite-plugin-checker';
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
+import { defineConfig } from "vite";
+import checker from "vite-plugin-checker";
 
 // ----------------------------------------------------------------------
 
 export default defineConfig({
-  base: './',
+  base: "./",
   resolve: {
     alias: {
-      'src': path.resolve(__dirname, 'src'),
+      src: path.resolve(__dirname, "src"),
     },
     // {
     //   find: /^~(.+)/,
@@ -27,6 +26,7 @@ export default defineConfig({
     checker({
       eslint: {
         lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+        useFlatConfig: true,
       },
     }),
   ],

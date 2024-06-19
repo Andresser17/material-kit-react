@@ -1,30 +1,30 @@
-import { useState } from "react";
 import { ProductDTO } from "@medusajs/types";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
-import { ProductOptionDTO } from "@medusajs/types";
-import { useForm, SubmitHandler } from "react-hook-form";
 
 import Box from "@mui/material/Box";
 
-import { useAddProduct } from "src/mutations/use-add-product";
-import { ProductStatus as ProductStatusEnum } from "src/enums";
-import { useUpdateProduct } from "src/mutations/use-update-product";
-import { OrderStatus, PaymentStatus, FulfillmentStatus } from "src/enums";
+import {
+  FulfillmentStatus,
+  OrderStatus,
+  PaymentStatus,
+  ProductStatus as ProductStatusEnum,
+} from "src/enums";
 
-import Summary from "../summary";
-import Payment from "../payment";
 import Customer from "../customer";
 import Fulfillment from "../fulfillment";
 import OrderDetails from "../order-details";
+import Payment from "../payment";
+import Summary from "../summary";
 import TimelineSection from "../timeline-section";
 
 // ----------------------------------------------------------------------
 
 export default function OrderView() {
-  const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
-  const [options, setOptions] = useState<ProductOptionDTO[]>([]);
+  // const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
+  // const [options, setOptions] = useState<ProductOptionDTO[]>([]);
   const location = useLocation();
-  const { handleSubmit, reset } = useForm<ProductDTO>({
+  const { handleSubmit } = useForm<ProductDTO>({
     defaultValues: location.state?.product
       ? {
           title: location.state?.product.title,
@@ -61,26 +61,27 @@ export default function OrderView() {
         },
     mode: "onChange",
   });
-  const resetForm = () => {
-    reset();
-    setStatus(ProductStatusEnum.DRAFT);
-    setOptions([]);
-  };
-  const upadteProductMutation = useUpdateProduct();
-  const addProductMutation = useAddProduct(resetForm);
+  // const resetForm = () => {
+  //   reset();
+  //   setStatus(ProductStatusEnum.DRAFT);
+  //   setOptions([]);
+  // };
+  // const upadteProductMutation = useUpdateProduct();
+  // const addProductMutation = useAddProduct(resetForm);
   const onSubmit: SubmitHandler<ProductDTO> = (data) => {
+    console.log({ data });
     if (location.state?.product) {
-      upadteProductMutation({
-        id: location.state?.product.id,
-        product: { ...data, status },
-        // toUpload: images,
-      });
+      // upadteProductMutation({
+      //   id: location.state?.product.id,
+      //   product: { ...data, status },
+      //   // toUpload: images,
+      // });
       return;
     }
-    addProductMutation({
-      newProduct: { ...data, status, options },
-      // toUpload: images,
-    });
+    // addProductMutation({
+    //   newProduct: { ...data, status, options },
+    //   // toUpload: images,
+    // });
   };
 
   return (

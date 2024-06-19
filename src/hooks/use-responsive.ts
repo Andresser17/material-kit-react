@@ -1,5 +1,5 @@
+import { Breakpoint, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme, Breakpoint } from "@mui/material/styles";
 
 // ----------------------------------------------------------------------
 
@@ -40,10 +40,17 @@ export function useWidth(): Breakpoint {
 
   const keys = [...theme.breakpoints.keys].reverse();
 
-  return (
-    keys.reduce((output, key) => {
-      const matches = useMediaQuery(theme.breakpoints.up(key));
-      return output === null && matches ? key : output;
-    }, null)
-  );
+  const key = keys.find((key) => {
+    const matches = useMediaQuery(theme.breakpoints.up(key));
+    if (matches) return key;
+  });
+
+  return key ? key : "lg";
+
+  // return (
+  //   keys.reduce((prev, key, i) => {
+  //     const matches = useMediaQuery(theme.breakpoints.up(key));
+  //     return prev === null && matches ? key : prev;
+  //   }, null)
+  // );
 }

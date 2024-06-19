@@ -1,20 +1,20 @@
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import { useTheme } from "@mui/material/styles";
-import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Stack,
+  Toolbar,
+  useTheme,
+} from "@mui/material";
 
 import { useResponsive } from "src/hooks/use-responsive";
 
-import { bgBlur } from "src/theme/css";
-
 import Iconify from "src/components/iconify";
 
-import Searchbar from "./common/searchbar";
-import { NAV, HEADER } from "./config-layout";
 import AccountPopover from "./common/account-popover";
 import NotificationsPopover from "./common/notifications-popover";
+import Searchbar from "./common/searchbar";
+import { HEADER, NAV } from "./config-layout";
 
 // ----------------------------------------------------------------------
 
@@ -48,11 +48,11 @@ export default function Header({ onOpenNav }: { onOpenNav: () => void }) {
         boxShadow: "none",
         height: HEADER.H_MOBILE,
         zIndex: theme.zIndex.appBar + 1,
-        ...bgBlur({
-          color: theme.palette.background.default,
-          blur: 0,
-          opacity: 0,
-        }),
+        // ...bgBlur({
+        //   color: theme.palette.background.default,
+        //   blur: 0,
+        //   opacity: 0,
+        // }),
         transition: theme.transitions.create(["height"], {
           duration: theme.transitions.duration.shorter,
         }),

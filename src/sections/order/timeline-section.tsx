@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 
-import Box from "@mui/material/Box";
 import {
   Divider,
-  Popover,
+  IconButton,
   MenuItem,
+  Popover,
   TextField,
   Typography,
-  IconButton,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
@@ -16,7 +16,9 @@ import SectionBox from "src/components/section-box";
 export default function TimelineSection() {
   const [open, setOpen] = useState<Element | null>(null);
 
-  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleOpenMenu = (e: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
     setOpen(e.currentTarget);
   };
 

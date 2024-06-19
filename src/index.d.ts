@@ -1,16 +1,16 @@
 import {
   AddressDTO,
   MoneyAmountDTO,
-  SalesChannelDTO,
   ProductVariantDTO,
+  SalesChannelDTO,
 } from "@medusajs/types";
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
-import HTTPError from "./utils/http-error";
-import { LotStatus, DraftOrderStatus } from "./enums";
 import { Option } from "./components/controlled-select";
+import { DraftOrderStatus, LotStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
+import HTTPError from "./utils/http-error";
 
 export declare module "@mui/material/styles" {
   interface Theme {

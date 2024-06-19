@@ -46,12 +46,15 @@ export default function LotDetails({ lot }: ILotDetails) {
   };
 
   const handleDelete = () => {
-    deleteLotMutation({ lot_id: lot.id });
+    openConfirmActionModal({
+      title: "Delete Lot",
+      message: "Are you sure you want to delete this lot?",
+    });
     handleCloseMenu();
   };
 
   useEffect(() => {
-    if (callAction) handleDelete();
+    if (callAction) deleteLotMutation({ lot_id: lot.id });
   }, [callAction]);
 
   return (
@@ -101,15 +104,7 @@ export default function LotDetails({ lot }: ILotDetails) {
           Update Status
         </MenuItem>
 
-        <MenuItem
-          onClick={() =>
-            openConfirmActionModal({
-              title: "Delete Lot",
-              message: "Are you sure you want to delete this lot?",
-            })
-          }
-          sx={{ color: "error.main" }}
-        >
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete Lot
         </MenuItem>

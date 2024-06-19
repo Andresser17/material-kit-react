@@ -1240,7 +1240,7 @@ array-buffer-byte-length@^1.0.1:
     call-bind "^1.0.5"
     is-array-buffer "^3.0.4"
 
-array-includes@^3.1.5, array-includes@^3.1.6, array-includes@^3.1.7:
+array-includes@^3.1.5, array-includes@^3.1.6, array-includes@^3.1.7, array-includes@^3.1.8:
   version "3.1.8"
   resolved "https://registry.npmjs.org/array-includes/-/array-includes-3.1.8.tgz"
   integrity sha512-itaWrbYbqpGXkGhZPGUulwnhVf5Hpy1xiCFsGqyIGglbBxmG5vSjxQen3/WGOjPpNEv1RtBLKxbmVXm8HpJStQ==
@@ -1257,7 +1257,7 @@ array-union@^2.1.0:
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
 
-array.prototype.findlast@^1.2.4:
+array.prototype.findlast@^1.2.5:
   version "1.2.5"
   resolved "https://registry.npmjs.org/array.prototype.findlast/-/array.prototype.findlast-1.2.5.tgz"
   integrity sha512-CVvd6FHg1Z3POpBLxO6E6zr+rSKEQ9L6rZHAaY7lLfhKsWYUBBOuMs0e9o24oopj6H+geRCX0YJ+TJLBK2eHyQ==
@@ -1310,15 +1310,15 @@ array.prototype.toreversed@^1.1.2:
     es-abstract "^1.22.1"
     es-shim-unscopables "^1.0.0"
 
-array.prototype.tosorted@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.npmjs.org/array.prototype.tosorted/-/array.prototype.tosorted-1.1.3.tgz"
-  integrity sha512-/DdH4TiTmOKzyQbp/eadcCVexiCb36xJg7HshYOYJnNZFDj33GEv0P7GxsynpShhq4OLYJzbGcBDkLsDt7MnNg==
+array.prototype.tosorted@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/array.prototype.tosorted/-/array.prototype.tosorted-1.1.4.tgz"
+  integrity sha512-p6Fx8B7b7ZhL/gmUsAy0D15WhvDccw3mnGNbZpi3pmeJdxtWsj2jEaI4Y6oo3XiHfzuSgPwKc04MYt6KgvC/wA==
   dependencies:
-    call-bind "^1.0.5"
+    call-bind "^1.0.7"
     define-properties "^1.2.1"
-    es-abstract "^1.22.3"
-    es-errors "^1.1.0"
+    es-abstract "^1.23.3"
+    es-errors "^1.3.0"
     es-shim-unscopables "^1.0.2"
 
 arraybuffer.prototype.slice@^1.0.3:
@@ -2050,7 +2050,7 @@ error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-es-abstract@^1.22.1, es-abstract@^1.22.3, es-abstract@^1.23.0, es-abstract@^1.23.1, es-abstract@^1.23.2:
+es-abstract@^1.22.1, es-abstract@^1.22.3, es-abstract@^1.23.0, es-abstract@^1.23.1, es-abstract@^1.23.2, es-abstract@^1.23.3:
   version "1.23.3"
   resolved "https://registry.npmjs.org/es-abstract/-/es-abstract-1.23.3.tgz"
   integrity sha512-e+HfNH61Bj1X9/jLc5v1owaLYuHdeHHSQlkhCBiTK8rBvKaULl/beGMxwrMXjpYrv4pz22BlY570vVePA2ho4A==
@@ -2109,7 +2109,7 @@ es-define-property@^1.0.0:
   dependencies:
     get-intrinsic "^1.2.4"
 
-es-errors@^1.1.0, es-errors@^1.2.1, es-errors@^1.3.0:
+es-errors@^1.2.1, es-errors@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz"
   integrity sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==
@@ -2129,14 +2129,14 @@ es-get-iterator@^1.1.2:
     isarray "^2.0.5"
     stop-iteration-iterator "^1.0.0"
 
-es-iterator-helpers@^1.0.17:
-  version "1.0.18"
-  resolved "https://registry.npmjs.org/es-iterator-helpers/-/es-iterator-helpers-1.0.18.tgz"
-  integrity sha512-scxAJaewsahbqTYrGKJihhViaM6DDZDDoucfvzNbK0pOren1g/daDQ3IAhzn+1G14rBG7w+i5N+qul60++zlKA==
+es-iterator-helpers@^1.0.19:
+  version "1.0.19"
+  resolved "https://registry.npmjs.org/es-iterator-helpers/-/es-iterator-helpers-1.0.19.tgz"
+  integrity sha512-zoMwbCcH5hwUkKJkT8kDIBZSz9I6mVG//+lDCinLCGov4+r7NIy0ld8o03M0cJxl2spVf6ESYVS6/gpIfq1FFw==
   dependencies:
     call-bind "^1.0.7"
     define-properties "^1.2.1"
-    es-abstract "^1.23.0"
+    es-abstract "^1.23.3"
     es-errors "^1.3.0"
     es-set-tostringtag "^2.0.3"
     function-bind "^1.1.2"
@@ -2406,29 +2406,29 @@ eslint-plugin-react-hooks@^4.3.0, eslint-plugin-react-hooks@^4.6.0:
   resolved "https://registry.npmjs.org/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.6.0.tgz"
   integrity sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g==
 
-eslint-plugin-react@^7.28.0, eslint-plugin-react@^7.34.1:
-  version "7.34.1"
-  resolved "https://registry.npmjs.org/eslint-plugin-react/-/eslint-plugin-react-7.34.1.tgz"
-  integrity sha512-N97CxlouPT1AHt8Jn0mhhN2RrADlUAsk1/atcT2KyA/l9Q/E6ll7OIGwNumFmWfZ9skV3XXccYS19h80rHtgkw==
+eslint-plugin-react@^7.28.0, eslint-plugin-react@^7.34.3:
+  version "7.34.3"
+  resolved "https://registry.npmjs.org/eslint-plugin-react/-/eslint-plugin-react-7.34.3.tgz"
+  integrity sha512-aoW4MV891jkUulwDApQbPYTVZmeuSyFrudpbTAQuj5Fv8VL+o6df2xIGpw8B0hPjAaih1/Fb0om9grCdyFYemA==
   dependencies:
-    array-includes "^3.1.7"
-    array.prototype.findlast "^1.2.4"
+    array-includes "^3.1.8"
+    array.prototype.findlast "^1.2.5"
     array.prototype.flatmap "^1.3.2"
     array.prototype.toreversed "^1.1.2"
-    array.prototype.tosorted "^1.1.3"
+    array.prototype.tosorted "^1.1.4"
     doctrine "^2.1.0"
-    es-iterator-helpers "^1.0.17"
+    es-iterator-helpers "^1.0.19"
     estraverse "^5.3.0"
     jsx-ast-utils "^2.4.1 || ^3.0.0"
     minimatch "^3.1.2"
-    object.entries "^1.1.7"
-    object.fromentries "^2.0.7"
-    object.hasown "^1.1.3"
-    object.values "^1.1.7"
+    object.entries "^1.1.8"
+    object.fromentries "^2.0.8"
+    object.hasown "^1.1.4"
+    object.values "^1.2.0"
     prop-types "^15.8.1"
     resolve "^2.0.0-next.5"
     semver "^6.3.1"
-    string.prototype.matchall "^4.0.10"
+    string.prototype.matchall "^4.0.11"
 
 eslint-plugin-unused-imports@^3.0.0:
   version "3.0.0"
@@ -3432,20 +3432,10 @@ lodash-es@^4.17.21:
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
-lodash.debounce@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
-  integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
-
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
-
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.npmjs.org/lodash.pick/-/lodash.pick-4.4.0.tgz"
-  integrity sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==
 
 lodash@^4.17.21:
   version "4.17.21"
@@ -3634,7 +3624,7 @@ object.assign@^4.1.2, object.assign@^4.1.3, object.assign@^4.1.4, object.assign@
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
-object.entries@^1.1.5, object.entries@^1.1.6, object.entries@^1.1.7:
+object.entries@^1.1.5, object.entries@^1.1.6, object.entries@^1.1.8:
   version "1.1.8"
   resolved "https://registry.npmjs.org/object.entries/-/object.entries-1.1.8.tgz"
   integrity sha512-cmopxi8VwRIAw/fkijJohSfpef5PdN0pMQJN6VC/ZKvn0LIknWD8KtgY6KlQdEc4tIjcQ3HxSMmnvtzIscdaYQ==
@@ -3643,7 +3633,7 @@ object.entries@^1.1.5, object.entries@^1.1.6, object.entries@^1.1.7:
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
-object.fromentries@^2.0.6, object.fromentries@^2.0.7:
+object.fromentries@^2.0.6, object.fromentries@^2.0.7, object.fromentries@^2.0.8:
   version "2.0.8"
   resolved "https://registry.npmjs.org/object.fromentries/-/object.fromentries-2.0.8.tgz"
   integrity sha512-k6E21FzySsSK5a21KRADBd/NGneRegFO5pLHfdQLpRDETUNJueLXs3WCzyQ3tFRDYgbq3KHGXfTbi2bs8WQ6rQ==
@@ -3663,7 +3653,7 @@ object.groupby@^1.0.1:
     es-abstract "^1.22.1"
     get-intrinsic "^1.2.1"
 
-object.hasown@^1.1.3:
+object.hasown@^1.1.4:
   version "1.1.4"
   resolved "https://registry.npmjs.org/object.hasown/-/object.hasown-1.1.4.tgz"
   integrity sha512-FZ9LZt9/RHzGySlBARE3VF+gE26TxR38SdmqOqliuTnl9wrKulaQs+4dee1V+Io8VfxqzAfHu6YuRgUy8OHoTg==
@@ -3672,7 +3662,7 @@ object.hasown@^1.1.3:
     es-abstract "^1.23.2"
     es-object-atoms "^1.0.0"
 
-object.values@^1.1.7:
+object.values@^1.1.7, object.values@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/object.values/-/object.values-1.2.0.tgz"
   integrity sha512-yBYjY9QX2hnRmZHAjG/f13MzmBzxzYgQhFrke06TTyKY5zSTEqkOeukBzIdVA3j3ulu8Qa3MbVFShV7T2RmGtQ==
@@ -4301,7 +4291,7 @@ stop-iteration-iterator@^1.0.0:
   dependencies:
     internal-slot "^1.0.4"
 
-string.prototype.matchall@^4.0.10:
+string.prototype.matchall@^4.0.11:
   version "4.0.11"
   resolved "https://registry.npmjs.org/string.prototype.matchall/-/string.prototype.matchall-4.0.11.tgz"
   integrity sha512-NUdh0aDavY2og7IbBPenWqR9exH+E26Sv8e0/eTe1tltDGZL+GtBkDAnnyBtmekfK6/Dq3MkcGtzXFEd1LQrtg==
@@ -4672,10 +4662,10 @@ util@^0.10.3:
   dependencies:
     inherits "2.0.3"
 
-vite-plugin-checker@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.npmjs.org/vite-plugin-checker/-/vite-plugin-checker-0.6.2.tgz"
-  integrity sha512-YvvvQ+IjY09BX7Ab+1pjxkELQsBd4rPhWNw8WLBeFVxu/E7O+n6VYAqNsKdK/a2luFlX/sMpoWdGFfg4HvwdJQ==
+vite-plugin-checker@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.npmjs.org/vite-plugin-checker/-/vite-plugin-checker-0.6.4.tgz"
+  integrity sha512-2zKHH5oxr+ye43nReRbC2fny1nyARwhxdm0uNYp/ERy4YvU9iZpNOsueoi/luXw5gnpqRSvjcEPxXbS153O2wA==
   dependencies:
     "@babel/code-frame" "^7.12.13"
     ansi-escapes "^4.3.0"
@@ -4684,8 +4674,6 @@ vite-plugin-checker@^0.6.2:
     commander "^8.0.0"
     fast-glob "^3.2.7"
     fs-extra "^11.1.0"
-    lodash.debounce "^4.0.8"
-    lodash.pick "^4.4.0"
     npm-run-path "^4.0.1"
     semver "^7.5.0"
     strip-ansi "^6.0.0"
