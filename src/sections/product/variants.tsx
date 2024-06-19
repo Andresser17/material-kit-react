@@ -1,4 +1,4 @@
-import { Product, ProductOptionRequest, ProductVariant } from "@medusajs/types";
+import { Product, ProductVariant } from "@medusajs/types";
 import { SetStateAction, useState } from "react";
 
 import {
@@ -24,10 +24,9 @@ import { useDeleteProductVariant } from "src/mutations/use-delete-product-varian
 
 interface IVariants {
   product: Product | undefined;
-  options: ProductOptionRequest[];
 }
 
-export default function Variants({ product, options }: IVariants) {
+export default function Variants({ product }: IVariants) {
   const [open, setOpen] = useState<Element | null>(null);
   const { onOpen: openAddVariantModal } = useModal("add-variant-modal");
   const { onOpen: openEditOptionsModal } = useModal("edit-options-modal");
@@ -51,7 +50,7 @@ export default function Variants({ product, options }: IVariants) {
   };
 
   const handleAddVariant = () => {
-    openAddVariantModal({ product, options });
+    openAddVariantModal({ product });
     handleCloseMenu();
   };
 
@@ -85,7 +84,7 @@ export default function Variants({ product, options }: IVariants) {
           <TableBody>
             {product &&
               product.variants.map((variant) => {
-                return <VariantTableRow variant={variant} />;
+                return <VariantTableRow key={variant.id} variant={variant} />;
               })}
           </TableBody>
         </Table>

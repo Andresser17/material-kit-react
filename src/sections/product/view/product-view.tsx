@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { ProductRequest } from "@medusajs/types";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
-import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
+import Box from "@mui/material/Box";
 
-import { useAppSelector } from "src/redux/hooks";
-import { useGetProduct } from "src/queries/use-get-product";
 import { ProductStatus as ProductStatusEnum } from "src/enums";
 import { useUpdateProduct } from "src/mutations/use-update-product";
-import { getOptions } from "src/redux/slices/product-options/product-options-slice";
+import { useGetProduct } from "src/queries/use-get-product";
 
-import Variants from "../variants";
+import AddImages, { SortableImageType } from "../add-images";
 import Attributes from "../attributes";
-import RawProduct from "../raw-product";
 import GeneralInfo from "../general-info";
 import ProductStatus from "../product-status";
-import AddImages, { SortableImageType } from "../add-images";
+import RawProduct from "../raw-product";
+import Variants from "../variants";
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +23,6 @@ export default function ProductView() {
   const { id: product_id } = useParams();
   const [images, setImages] = useState<SortableImageType[]>([]);
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
-  const options = useAppSelector((state) => getOptions(state));
   const { handleSubmit, control, setValue } = useForm<ProductRequest>({
     defaultValues: {
       title: "",
@@ -140,7 +137,7 @@ export default function ProductView() {
       <Box sx={{ display: "flex", gap: 3, p: 2 }}>
         <Box sx={{ w: "60%" }}>
           <GeneralInfo control={control} />
-          <Variants product={product} options={options} />
+          <Variants product={product} />
           <Attributes control={control} />
           <RawProduct />
         </Box>

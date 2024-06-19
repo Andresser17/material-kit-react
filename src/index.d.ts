@@ -261,17 +261,18 @@ export declare module "@medusajs/types" {
   }
 
   interface ProductOptionRequest {
-    id: string;
+    option_id: string;
     title: string;
+    value: string;
   }
 
   interface ProductVariantRequest {
     title: string;
-    sku: string;
-    ean: string;
-    upc: string;
-    barcode: string;
-    hs_code: string;
+    sku: string | null;
+    ean: string | null;
+    upc: string | null;
+    barcode: string | null;
+    hs_code: string | null;
     inventory_quantity: number;
     allow_backorder: boolean;
     manage_inventory: boolean;
@@ -279,9 +280,9 @@ export declare module "@medusajs/types" {
     length: number;
     height: number;
     width: number;
-    origin_country: string;
-    mid_code: string;
-    material: string;
+    origin_country: string | null;
+    mid_code: string | null;
+    material: string | null;
     metadata: Record<string, unknown>;
     prices: {
       amount: number;
@@ -290,7 +291,7 @@ export declare module "@medusajs/types" {
       min_quantity: number;
       max_quantity: number;
     }[];
-    options: string[];
+    options: { option_id: string; value: string }[];
   }
 
   export interface DraftOrderRequest
