@@ -37,9 +37,9 @@ export default function Stock({ control }: IStock) {
           />
           <ControlledField
             control={control}
-            id="stock"
+            id="inventory_quantity"
             type="number"
-            label="Stock"
+            label="Inventory Quantity"
             variant="outlined"
             sx={{ width: "48%" }}
           />

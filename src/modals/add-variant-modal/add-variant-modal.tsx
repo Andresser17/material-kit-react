@@ -56,7 +56,6 @@ export default function AddVariantModal() {
   const addProductVariantMutation = useAddProductVariant();
   const onSubmit: SubmitHandler<ProductVariantForm> = (data) => {
     const { price, ...properties } = data;
-    console.log({ data, options });
     addProductVariantMutation({
       product_id: product?.id ?? "",
       newProductVariant: {
@@ -77,6 +76,8 @@ export default function AddVariantModal() {
             : [],
       } as ProductVariantRequest,
     });
+
+    closeModal();
   };
 
   useEffect(() => {

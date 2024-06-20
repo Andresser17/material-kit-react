@@ -30,9 +30,6 @@ export default function Variants({ product }: IVariants) {
   const [open, setOpen] = useState<Element | null>(null);
   const { onOpen: openAddVariantModal } = useModal("add-variant-modal");
   const { onOpen: openEditOptionsModal } = useModal("edit-options-modal");
-  // const { variants } = useListProductVariants({
-  //   product_id: product?.id ?? "",
-  // });
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;

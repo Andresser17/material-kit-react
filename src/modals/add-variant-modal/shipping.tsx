@@ -117,14 +117,14 @@ export default function Shipping({ control }: IShipping) {
         >
           <ControlledField
             control={control}
-            id="mid-code"
+            id="mid_code"
             label="MID Code"
             variant="outlined"
             sx={{ width: "48%" }}
           />
           <ControlledField
             control={control}
-            id="hs-code"
+            id="hs_code"
             label="HS Code"
             variant="outlined"
             sx={{ width: "48%" }}

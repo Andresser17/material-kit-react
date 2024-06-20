@@ -14,7 +14,7 @@ import { useUser } from "src/queries/use-user";
 async function addProductVariant(
   access_token: string | undefined,
   product_id: string,
-  newProductVariant: ProductVariantRequest,
+  variant: ProductVariantRequest,
 ): Promise<ProductVariantDTO> {
   const url = new URL(`/admin/products/${product_id}/variants`, BACKEND_URL);
   const response = await fetch(url, {
@@ -23,7 +23,14 @@ async function addProductVariant(
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(newProductVariant),
+    body: JSON.stringify({
+      ...variant,
+      inventory_quantity: Number(variant.inventory_quantity),
+      width: Number(variant.width),
+      length: Number(variant.length),
+      height: Number(variant.height),
+      weight: Number(variant.weight),
+    }),
   });
   if (!response.ok)
     throw new HTTPError("Failed on creating new product variant", response);
