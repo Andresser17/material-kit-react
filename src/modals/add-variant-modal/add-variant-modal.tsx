@@ -32,11 +32,11 @@ export default function AddVariantModal() {
   const { handleSubmit, control } = useForm<ProductVariantForm>({
     defaultValues: {
       title: "",
-      sku: null,
-      ean: null,
-      upc: null,
-      barcode: null,
-      hs_code: null,
+      sku: "",
+      ean: "",
+      upc: "",
+      barcode: "",
+      hs_code: "",
       inventory_quantity: 0,
       allow_backorder: false,
       manage_inventory: true,
@@ -45,21 +45,29 @@ export default function AddVariantModal() {
       height: 0,
       width: 0,
       origin_country: null,
-      mid_code: null,
-      material: null,
+      mid_code: "",
+      material: "",
       metadata: {},
       prices: [],
       price: 0,
     },
     mode: "onChange",
   });
-  const addProductVariantMutation = useAddProductVariant();
+  const { mutate: addProductVariantMutation, isSuccess } =
+    useAddProductVariant();
   const onSubmit: SubmitHandler<ProductVariantForm> = (data) => {
     const { price, ...properties } = data;
     addProductVariantMutation({
       product_id: product?.id ?? "",
       newProductVariant: {
         ...properties,
+        sku: data.sku ? data.sku : null,
+        ean: data.ean ? data.ean : null,
+        upc: data.upc ? data.upc : null,
+        barcode: data.barcode ? data.barcode : null,
+        hs_code: data.hs_code ? data.hs_code : null,
+        mid_code: data.mid_code ? data.mid_code : null,
+        material: data.material ? data.material : null,
         prices: [
           {
             amount: Number(price.toString() + "00"),
@@ -74,11 +82,13 @@ export default function AddVariantModal() {
                 return { option_id: option.option_id, value: option.value };
               })
             : [],
-      } as ProductVariantRequest,
+      },
     });
-
-    closeModal();
   };
+
+  useEffect(() => {
+    if (isSuccess) closeModal();
+  }, [isSuccess]);
 
   useEffect(() => {
     if (product.options && product.options.length > 0) {

@@ -1,6 +1,6 @@
 import { ProductVariantDTO, ProductVariantRequest } from "@medusajs/types";
 import {
-  UseMutateFunction,
+  UseMutationResult,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -43,18 +43,16 @@ interface IUseAddProductVariantArgs {
   newProductVariant: ProductVariantRequest;
 }
 
-type IUseAddProductVariant = UseMutateFunction<
-  ProductVariantDTO | undefined,
+export function useAddProductVariant(): UseMutationResult<
+  ProductVariantDTO,
   Error,
   IUseAddProductVariantArgs,
   unknown
->;
-
-export function useAddProductVariant(): IUseAddProductVariant {
+> {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn: async ({
       product_id,
       newProductVariant,
@@ -78,6 +76,4 @@ export function useAddProductVariant(): IUseAddProductVariant {
       toast.success("Variant added successfully");
     },
   });
-
-  return mutate;
 }
