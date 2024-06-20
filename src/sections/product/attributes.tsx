@@ -1,10 +1,10 @@
-import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
+import { Control } from "react-hook-form";
 
-import { Box, Divider, Typography, InputAdornment } from "@mui/material";
+import { Box, Divider, InputAdornment, Typography } from "@mui/material";
 
-import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
+import SectionBox from "src/components/section-box";
 
 interface IAttributes {
   control: Control<ProductRequest>;
@@ -20,6 +20,29 @@ export default function Attributes({ control }: IAttributes) {
       <Typography variant="h6" sx={{ mb: 2 }}>
         Dimensions
       </Typography>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Typography>Width</Typography>
+        <ControlledField<ProductRequest>
+          control={control}
+          type="number"
+          id="width"
+          label=""
+          variant="outlined"
+          sx={{ width: 96 }}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">cm</InputAdornment>,
+          }}
+        />
+      </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -50,30 +73,8 @@ export default function Attributes({ control }: IAttributes) {
           mb: 2,
         }}
       >
-        <Typography>Width</Typography>
-        {/* <ControlledField<ProductRequest>
-          control={control}
-          type="number"
-          id="width"
-          label=""
-          variant="outlined"
-          sx={{ width: 96 }}
-          InputProps={{
-            endAdornment: <InputAdornment position="start">cm</InputAdornment>,
-          }}
-        /> */}
-      </Box>
-
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-        }}
-      >
         <Typography>Length</Typography>
-        {/* <ControlledField<ProductRequest>
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="length"
@@ -83,7 +84,7 @@ export default function Attributes({ control }: IAttributes) {
           InputProps={{
             endAdornment: <InputAdornment position="end">cm</InputAdornment>,
           }}
-        /> */}
+        />
       </Box>
 
       <Box
@@ -95,7 +96,7 @@ export default function Attributes({ control }: IAttributes) {
         }}
       >
         <Typography>Weight</Typography>
-        {/* <ControlledField<ProductRequest>
+        <ControlledField<ProductRequest>
           control={control}
           type="number"
           id="weight"
@@ -105,14 +106,14 @@ export default function Attributes({ control }: IAttributes) {
           InputProps={{
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
-        /> */}
+        />
       </Box>
 
       <Typography variant="h6" sx={{ my: 2 }}>
         Customs
       </Typography>
 
-      {/* <Box
+      <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -129,9 +130,9 @@ export default function Attributes({ control }: IAttributes) {
           variant="outlined"
           sx={{ width: 250 }}
         />
-      </Box> */}
+      </Box>
 
-      {/* <Box
+      <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -146,9 +147,9 @@ export default function Attributes({ control }: IAttributes) {
           variant="outlined"
           sx={{ width: 250 }}
         />
-      </Box> */}
+      </Box>
 
-      {/* <Box
+      <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -157,7 +158,7 @@ export default function Attributes({ control }: IAttributes) {
         }}
       >
         <Typography>Country of Origin</Typography>
-        <ControlledField
+        {/* <ControlledField
           control={control}
           select
           defaultValue="china"
@@ -171,8 +172,8 @@ export default function Attributes({ control }: IAttributes) {
               {option.label}
             </MenuItem>
           ))}
-        </ControlledField>
-      </Box> */}
+        </ControlledField> */}
+      </Box>
     </SectionBox>
   );
 }

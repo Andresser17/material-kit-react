@@ -1,16 +1,16 @@
-import { Control } from "react-hook-form";
 import { ProductRequest } from "@medusajs/types";
+import { Control } from "react-hook-form";
 
-import Box from "@mui/material/Box";
 import { Divider, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
 
-import { useListTags } from "src/queries/use-list-tags";
 import { useListCollections } from "src/queries/use-list-collections";
 import { useListProductTypes } from "src/queries/use-list-product-types";
+import { useListTags } from "src/queries/use-list-tags";
 
-import SectionBox from "src/components/section-box";
 import ControlledField from "src/components/controlled-field";
 import ControlledSelect from "src/components/controlled-select";
+import SectionBox from "src/components/section-box";
 
 interface IGeneralInfo {
   control: Control<ProductRequest>;

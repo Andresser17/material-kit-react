@@ -276,10 +276,10 @@ export declare module "@medusajs/types" {
     inventory_quantity: number;
     allow_backorder: boolean;
     manage_inventory: boolean;
-    weight: number;
-    length: number;
-    height: number;
-    width: number;
+    weight: number | null;
+    length: number | null;
+    height: number | null;
+    width: number | null;
     origin_country: string | null;
     mid_code: string | null;
     material: string | null;

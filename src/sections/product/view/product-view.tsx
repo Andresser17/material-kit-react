@@ -92,10 +92,10 @@ export default function ProductView() {
       setValue("description", product.description ?? "");
       setValue("handle", product.handle);
       setValue("status", product.status);
-      setValue("weight", product.weight);
-      setValue("length", product.length);
-      setValue("height", product.height);
-      setValue("width", product.width);
+      if (product.weight) setValue("weight", product.weight);
+      if (product.length) setValue("length", product.length);
+      if (product.height) setValue("height", product.height);
+      if (product.width) setValue("width", product.width);
       setValue("hs_code", product.hs_code ?? "");
       setValue("origin_country", product.origin_country ?? "");
       setValue("mid_code", product.mid_code ?? "");
