@@ -1,4 +1,3 @@
-import { Lot } from "@medusajs/types";
 import { Control } from "react-hook-form";
 
 import { Box, Divider, InputAdornment, Typography } from "@mui/material";
@@ -12,9 +11,10 @@ import {
   paymentMethods,
   status,
 } from "src/layouts/lot/config-select";
+import { LotForm } from "./view/create-lot-view";
 
 interface IGeneralInfo {
-  control: Control<Lot>;
+  control: Control<LotForm>;
 }
 
 export default function GeneralInfo({ control }: IGeneralInfo) {
@@ -37,6 +37,7 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           id="items.quantity"
           label="Items Quantity"
           variant="outlined"
+          type="number"
           sx={{ width: "48%" }}
         />
         <ControlledField
@@ -45,21 +46,24 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           label="Cost Per Item (USD)"
           variant="outlined"
           sx={{ width: "48%" }}
+          type="number"
+          disabled
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
         />
         <ControlledField
           control={control}
-          id="cost.amount"
+          id="total_cost"
           label="Total Cost (USD)"
           variant="outlined"
           sx={{ width: "48%" }}
+          disabled
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
         />
-        <ControlledSelect<Lot>
+        <ControlledSelect<LotForm>
           control={control}
           id="status"
           label="Status"
@@ -87,7 +91,7 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Payment
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<Lot>
+        <ControlledSelect<LotForm>
           control={control}
           id="cost.payment.method"
           label="Choose Payment Method"
@@ -101,6 +105,17 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
           }}
           handleSelectOption={(option): string => option.label}
           sx={{ width: "48%" }}
+        />
+        <ControlledField
+          control={control}
+          id="cost.amount"
+          label="Lot Cost (USD)"
+          variant="outlined"
+          type="number"
+          sx={{ width: "48%" }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
         />
         <ControlledField
           control={control}
@@ -118,7 +133,7 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
         Courier
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <ControlledSelect<Lot>
+        <ControlledSelect<LotForm>
           control={control}
           id="courier.company"
           label="Courier Company"
@@ -153,7 +168,7 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             endAdornment: <InputAdornment position="end">kg</InputAdornment>,
           }}
         />
-        <ControlledSelect<Lot>
+        <ControlledSelect<LotForm>
           control={control}
           id="courier.payment.method"
           label="Payment Method"

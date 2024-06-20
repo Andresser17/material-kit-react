@@ -28,6 +28,7 @@ export default defineConfig({
         lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
         useFlatConfig: true,
       },
+      // typescript: true,
     }),
   ],
   server: {
