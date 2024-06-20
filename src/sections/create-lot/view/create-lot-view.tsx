@@ -75,13 +75,6 @@ export default function CreateLotView() {
   const watchCourierCost = watch("courier.cost.amount");
   const watchCourierCostFee = watch("courier.payment.fee.amount");
   useEffect(() => {
-    if (watchItemsQuantity) {
-      setValue(
-        "items.cost_per_item",
-        getValues("total_cost") / Number(watchItemsQuantity),
-      );
-    }
-
     if (
       watchLotCost ||
       watchFeeAmount ||
@@ -95,6 +88,13 @@ export default function CreateLotView() {
           Number(watchCourierCost) +
           Number(watchCourierCostFee),
       );
+
+      if (watchItemsQuantity > 0) {
+        setValue(
+          "items.cost_per_item",
+          getValues("total_cost") / Number(watchItemsQuantity),
+        );
+      }
     }
   }, [
     watchItemsQuantity,
