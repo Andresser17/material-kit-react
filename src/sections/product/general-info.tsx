@@ -77,6 +77,8 @@ export default function GeneralInfo({ control }: IGeneralInfo) {
             return { inputValue: "", label: value.value, id: value.id };
           }}
           handleSelectOption={(option): { value: string; id: string } => {
+            if (option.label && option.inputValue.length === 0)
+              return { value: option.label, id: option.id };
             return { value: option.inputValue, id: option.id };
           }}
           dinamicOptions
