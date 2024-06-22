@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import ControlledSelect from "src/components/controlled-select";
 import { couriers, paymentMethods } from "src/layouts/lot/config-select";
 import { useUpdateLot } from "src/mutations/use-update-lot";
+import { LotForm } from "src/sections/create-lot/view/create-lot-view";
 
 export interface IEditLotSummaryModal {
   lot: Lot;
@@ -19,47 +20,49 @@ export default function EditLotSummaryModal() {
     props: { lot },
     onClose: closeModal,
   } = useModal<IEditLotSummaryModal>("edit-lot-summary-modal");
-  const { handleSubmit, control, setValue } = useForm<Lot>({
-    defaultValues: {
-      name: "",
-      description: "",
-      cost: {
-        amount: 0,
-        currency: "USD",
-        payment: {
-          method: "",
-          fee: {
-            amount: 0,
-            currency: "USD",
-          },
-        },
-      },
-      items: {
-        quantity: 0,
-        cost_per_item: 0,
-      },
-      courier: {
-        company: "",
-        weight: {
-          amount: 0,
-          unit: "",
-        },
+  const { handleSubmit, control, setValue, watch, getValues } =
+    useForm<LotForm>({
+      defaultValues: {
+        total_cost: 0,
+        name: "",
+        description: "",
         cost: {
           amount: 0,
           currency: "USD",
+          payment: {
+            method: "",
+            fee: {
+              amount: 0,
+              currency: "USD",
+            },
+          },
         },
-        payment: {
-          method: "",
-          fee: {
+        items: {
+          quantity: 0,
+          cost_per_item: 0,
+        },
+        courier: {
+          company: "",
+          weight: {
+            amount: 0,
+            unit: "",
+          },
+          cost: {
             amount: 0,
             currency: "USD",
           },
+          payment: {
+            method: "",
+            fee: {
+              amount: 0,
+              currency: "USD",
+            },
+          },
         },
+        ownership: [{ name: "", investment: { amount: 0, currency: "USD" } }],
       },
-      ownership: [{ name: "", investment: { amount: 0, currency: "USD" } }],
-    },
-    mode: "onChange",
-  });
+      mode: "onChange",
+    });
 
   const { mutate: updateLotMutation } = useUpdateLot();
   const onSubmit: SubmitHandler<Lot> = (data) => {
@@ -72,6 +75,7 @@ export default function EditLotSummaryModal() {
     setValue("items.quantity", lot.items.quantity);
     setValue("items.cost_per_item", lot.items.cost_per_item);
     setValue("description", lot.description);
+    if (lot.cost) setValue("cost.amount", lot.cost?.amount);
     if (lot.cost) setValue("cost.payment.method", lot.cost?.payment.method);
     if (lot.cost)
       setValue("cost.payment.fee.amount", lot.cost?.payment.fee.amount);
@@ -86,6 +90,41 @@ export default function EditLotSummaryModal() {
     //   lot.ownership[0]?.investment.amount,
     // );
   }, []);
+
+  const watchItemsQuantity = watch("items.quantity");
+  const watchLotCost = watch("cost.amount");
+  const watchFeeAmount = watch("cost.payment.fee.amount");
+  const watchCourierCost = watch("courier.cost.amount");
+  const watchCourierCostFee = watch("courier.payment.fee.amount");
+  useEffect(() => {
+    if (
+      watchLotCost ||
+      watchFeeAmount ||
+      watchCourierCost ||
+      watchCourierCostFee
+    ) {
+      setValue(
+        "total_cost",
+        Number(watchLotCost) +
+          Number(watchFeeAmount) +
+          Number(watchCourierCost) +
+          Number(watchCourierCostFee),
+      );
+
+      if (watchItemsQuantity > 0) {
+        setValue(
+          "items.cost_per_item",
+          getValues("total_cost") / Number(watchItemsQuantity),
+        );
+      }
+    }
+  }, [
+    watchItemsQuantity,
+    watchLotCost,
+    watchFeeAmount,
+    watchCourierCost,
+    watchCourierCostFee,
+  ]);
 
   return (
     <BaseModal
@@ -119,6 +158,7 @@ export default function EditLotSummaryModal() {
             label="Cost Per Item (USD)"
             variant="outlined"
             sx={{ width: "48%" }}
+            disabled
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
@@ -127,9 +167,10 @@ export default function EditLotSummaryModal() {
           />
           <ControlledField
             control={control}
-            id="cost.amount"
+            id="total_cost"
             label="Total Cost (USD)"
             variant="outlined"
+            disabled
             sx={{ width: "48%" }}
             InputProps={{
               startAdornment: (
@@ -152,7 +193,7 @@ export default function EditLotSummaryModal() {
           Payment
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          <ControlledSelect<Lot>
+          <ControlledSelect<LotForm>
             control={control}
             id="cost.payment.method"
             label="Choose Payment Method"
@@ -166,6 +207,19 @@ export default function EditLotSummaryModal() {
             }}
             handleSelectOption={(option): string => option.label}
             sx={{ width: "48%" }}
+          />
+          <ControlledField
+            control={control}
+            id="cost.amount"
+            label="Lot Cost (USD)"
+            variant="outlined"
+            type="number"
+            sx={{ width: "48%" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
+            }}
           />
           <ControlledField
             control={control}
@@ -185,7 +239,7 @@ export default function EditLotSummaryModal() {
           Courier
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          <ControlledSelect<Lot>
+          <ControlledSelect<LotForm>
             control={control}
             id="courier.company"
             label="Courier Company"
@@ -222,7 +276,7 @@ export default function EditLotSummaryModal() {
               endAdornment: <InputAdornment position="end">kg</InputAdornment>,
             }}
           />
-          <ControlledSelect<Lot>
+          <ControlledSelect<LotForm>
             control={control}
             id="courier.payment.method"
             label="Payment Method"

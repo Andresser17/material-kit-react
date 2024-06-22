@@ -1,28 +1,28 @@
+import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, SetStateAction } from "react";
 
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
+import Typography from "@mui/material/Typography";
 
+import { IAddProductModal } from "src/modals/add-product-modal";
 import { useModal } from "src/modals/useModal";
 import { useListProducts } from "src/queries/use-list-products";
-import { IAddProductModal } from "src/modals/add-product-modal";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 
-import { emptyRows } from "../utils";
-import TableEmptyRows from "../table-empty-rows";
+import ProductTableHead, { TableOrder } from "../product-table-head";
 import ProductTableRow from "../product-table-row";
 import ProductTableToolbar from "../product-table-toolbar";
-import ProductTableHead, { TableOrder } from "../product-table-head";
+import TableEmptyRows from "../table-empty-rows";
+import { emptyRows } from "../utils";
 
 // ----------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ export default function ProductsView() {
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
         >
-          Add Product
+          New Product
         </Button>
       </Stack>
 

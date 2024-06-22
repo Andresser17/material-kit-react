@@ -1,13 +1,13 @@
-import { useState, SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
-import Container from "@mui/material/Container";
 import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
+import Typography from "@mui/material/Typography";
 
 import { emptyRows } from "src/utils/table-utils";
 
@@ -16,13 +16,17 @@ import { useListLots } from "src/queries/use-list-lots";
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Iconify from "src/components/iconify";
+import LotTableHead, { TableOrder } from "../lot-table-head";
 import LotTableRow from "../lot-table-row";
 import LotTableToolbar from "../lot-table-toolbar";
-import LotTableHead, { TableOrder } from "../lot-table-head";
 
 // ----------------------------------------------------------------------
 
 export default function LotsView() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState<TableOrder>(TableOrder.ASC);
@@ -73,6 +77,15 @@ export default function LotsView() {
         mb={5}
       >
         <Typography variant="h4">Lots</Typography>
+
+        <Button
+          onClick={() => navigate("/lots/create")}
+          variant="contained"
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+        >
+          New Lot
+        </Button>
       </Stack>
 
       <Card>
