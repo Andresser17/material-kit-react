@@ -1,18 +1,19 @@
-import { useState, ChangeEvent } from "react";
 import { ProductVariant } from "@medusajs/types";
+import { ChangeEvent, useEffect, useState } from "react";
 
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import {
-  Box,
-  Stack,
   Avatar,
-  TextField,
+  Box,
   IconButton,
+  Stack,
+  TextField,
   Typography,
 } from "@mui/material";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
 import Iconify from "src/components/iconify";
+import { useUpdateProductVariant } from "src/mutations/use-update-product-variant";
 
 // ----------------------------------------------------------------------
 
@@ -21,17 +22,31 @@ interface IItemsTableRowVariant {
 }
 
 export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
+  const { mutate: updateProductVariantMutation, data: updatedProduct } =
+    useUpdateProductVariant();
   const handleChange = (newQuantity: number) => {
-    console.log({ newQuantity });
-    // setLineItems((prev) => {
-    //   return prev.map((lineItem) => {
-    //     if (lineItem.variant_id === data.id) {
-    //       return { ...lineItem, quantity: newQuantity };
-    //     }
-    //     return lineItem;
-    //   });
-    // });
+    updateProductVariantMutation({
+      product_id: data.product_id,
+      variant_id: data.id,
+      variant: { inventory_quantity: newQuantity },
+    });
   };
+  const [inventoryQuantity, setInventoryQuantity] = useState(0);
+
+  useEffect(() => {
+    if (data) {
+      setInventoryQuantity(data.inventory_quantity);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (updatedProduct) {
+      const variant = updatedProduct.variants.find(
+        (variant) => variant.id === data.id,
+      );
+      if (variant) setInventoryQuantity(variant.inventory_quantity);
+    }
+  }, [updatedProduct]);
 
   return (
     <TableRow tabIndex={-1}>
@@ -76,9 +91,12 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
             variant="subtitle2"
             sx={{ color: "text.secondary", fontSize: 10 }}
           >
-            Stock: {data.inventory_quantity}
+            Stock: {inventoryQuantity}
           </Typography>
-          <StockField handleChange={handleChange} />
+          <StockField
+            inventoryQuantity={inventoryQuantity}
+            handleChange={handleChange}
+          />
         </Stack>
       </TableCell>
 
@@ -100,29 +118,36 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
   );
 }
 
-function StockField({
-  handleChange,
-}: {
+interface IStockField {
+  inventoryQuantity: number;
   handleChange: (newQuantity: number) => void;
-}) {
-  const [stock, setStock] = useState(1);
+}
+
+function StockField({ inventoryQuantity, handleChange }: IStockField) {
+  const [stock, setStock] = useState(0);
 
   const handleMinus = () => {
     setStock((prev) => {
-      handleChange(prev - 1);
+      if (prev === 0) return prev;
+
+      handleChange(inventoryQuantity - 1);
       return prev - 1;
     });
   };
 
   const handlePlus = () => {
     setStock((prev) => {
-      handleChange(prev + 1);
+      handleChange(inventoryQuantity + 1);
       return prev + 1;
     });
   };
 
   const handleStock = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(Number(e.target.value));
+    const newStock = Number(e.target.value);
+    if (newStock >= stock) handleChange(inventoryQuantity + (newStock - stock));
+    else if (newStock < stock)
+      handleChange(inventoryQuantity - (stock - newStock));
+
     setStock(Number(e.target.value));
   };
 

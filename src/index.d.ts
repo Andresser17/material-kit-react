@@ -267,31 +267,31 @@ export declare module "@medusajs/types" {
   }
 
   interface ProductVariantRequest {
-    title: string;
-    sku: string | null;
-    ean: string | null;
-    upc: string | null;
-    barcode: string | null;
-    hs_code: string | null;
-    inventory_quantity: number;
-    allow_backorder: boolean;
-    manage_inventory: boolean;
-    weight: number | null;
-    length: number | null;
-    height: number | null;
-    width: number | null;
-    origin_country: string | null;
-    mid_code: string | null;
-    material: string | null;
-    metadata: Record<string, unknown>;
-    prices: {
+    title?: string;
+    sku?: string | null;
+    ean?: string | null;
+    upc?: string | null;
+    barcode?: string | null;
+    hs_code?: string | null;
+    inventory_quantity?: number;
+    allow_backorder?: boolean;
+    manage_inventory?: boolean;
+    weight?: number | null;
+    length?: number | null;
+    height?: number | null;
+    width?: number | null;
+    origin_country?: string | null;
+    mid_code?: string | null;
+    material?: string | null;
+    metadata?: Record<string, unknown>;
+    prices?: {
       amount: number;
       region_id?: string;
       currency_code?: string;
       min_quantity: number;
       max_quantity: number;
     }[];
-    options: { option_id: string; value: string }[];
+    options?: { option_id: string; value: string }[];
   }
 
   export interface DraftOrderRequest
