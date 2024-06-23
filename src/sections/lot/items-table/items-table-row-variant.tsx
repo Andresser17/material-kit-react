@@ -1,5 +1,5 @@
 import { ProductVariant } from "@medusajs/types";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Avatar,
@@ -13,36 +13,49 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
 import Iconify from "src/components/iconify";
+import { useUpdateLot } from "src/mutations/use-update-lot";
 import { useUpdateProductVariant } from "src/mutations/use-update-product-variant";
 
 // ----------------------------------------------------------------------
 
 interface IItemsTableRowVariant {
-  data: ProductVariant;
+  currentStock: { variant_id: string; quantity: number } | undefined;
+  lot_id: string;
+  variant: ProductVariant;
 }
 
-export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
+export default function ItemsTableRowVariant({
+  currentStock,
+  lot_id,
+  variant,
+}: IItemsTableRowVariant) {
   const { mutate: updateProductVariantMutation, data: updatedProduct } =
     useUpdateProductVariant();
-  const handleChange = (newQuantity: number) => {
+  const { mutate: updateLotMutation } = useUpdateLot();
+  const handleChange = (newQuantity: number, stock: number) => {
     updateProductVariantMutation({
-      product_id: data.product_id,
-      variant_id: data.id,
+      product_id: variant.product_id,
+      variant_id: variant.id,
       variant: { inventory_quantity: newQuantity },
+    });
+
+    updateLotMutation({
+      lot_id,
+      lot: { stock: [{ variant_id: variant.id, quantity: stock }] },
     });
   };
   const [inventoryQuantity, setInventoryQuantity] = useState(0);
 
   useEffect(() => {
-    if (data) {
-      setInventoryQuantity(data.inventory_quantity);
+    if (variant) {
+      setInventoryQuantity(variant.inventory_quantity);
     }
   }, []);
 
   useEffect(() => {
     if (updatedProduct) {
       const variant = updatedProduct.variants.find(
-        (variant) => variant.id === data.id,
+        (variant) => variant.id === variant.id,
       );
       if (variant) setInventoryQuantity(variant.inventory_quantity);
     }
@@ -66,7 +79,7 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
           />
           <Box>
             <Typography sx={{ fontSize: 12 }} variant="subtitle2" noWrap>
-              {data.title}
+              {variant.title}
             </Typography>
             <Typography
               sx={{ fontSize: 10, color: "#888" }}
@@ -94,6 +107,7 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
             Stock: {inventoryQuantity}
           </Typography>
           <StockField
+            currentStock={currentStock}
             inventoryQuantity={inventoryQuantity}
             handleChange={handleChange}
           />
@@ -103,7 +117,7 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
       <TableCell>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography sx={{ fontSize: 14, mr: 1 }} variant="subtitle2" noWrap>
-            {data.prices?.length > 0 ? data?.prices[0].amount : 0}
+            {variant.prices?.length > 0 ? variant?.prices[0].amount : 0}
           </Typography>
           <Typography
             sx={{ fontSize: 14, color: "text.secondary" }}
@@ -119,42 +133,66 @@ export default function ItemsTableRowVariant({ data }: IItemsTableRowVariant) {
 }
 
 interface IStockField {
+  currentStock: { variant_id: string; quantity: number } | undefined;
   inventoryQuantity: number;
-  handleChange: (newQuantity: number) => void;
+  handleChange: (newQuantity: number, stock: number) => void;
 }
 
-function StockField({ inventoryQuantity, handleChange }: IStockField) {
+function StockField({
+  currentStock,
+  inventoryQuantity,
+  handleChange,
+}: IStockField) {
   const [stock, setStock] = useState(0);
+  const [oldStock, setOldStock] = useState(0);
 
   const handleMinus = () => {
     setStock((prev) => {
       if (prev === 0) return prev;
-
-      handleChange(inventoryQuantity - 1);
       return prev - 1;
     });
   };
 
   const handlePlus = () => {
     setStock((prev) => {
-      handleChange(inventoryQuantity + 1);
       return prev + 1;
     });
   };
 
-  const handleStock = (e: ChangeEvent<HTMLInputElement>) => {
-    const newStock = Number(e.target.value);
-    if (newStock >= stock) handleChange(inventoryQuantity + (newStock - stock));
-    else if (newStock < stock)
-      handleChange(inventoryQuantity - (stock - newStock));
+  // const handleStock = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const newStock = Number(e.target.value);
+  //   if (newStock >= stock)
+  //     handleChange(inventoryQuantity + (newStock - stock), newStock);
+  //   else if (newStock < stock)
+  //     handleChange(inventoryQuantity - (stock - newStock), newStock);
 
-    setStock(Number(e.target.value));
+  //   setStock(newStock);
+  // };
+
+  const handleStock = (_event: any) => {
+    if (stock === oldStock) return;
+
+    if (stock >= oldStock) {
+      handleChange(inventoryQuantity + (stock - oldStock), stock);
+      setOldStock(stock);
+    } else if (stock < oldStock) {
+      handleChange(inventoryQuantity - (oldStock - stock), stock);
+      setOldStock(stock);
+    }
   };
+
+  useEffect(() => {
+    if (currentStock) {
+      setStock(currentStock.quantity);
+      setOldStock(currentStock.quantity);
+    }
+  }, []);
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <IconButton
         onClick={handleMinus}
+        onMouseLeave={handleStock}
         sx={{ width: 30, height: 30, borderRadius: "5px", mr: 1 }}
       >
         <Iconify icon="ant-design:minus-outlined" />
@@ -163,7 +201,11 @@ function StockField({ inventoryQuantity, handleChange }: IStockField) {
         id="quantity"
         type="number"
         value={stock}
-        onChange={handleStock}
+        onChange={(e) => {
+          if (stock !== oldStock) setOldStock(stock);
+          setStock(Number(e.target.value));
+        }}
+        onBlur={handleStock}
         sx={{
           width: "36px",
           "& .MuiInputBase-root": {
@@ -179,6 +221,7 @@ function StockField({ inventoryQuantity, handleChange }: IStockField) {
       </TextField>
       <IconButton
         onClick={handlePlus}
+        onMouseLeave={handleStock}
         sx={{ width: 30, height: 30, borderRadius: "5px", ml: 1 }}
       >
         <Iconify icon="ant-design:plus-outlined" />

@@ -24,7 +24,7 @@ import { useModal } from "../useModal";
 import ProductTableToolbar from "./product-table-toolbar";
 
 export interface IAddProductToLotModal {
-  lot: Lot | undefined;
+  lot: Lot;
 }
 
 export default function AddProductToLotModal() {
@@ -49,7 +49,7 @@ export default function AddProductToLotModal() {
 }
 
 interface IProductsTable {
-  lot: Lot | undefined;
+  lot: Lot;
   products: Product[];
   count: number;
 }
@@ -70,8 +70,8 @@ function ProductsTable({ lot, products, count }: IProductsTable) {
     const found = selected.find((selected_id) => selected_id === product_id);
     if (!found) {
       addLotProductMutation({
-        lot_id: lot?.id ?? "",
-        product_id: product_id ?? "",
+        lot_id: lot.id,
+        product_id: product_id,
         onSuccess() {
           setSelected((prev) => [...prev, product_id]);
         },

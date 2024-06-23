@@ -345,13 +345,13 @@ export declare module "@medusajs/types" {
   }
 
   interface Lot {
-    id: string;
-    created_at: string;
-    updated_at: string;
-    name: string;
-    description: string | null;
-    status: LotStatus;
-    cost: {
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+    name?: string;
+    description?: string;
+    status?: LotStatus;
+    cost?: {
       amount: number;
       currency: string;
       payment: {
@@ -361,12 +361,12 @@ export declare module "@medusajs/types" {
           currency: string;
         };
       };
-    } | null;
-    items: {
+    };
+    items?: {
       quantity: number;
       cost_per_item: number;
     };
-    courier: {
+    courier?: {
       company: string;
       weight: {
         amount: number;
@@ -384,15 +384,14 @@ export declare module "@medusajs/types" {
         };
       };
     };
-    ownership: [
-      {
-        name: string | null;
-        investment: {
-          amount: number;
-          currency: string;
-        };
-      },
-    ];
-    products: Product[];
+    ownership?: {
+      name: string | null;
+      investment: {
+        amount: number;
+        currency: string;
+      };
+    }[];
+    stock?: { variant_id: string; quantity: number }[];
+    products?: Product[];
   }
 }

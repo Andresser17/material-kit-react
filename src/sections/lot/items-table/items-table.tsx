@@ -1,16 +1,16 @@
 import { Lot } from "@medusajs/types";
-import { useState, SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 
 import { Box, Button, TablePagination } from "@mui/material";
 
-import { useModal } from "src/modals/useModal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
+import { useModal } from "src/modals/useModal";
 
-import Iconify from "src/components/iconify";
 import AccordionTable from "src/components/accordion-table";
+import Iconify from "src/components/iconify";
 
-import ItemsTableRowVariant from "./items-table-row-variant";
 import ItemsTableRowProduct from "./items-table-row-product";
+import ItemsTableRowVariant from "./items-table-row-variant";
 
 interface IItemsTable {
   lot: Lot;
@@ -58,10 +58,19 @@ export default function ItemsTable({ lot }: IItemsTable) {
             return (
               <AccordionTable
                 key={product.id}
-                head={<ItemsTableRowProduct lot_id={lot.id} data={product} />}
+                head={
+                  <ItemsTableRowProduct lot_id={lot?.id ?? ""} data={product} />
+                }
               >
                 {product.variants.map((variant) => (
-                  <ItemsTableRowVariant key={variant.id} data={variant} />
+                  <ItemsTableRowVariant
+                    key={variant.id}
+                    currentStock={lot.stock?.find(
+                      (stock) => stock.variant_id === variant.id,
+                    )}
+                    lot_id={lot?.id ?? ""}
+                    variant={variant}
+                  />
                 ))}
               </AccordionTable>
             );

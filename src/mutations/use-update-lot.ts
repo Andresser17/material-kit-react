@@ -1,15 +1,15 @@
-import toast from "react-hot-toast";
 import { Lot } from "@medusajs/types";
 import {
+  UseMutationResult,
   useMutation,
   useQueryClient,
-  UseMutationResult,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 interface UpdateLotResponse {
   lot: Lot;
@@ -38,15 +38,6 @@ interface useUpdateLotArgs {
   lot_id: string;
   lot: Lot;
 }
-
-// type IUseUpdateLot = UseMutateFunction<
-//   UpdateLotResponse | undefined,
-//   Error,
-//   useUpdateLotArgs,
-//   unknown
-// >;
-
-// interface UseUpdateLotResponse {}
 
 export function useUpdateLot(): UseMutationResult<
   UpdateLotResponse,
