@@ -1,20 +1,20 @@
-import { useState, MouseEvent } from "react";
 import { DraftOrderResponse } from "@medusajs/types";
+import { MouseEvent, useState } from "react";
 
-import Box from "@mui/material/Box";
 import {
   Button,
   Divider,
-  Popover,
-  MenuItem,
   IconButton,
+  MenuItem,
+  Popover,
   Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import { DraftOrderStatus } from "src/enums";
 
-import Label from "src/components/label";
 import Iconify from "src/components/iconify";
+import Label from "src/components/label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
@@ -34,8 +34,6 @@ export default function OrderDetails({ data }: IOrderDetails) {
   };
 
   const handleCancelOrder = () => {};
-
-  if (!data) return <div>Loading!!!</div>;
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>

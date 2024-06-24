@@ -1,13 +1,14 @@
-import { useState, ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 import {
-  Table,
   Accordion,
-  TableHead,
+  AccordionDetails,
+  AccordionSummary,
+  SxProps,
+  Table,
   TableBody,
   TableContainer,
-  AccordionSummary,
-  AccordionDetails,
+  TableHead,
 } from "@mui/material";
 
 import Iconify from "../iconify";
@@ -17,9 +18,14 @@ import Iconify from "../iconify";
 export interface IAccordionTable {
   head: ReactNode;
   children: ReactNode;
+  sx: SxProps;
 }
 
-export default function AccordionTable({ head, children }: IAccordionTable) {
+export default function AccordionTable({
+  head,
+  children,
+  sx,
+}: IAccordionTable) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -28,6 +34,7 @@ export default function AccordionTable({ head, children }: IAccordionTable) {
         "& .MuiAccordionSummary-root:hover:not(.Mui-disabled)": {
           cursor: "default",
         },
+        ...sx,
       }}
       expanded={expanded}
     >

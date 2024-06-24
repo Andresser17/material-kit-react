@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { LotStatus } from "src/enums";
 import { IAddProductModal } from "src/modals/add-product-modal";
+import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-order-modal/add-product-to-draft-order-modal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
@@ -30,9 +31,10 @@ const initialState = {
       props: {},
     } as Modal<IEditOptionsModal>,
     {
-      id: "add-existing-product-modal",
+      id: "add-product-to-draft-order-modal",
       open: false,
-    } as Modal<undefined>,
+      props: { selectedProducts: [] },
+    } as Modal<IAddProductToDraftOrderModal>,
     {
       id: "add-product-to-lot-modal",
       open: false,

@@ -1,10 +1,10 @@
 import { DraftOrderLineItem } from "@medusajs/types";
-import { useState, Dispatch, useEffect, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import {
   Box,
-  Table,
   Button,
+  Table,
   TableBody,
   TableContainer,
   TablePagination,
@@ -13,26 +13,27 @@ import {
 import { emptyRows } from "src/utils/table-utils";
 
 import { useModal } from "src/modals/useModal";
-import { useAppSelector } from "src/redux/hooks";
-import { getSelectedProducts } from "src/redux/slices/add-existing-product/add-existing-product-slice";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
-import ItemsTableRow from "./items-table-row";
+import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-order-modal";
 import ItemsTableHead from "./items-table-head";
+import ItemsTableRow from "./items-table-row";
 
 interface IItemsTable {
   setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
 }
 
 export default function ItemsTable({ setLineItems }: IItemsTable) {
-  const selectedProducts = useAppSelector((state) =>
-    getSelectedProducts(state),
-  );
   const [page, setPage] = useState(0);
-  const { onOpen: openModal } = useModal("add-existing-product-modal");
+  const {
+    props: { selectedProducts },
+    onOpen: openModal,
+  } = useModal<IAddProductToDraftOrderModal>(
+    "add-product-to-draft-order-modal",
+  );
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [count] = useState(0);

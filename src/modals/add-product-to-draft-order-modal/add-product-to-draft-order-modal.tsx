@@ -1,5 +1,5 @@
-import { Lot, Product, ProductVariant } from "@medusajs/types";
-import { SetStateAction, useEffect, useState } from "react";
+import { Product, ProductVariant } from "@medusajs/types";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import {
   Avatar,
@@ -12,8 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useAddLotProduct } from "src/mutations/use-add-lot-product";
-import { useRemoveLotProduct } from "src/mutations/use-remove-lot-product";
 import { useListProducts } from "src/queries/use-list-products";
 
 import AccordionTable from "src/components/accordion-table/accordion-table";
@@ -23,70 +21,57 @@ import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 import ProductTableToolbar from "./product-table-toolbar";
 
-export interface IAddProductToLotModal {
-  lot: Lot;
+export interface IAddProductToDraftOrderModal {
+  selectedProducts: ProductVariant[];
 }
 
-export default function AddProductToLotModal() {
-  const {
-    props: { lot },
-    onClose: closeModal,
-  } = useModal<IAddProductToLotModal>("add-product-to-lot-modal");
-  const { products, count } = useListProducts({});
+export default function AddProductToDraftOrderModal() {
+  const { onClose: closeModal, onUpdate: updateProps } =
+    useModal<IAddProductToDraftOrderModal>("add-product-to-draft-order-modal");
+  const [selected, setSelected] = useState<ProductVariant[]>([]);
+
+  const handleClose = () => {
+    updateProps({ selectedProducts: selected });
+    closeModal();
+  };
 
   return (
     <BaseModal
-      modalId="add-product-to-lot-modal"
+      modalId="add-product-to-draft-order-modal"
       title="Add Products"
       open
       closeOnTap
-      onClose={closeModal}
+      onClose={handleClose}
       footer={false}
     >
-      <ProductsTable lot={lot} products={products ?? []} count={count} />
+      <ProductsTable selected={selected} setSelected={setSelected} />
     </BaseModal>
   );
 }
 
 interface IProductsTable {
-  lot: Lot;
-  products: Product[];
-  count: number;
+  selected: ProductVariant[];
+  setSelected: Dispatch<SetStateAction<ProductVariant[]>>;
 }
 
-function ProductsTable({ lot, products, count }: IProductsTable) {
-  const [selected, setSelected] = useState<string[]>([]);
-
+function ProductsTable({ selected, setSelected }: IProductsTable) {
   const [page, setPage] = useState(0);
 
   const [filterName, setFilterName] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [addLotProductMutation] = useAddLotProduct();
-  const [removeLotProductMutation] = useRemoveLotProduct();
+  const { products, count } = useListProducts({});
 
-  const handleClick = (product_id: string) => {
-    const found = selected.find((selected_id) => selected_id === product_id);
+  const handleClick = (product: ProductVariant) => {
+    const found = selected.find((sel) => sel.id === product.id);
+
     if (!found) {
-      addLotProductMutation({
-        lot_id: lot.id ?? "",
-        product_id: product_id,
-        onSuccess() {
-          setSelected((prev) => [...prev, product_id]);
-        },
-      });
-    } else {
-      removeLotProductMutation({
-        lot_id: lot?.id ?? "",
-        product_id: product_id ?? "",
-        onSuccess() {
-          setSelected((prev) => {
-            return prev.filter((selected) => selected != product_id);
-          });
-        },
-      });
-    }
+      setSelected((prev) => [...prev, product]);
+    } else
+      setSelected((prev) =>
+        prev.filter((selected) => selected.id != product.id),
+      );
   };
 
   const handlePageChange = (
@@ -108,15 +93,10 @@ function ProductsTable({ lot, products, count }: IProductsTable) {
     setFilterName(event.target.value);
   };
 
-  useEffect(() => {
-    if (selected.length === 0 && lot?.products)
-      setSelected(lot.products.map((product) => product.id));
-  }, []);
-
   return (
     <Card sx={{ borderRadius: "10px" }}>
       <ProductTableToolbar
-        selected={selected}
+        selectedRows={selected.length}
         filterName={filterName}
         onFilterName={handleFilterByName}
       />
@@ -129,24 +109,26 @@ function ProductsTable({ lot, products, count }: IProductsTable) {
               return (
                 <AccordionTable
                   key={product.id}
-                  head={
-                    <SummaryRow
-                      product={product}
+                  head={<SummaryRow product={product} />}
+                  sx={{
+                    pointerEvents:
+                      product.variants.length === 0 ? "none" : "inherit",
+                    opacity: product.variants.length === 0 ? 0.5 : 1,
+                  }}
+                >
+                  {product.variants.map((variant) => (
+                    <DetailsRow
+                      key={variant.id}
+                      variant={variant}
                       selectedRow={(product_id: string) => {
                         const index = selected.findIndex(
-                          (selected_id) => selected_id === product_id,
+                          (selected) => selected.id === product_id,
                         );
 
                         return index != -1;
                       }}
-                      handleClick={(product_id: string) => {
-                        return handleClick(product_id);
-                      }}
+                      handleClick={handleClick}
                     />
-                  }
-                >
-                  {product.variants.map((variant) => (
-                    <DetailsRow key={variant.id} variant={variant} />
                   ))}
                 </AccordionTable>
               );
@@ -168,21 +150,11 @@ function ProductsTable({ lot, products, count }: IProductsTable) {
 
 interface ISummaryRow {
   product: Product;
-  selectedRow: (product_id: string) => boolean;
-  handleClick: (product_id: string) => void;
 }
 
-function SummaryRow({ product, selectedRow, handleClick }: ISummaryRow) {
+function SummaryRow({ product }: ISummaryRow) {
   return (
     <TableRow>
-      <TableCell padding="checkbox">
-        <Checkbox
-          disableRipple
-          checked={selectedRow(product.id)}
-          onChange={() => handleClick(product.id)}
-        />
-      </TableCell>
-
       <TableCell align="center">
         <Avatar
           alt={`${product.title} thumbnail`}
@@ -210,11 +182,21 @@ function SummaryRow({ product, selectedRow, handleClick }: ISummaryRow) {
 
 interface IDetailsRow {
   variant: ProductVariant;
+  selectedRow: (product_id: string) => boolean;
+  handleClick: (product: ProductVariant) => void;
 }
 
-function DetailsRow({ variant }: IDetailsRow) {
+function DetailsRow({ variant, selectedRow, handleClick }: IDetailsRow) {
   return (
     <TableRow>
+      <TableCell padding="checkbox">
+        <Checkbox
+          disableRipple
+          checked={selectedRow(variant.id)}
+          onChange={() => handleClick(variant)}
+        />
+      </TableCell>
+
       <TableCell align="center">
         <Avatar
           alt={`${variant.title} thumbnail`}

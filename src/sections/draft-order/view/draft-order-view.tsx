@@ -1,26 +1,32 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { DraftOrderRequest } from "@medusajs/types";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Navigate, useParams } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 
 import { DraftOrderStatus } from "src/enums";
-import { useGetDraftOrder } from "src/queries/use-get-draft-order";
 import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
+import { useGetDraftOrder } from "src/queries/use-get-draft-order";
 
-import Payment from "../payment";
-import Summary from "../summary";
-import Shipping from "../shipping";
 import Customer from "../customer";
-import RawOrder from "../raw-order";
 import OrderDetails from "../order-details";
+import Payment from "../payment";
+import RawOrder from "../raw-order";
+import Shipping from "../shipping";
+import Summary from "../summary";
 
 // ----------------------------------------------------------------------
 
 export default function DraftOrderView() {
   const { id } = useParams();
-  const { draft_order } = useGetDraftOrder({ draft_order_id: id ?? "" });
+  const {
+    data: draft_order,
+    isLoading,
+    isSuccess,
+  } = useGetDraftOrder({
+    draft_order_id: id ?? "",
+  });
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
@@ -60,6 +66,14 @@ export default function DraftOrderView() {
       newDraftOrder: { ...data, status },
     });
   };
+
+  console.log({ draft_order, isSuccess });
+
+  if (isLoading) return <div>Loading!!!</div>;
+
+  if (!isSuccess) {
+    return <Navigate to="/404" />;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

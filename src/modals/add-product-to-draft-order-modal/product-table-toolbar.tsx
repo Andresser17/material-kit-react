@@ -1,22 +1,21 @@
 import { SetStateAction } from "react";
 // ----------------------------------------------------------------------
-import { ProductVariant } from "@medusajs/types";
 
+import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
 
 import Iconify from "src/components/iconify";
 
 interface IProductTableToolbar {
-  selected: ProductVariant[];
+  selectedRows: number;
   filterName: string;
   onFilterName: (event: { target: { value: SetStateAction<string> } }) => void;
 }
 
 export default function ProductTableToolbar({
-  selected,
+  selectedRows,
   filterName,
   onFilterName,
 }: IProductTableToolbar) {
@@ -29,7 +28,7 @@ export default function ProductTableToolbar({
       }}
     >
       <Typography component="div" variant="subtitle1">
-        {selected.length} selected
+        {selectedRows} selected
       </Typography>
 
       <OutlinedInput

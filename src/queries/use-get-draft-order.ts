@@ -1,9 +1,9 @@
 import { DraftOrderResponse } from "@medusajs/types";
-import { useMutationState, useQuery } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 import HTTPError from "src/utils/http-error";
 
-import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
+import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
@@ -35,31 +35,22 @@ async function getDraftOrder({
 
 export function useGetDraftOrder({
   draft_order_id,
-}: IGetDraftOrder): GetDraftOrderResponse {
+}: IGetDraftOrder): UseQueryResult {
   const { user } = useUser();
 
-  const { data } = useQuery({
+  return useQuery({
     queryKey: [QUERY_KEY.draft_order, user?.access_token, draft_order_id],
     queryFn: async ({ queryKey }): Promise<GetDraftOrderResponse | null> =>
       getDraftOrder({
         access_token: queryKey[1] as string,
         draft_order_id: queryKey[2] as string,
       }),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    // refetchOnMount: false,
+    // refetchOnWindowFocus: false,
+    // refetchOnReconnect: false,
     throwOnError: (error) => {
       console.log(error);
       return false;
     },
   });
-
-  useMutationState({
-    filters: { mutationKey: [MUTATION_KEY], status: "pending" },
-    // select: (mutation) => mutation.state.variables,
-  });
-
-  return {
-    draft_order: data?.draft_order ?? null,
-  };
 }
