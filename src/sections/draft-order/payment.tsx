@@ -1,5 +1,3 @@
-import { DraftOrderResponse } from "@medusajs/types";
-
 import { Button, Divider, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -8,11 +6,10 @@ import SummaryField from "src/components/summary-field";
 import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IPayment {
-  data: DraftOrderResponse;
   paymentAmounts: PaymentAmounts;
 }
 
-export default function Payment({ data, paymentAmounts }: IPayment) {
+export default function Payment({ paymentAmounts }: IPayment) {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>

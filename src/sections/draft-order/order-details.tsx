@@ -17,6 +17,7 @@ import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { useDeleteDraftOrder } from "src/mutations/use-delete-draft-order";
 import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IOrderDetails {
@@ -26,6 +27,7 @@ interface IOrderDetails {
 
 export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
+  const { mutate: deleteDraftOrderMutation } = useDeleteDraftOrder();
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
@@ -35,7 +37,9 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
     setOpen(null);
   };
 
-  const handleCancelOrder = () => {};
+  const handleCancelOrder = () => {
+    deleteDraftOrderMutation({ draft_order_id: data.id });
+  };
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>

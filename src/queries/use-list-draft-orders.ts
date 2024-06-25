@@ -45,15 +45,12 @@ export function useListDraftOrders({
   const { user } = useUser();
 
   const { data } = useQuery({
-    queryKey: [QUERY_KEY.draft_order, user?.access_token, query],
+    queryKey: [QUERY_KEY.list_draft_orders, user?.access_token, query],
     queryFn: async ({ queryKey }): Promise<DraftOrdersResponse | null> =>
       listDraftOrders({
         access_token: queryKey[1] as string,
         query: queryKey[2] as IListDraftOrders["query"],
       }),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
     throwOnError: (error) => {
       console.log(error);
       return false;
