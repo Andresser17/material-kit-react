@@ -1,36 +1,43 @@
-import { ProductVariant, DraftOrderLineItem } from "@medusajs/types";
-import { useState, Dispatch, ChangeEvent, SetStateAction } from "react";
+import { DraftOrderLineItem, ProductVariant } from "@medusajs/types";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import {
-  Box,
-  Stack,
   Avatar,
-  TextField,
+  Box,
   IconButton,
+  Stack,
+  TextField,
   Typography,
 } from "@mui/material";
-
-import { useAppDispatch } from "src/redux/hooks";
-import { removeSelected } from "src/redux/slices/add-existing-product";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
 import Iconify from "src/components/iconify";
+import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-order-modal";
+import { useModal } from "src/modals/useModal";
 
 // ----------------------------------------------------------------------
 
 interface IItemsTableRow {
-  data: ProductVariant;
+  variant: ProductVariant;
   setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
 }
 
-export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
-  const dispatch = useAppDispatch();
+export default function ItemsTableRow({
+  variant,
+  setLineItems,
+}: IItemsTableRow) {
+  const {
+    props: { selectedProducts },
+    onUpdate: updateSelectedProducts,
+  } = useModal<IAddProductToDraftOrderModal>(
+    "add-product-to-draft-order-modal",
+  );
 
   const handleChange = (newQuantity: number) => {
     setLineItems((prev) => {
       return prev.map((lineItem) => {
-        if (lineItem.variant_id === data.id) {
+        if (lineItem.variant_id === variant.id) {
           return { ...lineItem, quantity: newQuantity };
         }
 
@@ -40,9 +47,16 @@ export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
   };
 
   const handleDelete = () => {
-    dispatch(removeSelected(data.id));
+    updateSelectedProducts({
+      selectedProducts: selectedProducts.filter(
+        (product) => product.id !== variant.id,
+      ),
+    });
     setLineItems((prev) => {
-      return prev.filter((lineItem) => lineItem.variant_id != data.id);
+      const result = prev.filter(
+        (lineItem) => lineItem.variant_id != variant.id,
+      );
+      return result;
     });
   };
 
@@ -64,7 +78,7 @@ export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
           />
           <Box>
             <Typography sx={{ fontSize: 12 }} variant="subtitle2" noWrap>
-              {data.title}
+              {variant.title}
             </Typography>
             <Typography
               sx={{ fontSize: 10, color: "#888" }}
@@ -89,11 +103,11 @@ export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
             variant="subtitle2"
             sx={{ color: "text.secondary", fontSize: 10 }}
           >
-            Max: {data.inventory_quantity}
+            Max: {variant.inventory_quantity}
           </Typography>
           <StockField
             handleChange={handleChange}
-            maxQuantity={data.inventory_quantity}
+            maxQuantity={variant.inventory_quantity}
           />
         </Stack>
       </TableCell>
@@ -101,7 +115,7 @@ export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
       <TableCell>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography sx={{ fontSize: 14, mr: 1 }} variant="subtitle2" noWrap>
-            {data.inventory_quantity ?? 0}
+            {variant.inventory_quantity ?? 0}
           </Typography>
           <Typography
             sx={{ fontSize: 14, color: "text.secondary" }}
@@ -122,17 +136,16 @@ export default function ItemsTableRow({ data, setLineItems }: IItemsTableRow) {
   );
 }
 
-function StockField({
-  handleChange,
-  maxQuantity,
-}: {
+interface IStockField {
   handleChange: (newQuantity: number) => void;
   maxQuantity: number;
-}) {
+}
+
+function StockField({ handleChange, maxQuantity }: IStockField) {
   const [stock, setStock] = useState(1);
 
   const handleMinus = () => {
-    if (maxQuantity === stock) return;
+    if (stock === 1) return;
     setStock((prev) => {
       handleChange(prev - 1);
       return prev - 1;
@@ -148,9 +161,11 @@ function StockField({
   };
 
   const handleStock = (e: ChangeEvent<HTMLInputElement>) => {
-    if (maxQuantity === stock) return;
-    handleChange(Number(e.target.value));
-    setStock(Number(e.target.value));
+    const newValue = Number(e.target.value);
+
+    if (newValue > maxQuantity) return;
+    handleChange(newValue);
+    setStock(newValue);
   };
 
   return (

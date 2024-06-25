@@ -1,41 +1,45 @@
-import { CartLineItemDTO, DraftOrderResponse } from "@medusajs/types";
+import { DraftOrderResponse } from "@medusajs/types";
 
-import { Box, Avatar, Divider, Typography } from "@mui/material";
+import { Avatar, Box, Divider, Typography } from "@mui/material";
 
+import { CartLineItem } from "@medusajs/types";
+import { useEffect, useState } from "react";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { PaymentAmounts } from "./view/draft-order-view";
 
 interface ISummary {
-  data: DraftOrderResponse | null;
+  data: DraftOrderResponse;
+  paymentAmounts: PaymentAmounts;
 }
 
-export default function Summary({ data }: ISummary) {
+export default function Summary({ data, paymentAmounts }: ISummary) {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Typography variant="h4">Summary</Typography>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
       {data &&
-        data.cart.items.map((item: CartLineItemDTO) => (
+        data.cart.items.map((item: CartLineItem) => (
           <CartItemSummary key={item.id} data={item} />
         ))}
       <SummaryField
         title="Subtotal"
-        value={`$${data?.cart.subtotal} USD`}
+        value={`$${paymentAmounts.subtotal} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Shipping"
-        value={`$${data?.cart.shipping_total} USD`}
+        value={`$${paymentAmounts.shipping_total} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Tax"
-        value={`$${data?.cart.tax_total} USD`}
+        value={`$${paymentAmounts.tax_total} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Total to pay"
-        value={`$${data?.cart.total} USD`}
+        value={`$${paymentAmounts.total} USD`}
         bold
       />
     </SectionBox>
@@ -43,10 +47,33 @@ export default function Summary({ data }: ISummary) {
 }
 
 interface ICartItemSummary {
-  data: CartLineItemDTO;
+  data: CartLineItem;
 }
 
 function CartItemSummary({ data }: ICartItemSummary) {
+  const [amounts, setAmounts] = useState<{
+    [x: string]: string;
+    unit_price: string;
+    total: string;
+  }>({ unit_price: "", total: "" });
+
+  useEffect(() => {
+    if (data) {
+      setAmounts((prev) => {
+        const newState = { ...prev };
+        Object.keys(amounts).forEach((key) => {
+          let amountArr = data[key].toString().split("");
+          amountArr = amountArr.slice(0, amountArr.length - 2);
+          if (amountArr.length === 0) amountArr = ["0"];
+          const amount = `${amountArr}.00`;
+          newState[key] = amount;
+        });
+
+        return newState;
+      });
+    }
+  }, [data]);
+
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
       <Box
@@ -72,10 +99,10 @@ function CartItemSummary({ data }: ICartItemSummary) {
           variant="subtitle2"
           noWrap
         >
-          ${data.unit_price} x{data.quantity}
+          ${amounts.unit_price} x{data.quantity}
         </Typography>
         <Typography sx={{ fontSize: 12, mr: 0.8 }} variant="subtitle2" noWrap>
-          ${data.total}
+          ${amounts.total}
         </Typography>
         <Typography
           sx={{ fontSize: 12, color: "#888" }}

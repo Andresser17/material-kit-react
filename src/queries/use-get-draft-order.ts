@@ -7,10 +7,6 @@ import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
-interface GetDraftOrderResponse {
-  draft_order: DraftOrderResponse | null;
-}
-
 interface IGetDraftOrder {
   draft_order_id: string;
 }
@@ -20,7 +16,7 @@ async function getDraftOrder({
   draft_order_id,
 }: IGetDraftOrder & {
   access_token: string;
-}): Promise<GetDraftOrderResponse | null> {
+}): Promise<DraftOrderResponse | null> {
   const url = new URL(`/admin/draft-orders/${draft_order_id}`, BACKEND_URL);
   const response = await fetch(url, {
     headers: {
@@ -30,17 +26,20 @@ async function getDraftOrder({
   if (!response.ok)
     throw new HTTPError("Failed on get draft order by id", response);
 
-  return await response.json();
+  const { draft_order }: { draft_order: DraftOrderResponse } =
+    await response.json();
+
+  return draft_order;
 }
 
 export function useGetDraftOrder({
   draft_order_id,
-}: IGetDraftOrder): UseQueryResult {
+}: IGetDraftOrder): UseQueryResult<DraftOrderResponse, HTTPError> {
   const { user } = useUser();
 
   return useQuery({
     queryKey: [QUERY_KEY.draft_order, user?.access_token, draft_order_id],
-    queryFn: async ({ queryKey }): Promise<GetDraftOrderResponse | null> =>
+    queryFn: async ({ queryKey }): Promise<DraftOrderResponse | null> =>
       getDraftOrder({
         access_token: queryKey[1] as string,
         draft_order_id: queryKey[2] as string,

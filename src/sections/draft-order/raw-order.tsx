@@ -1,19 +1,19 @@
 import { DraftOrderResponse } from "@medusajs/types";
 
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Divider,
-  Accordion,
   Typography,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
 
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 
 interface IRawOrder {
-  data: DraftOrderResponse | null;
+  data: DraftOrderResponse;
 }
 
 export default function RawOrder({ data }: IRawOrder) {

@@ -96,7 +96,7 @@ export default function ItemsTable({ setLineItems }: IItemsTable) {
                     return (
                       <ItemsTableRow
                         key={item.id}
-                        data={item}
+                        variant={item}
                         setLineItems={setLineItems}
                       />
                     );

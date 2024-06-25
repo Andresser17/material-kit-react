@@ -1,6 +1,8 @@
 import {
   AddressDTO,
+  CartLineItemDTO,
   MoneyAmountDTO,
+  PaymentSessionDTO,
   ProductOptionValueDTO,
   ProductVariantDTO,
   SalesChannelDTO,
@@ -8,6 +10,7 @@ import {
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
+import { Address } from "cluster";
 import { Option } from "./components/controlled-select";
 import { DraftOrderStatus, LotStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
@@ -167,13 +170,94 @@ export declare module "@medusajs/types" {
     updated_at: string;
     status: DraftOrderStatus;
     display_id: number;
-    cart: CartDTO;
+    cart: Cart;
     cart_id: string;
     order: OrderDTO;
     order_id: string;
     canceled_at: string;
     no_notification_order: boolean;
     metadata: Record<string, unknown> | null;
+  }
+
+  interface Cart {
+    [key: string]:
+      | string
+      | Date
+      | null
+      | LineItem[]
+      | Region
+      | Discount[]
+      | GiftCard[]
+      | Customer
+      | PaymentSessionDTO
+      | ShippingMethod[]
+      | CartType
+      | SalesChannel
+      | SalesChannel[]
+      | number
+      | Record<string, unknown>;
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | Date;
+    object: "card";
+    email: string;
+    billing_address_id: string;
+    billing_address: string;
+    shipping_address_id: string;
+    shipping_address: null | Address;
+    items: LineItem[];
+    region_id: string;
+    region: Region;
+    discounts: Discount[];
+    gift_cards: GiftCard[];
+    customer_id: string;
+    customer: Customer;
+    payment_session: null | PaymentSessionDTO;
+    payment_sessions: PaymentSession[];
+    payment_id: string;
+    payment: Payment;
+    shipping_methods: ShippingMethod[];
+    type: CartType;
+    completed_at: Date;
+    payment_authorized_at: Date;
+    idempotency_key: string;
+    context: Record<string, unknown>;
+    metadata: Record<string, unknown>;
+    sales_channel_id: null | string;
+    sales_channel: SalesChannel;
+    sales_channels: SalesChannel[];
+    shipping_total: number;
+    discount_total: number;
+    raw_discount_total: number;
+    item_tax_total: null | number;
+    shipping_tax_total: null | number;
+    tax_total: null | number;
+    refunded_total: number;
+    total: number;
+    subtotal: number;
+    refundable_amount: number;
+    gift_card_total: number;
+    gift_card_tax_total: number;
+  }
+
+  interface CartLineItem extends CartLineItemDTO {
+    [key: string]:
+      | string
+      | Date
+      | null
+      | LineItem[]
+      | Region
+      | Discount[]
+      | GiftCard[]
+      | Customer
+      | PaymentSessionDTO
+      | ShippingMethod[]
+      | CartType
+      | SalesChannel
+      | SalesChannel[]
+      | number
+      | Record<string, unknown>;
   }
 
   interface ShippingAddress extends AddressDTO {

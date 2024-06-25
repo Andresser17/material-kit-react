@@ -1,22 +1,22 @@
-import { useState, SyntheticEvent } from "react";
 import { DraftOrderResponse } from "@medusajs/types";
+import { SyntheticEvent, useState } from "react";
 
-import Box from "@mui/material/Box";
 import {
   Avatar,
   Divider,
-  Popover,
-  MenuItem,
-  Typography,
   IconButton,
+  MenuItem,
+  Popover,
+  Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface ICustomer {
-  data: DraftOrderResponse | null;
+  data: DraftOrderResponse;
 }
 
 export default function Customer({ data }: ICustomer) {

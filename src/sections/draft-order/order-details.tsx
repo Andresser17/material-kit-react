@@ -17,12 +17,14 @@ import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IOrderDetails {
-  data: DraftOrderResponse | null;
+  data: DraftOrderResponse;
+  paymentAmounts: PaymentAmounts;
 }
 
-export default function OrderDetails({ data }: IOrderDetails) {
+export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
@@ -66,12 +68,15 @@ export default function OrderDetails({ data }: IOrderDetails) {
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Email" value={data.cart.email ?? "N/A"} />
+        <TitleValueField title="Email" value={data.cart?.email ?? "N/A"} />
         <TitleValueField
           title="Phone"
-          value={data.cart.customer.phone ?? "N/A"}
+          value={data.cart?.customer?.phone ?? "N/A"}
         />
-        <TitleValueField title="Amount USD" value={`$${data?.cart.total}`} />
+        <TitleValueField
+          title="Amount USD"
+          value={`$${paymentAmounts.total}`}
+        />
       </Box>
       <Popover
         open={open != null}

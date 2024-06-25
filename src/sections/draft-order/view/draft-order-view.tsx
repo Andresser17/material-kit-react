@@ -1,13 +1,11 @@
-import { DraftOrderRequest } from "@medusajs/types";
-import { useState } from "react";
+import { DraftOrderRequest, DraftOrderResponse } from "@medusajs/types";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Navigate, useParams } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 
 import { DraftOrderStatus } from "src/enums";
 import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
-import { useGetDraftOrder } from "src/queries/use-get-draft-order";
 
 import Customer from "../customer";
 import OrderDetails from "../order-details";
@@ -18,14 +16,24 @@ import Summary from "../summary";
 
 // ----------------------------------------------------------------------
 
-export default function DraftOrderView() {
-  const { id } = useParams();
-  const {
-    data: draft_order,
-    isLoading,
-    isSuccess,
-  } = useGetDraftOrder({
-    draft_order_id: id ?? "",
+export interface PaymentAmounts {
+  [key: string]: string;
+  total: string;
+  subtotal: string;
+  shipping_total: string;
+  tax_total: string;
+}
+
+interface IDraftOrderView {
+  draftOrder: DraftOrderResponse;
+}
+
+export default function DraftOrderView({ draftOrder }: IDraftOrderView) {
+  const [paymentAmounts, setPaymentAmounts] = useState<PaymentAmounts>({
+    total: "0.00",
+    subtotal: "0.00",
+    shipping_total: "0.00",
+    tax_total: "0.00",
   });
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
@@ -67,13 +75,22 @@ export default function DraftOrderView() {
     });
   };
 
-  console.log({ draft_order, isSuccess });
+  useEffect(() => {
+    if (draftOrder) {
+      setPaymentAmounts((prev) => {
+        const newState = { ...prev };
+        Object.keys(paymentAmounts).forEach((key) => {
+          let amountArr = draftOrder.cart[key].toString().split("");
+          amountArr = amountArr.slice(0, amountArr.length - 2);
+          if (amountArr.length === 0) amountArr = ["0"];
+          const amount = `${amountArr}.00`;
+          newState[key] = amount;
+        });
 
-  if (isLoading) return <div>Loading!!!</div>;
-
-  if (!isSuccess) {
-    return <Navigate to="/404" />;
-  }
+        return newState;
+      });
+    }
+  }, [draftOrder]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -93,12 +110,12 @@ export default function DraftOrderView() {
             },
           }}
         >
-          <OrderDetails data={draft_order} />
-          <Payment data={draft_order} />
-          <Summary data={draft_order} />
-          <Shipping data={draft_order} />
-          <Customer data={draft_order} />
-          <RawOrder data={draft_order} />
+          <OrderDetails data={draftOrder} paymentAmounts={paymentAmounts} />
+          <Payment data={draftOrder} paymentAmounts={paymentAmounts} />
+          <Summary data={draftOrder} paymentAmounts={paymentAmounts} />
+          <Shipping data={draftOrder} />
+          <Customer data={draftOrder} />
+          <RawOrder data={draftOrder} />
         </Box>
       </Box>
     </form>

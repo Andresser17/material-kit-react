@@ -6,7 +6,7 @@ import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 
 interface IShipping {
-  data: DraftOrderResponse | null;
+  data: DraftOrderResponse;
 }
 
 export default function Shipping({ data }: IShipping) {
