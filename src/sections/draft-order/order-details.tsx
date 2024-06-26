@@ -89,9 +89,7 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
-          Generate Order
-        </MenuItem>
+        <MenuItem sx={{ fontSize: 12 }}>Generate Order</MenuItem>
         <MenuItem
           onClick={handleCancelOrder}
           sx={{ color: "error.main", fontSize: 12 }}

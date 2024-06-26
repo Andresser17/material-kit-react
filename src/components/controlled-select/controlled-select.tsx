@@ -27,6 +27,7 @@ export interface IControlledSelect<Y extends FieldValues> {
   sx?: SxProps;
   multiple?: boolean;
   dinamicOptions?: boolean;
+  required?: boolean;
 }
 
 export default function ControlledSelect<Y extends FieldValues>({
@@ -37,6 +38,7 @@ export default function ControlledSelect<Y extends FieldValues>({
   options,
   sx,
   multiple,
+  required,
   mapControlValueToOption,
   mapMultiControlValueToOption,
   handleSelectOption,
@@ -126,6 +128,7 @@ export default function ControlledSelect<Y extends FieldValues>({
             getOptionLabel={handleGetOptionLabel}
             renderInput={(params) => (
               <TextField
+                required={required}
                 className="controlled-field"
                 helperText={error ? error.message : null}
                 error={!!error}

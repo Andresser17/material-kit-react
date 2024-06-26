@@ -1,20 +1,45 @@
 import { Button, Divider, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
+import { useEffect } from "react";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
+import { useModal } from "src/modals/useModal";
+import { useMarkPayDraftOrder } from "src/mutations/use-mark-pay-draft-order";
 import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IPayment {
+  draftOrderId: string;
   paymentAmounts: PaymentAmounts;
 }
 
-export default function Payment({ paymentAmounts }: IPayment) {
+export default function Payment({ draftOrderId, paymentAmounts }: IPayment) {
+  const {
+    props: { data },
+    onOpen: openModal,
+  } = useModal<IMarkPayDraftOrderModal>("mark-pay-draft-order-modal");
+  const { mutate: markPayDraftOrderMutation } = useMarkPayDraftOrder();
+
+  useEffect(() => {
+    if (data) {
+      markPayDraftOrderMutation({
+        draft_order_id: draftOrderId,
+        data,
+      });
+    }
+  }, [data]);
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4">Payment</Typography>
-        <Button size="small" variant="outlined" sx={{ fontWeight: "normal" }}>
+        <Button
+          onClick={() => openModal()}
+          size="small"
+          variant="outlined"
+          sx={{ fontWeight: "normal" }}
+        >
           Mark as paid
         </Button>
       </Box>

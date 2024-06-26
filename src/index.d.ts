@@ -2,6 +2,7 @@ import {
   AddressDTO,
   CartLineItemDTO,
   MoneyAmountDTO,
+  OrderDTO,
   PaymentSessionDTO,
   ProductOptionValueDTO,
   ProductVariantDTO,
@@ -139,7 +140,7 @@ export declare module "@medusajs/types" {
     includes_tax: boolean;
   }
 
-  interface OrderDTO {
+  interface Order extends OrderDTO {
     display_id: number;
     fulfillment_status: FulfillmentStatus;
     payment_status: PaymentStatus;
@@ -177,6 +178,40 @@ export declare module "@medusajs/types" {
     canceled_at: string;
     no_notification_order: boolean;
     metadata: Record<string, unknown> | null;
+  }
+
+  interface DraftOrderRequest
+    extends Omit<
+      DraftOrder,
+      "id",
+      "created_at",
+      "canceled_at",
+      "updated_at",
+      "deleted_at"
+    > {
+    email: string;
+    region_id: string;
+    shipping_methods: {
+      option_id: string;
+      data: Record<string, unknown>;
+      price: number;
+    }[];
+    status: DraftOrderStatus;
+    billing_address: ShippingAddress;
+    shipping_address: ShippingAddress;
+    items: DraftOrderLineItem[];
+    discounts: { code: string }[];
+    customer_id: string;
+    no_notification_order: boolean;
+    metadata: Record<string, unknown>;
+  }
+
+  interface DraftOrderLineItem {
+    quantity: number;
+    variant_id: string;
+    unit_price: number;
+    title: string;
+    metadata?: Record<string, unknown> | null;
   }
 
   interface Cart {
@@ -376,40 +411,6 @@ export declare module "@medusajs/types" {
       max_quantity: number;
     }[];
     options?: { option_id: string; value: string }[];
-  }
-
-  export interface DraftOrderRequest
-    extends Omit<
-      DraftOrder,
-      "id",
-      "created_at",
-      "canceled_at",
-      "updated_at",
-      "deleted_at"
-    > {
-    email: string;
-    region_id: string;
-    shipping_methods: {
-      option_id: string;
-      data: Record<string, unknown>;
-      price: number;
-    }[];
-    status: DraftOrderStatus;
-    billing_address: ShippingAddress;
-    shipping_address: ShippingAddress;
-    items: DraftOrderLineItem[];
-    discounts: { code: string }[];
-    customer_id: string;
-    no_notification_order: boolean;
-    metadata: Record<string, unknown>;
-  }
-
-  interface DraftOrderLineItem {
-    quantity: number;
-    variant_id: string;
-    unit_price: number;
-    title: string;
-    metadata?: Record<string, unknown> | null;
   }
 
   interface ShippingMethodData {
