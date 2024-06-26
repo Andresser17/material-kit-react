@@ -2,11 +2,11 @@ import { Button, Divider, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { useModal } from "src/modals/useModal";
-import { useMarkPayDraftOrder } from "src/mutations/use-mark-pay-draft-order";
 import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IPayment {
@@ -15,27 +15,22 @@ interface IPayment {
 }
 
 export default function Payment({ draftOrderId, paymentAmounts }: IPayment) {
+  const navigate = useNavigate();
   const {
-    props: { data },
+    props: { redirect_url },
     onOpen: openModal,
   } = useModal<IMarkPayDraftOrderModal>("mark-pay-draft-order-modal");
-  const { mutate: markPayDraftOrderMutation } = useMarkPayDraftOrder();
 
   useEffect(() => {
-    if (data) {
-      markPayDraftOrderMutation({
-        draft_order_id: draftOrderId,
-        data,
-      });
-    }
-  }, [data]);
+    if (redirect_url && redirect_url.length > 0) navigate(redirect_url);
+  }, [redirect_url]);
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4">Payment</Typography>
         <Button
-          onClick={() => openModal()}
+          onClick={() => openModal({ draft_order_id: draftOrderId })}
           size="small"
           variant="outlined"
           sx={{ fontWeight: "normal" }}

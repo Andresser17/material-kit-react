@@ -3,8 +3,10 @@ import { useForm } from "react-hook-form";
 import ControlledField from "src/components/controlled-field";
 
 import { Box, InputAdornment, Typography } from "@mui/material";
+import { useEffect } from "react";
 import ControlledSelect from "src/components/controlled-select";
 import { paymentMethods } from "src/layouts/lot/config-select";
+import { useMarkPayDraftOrder } from "src/mutations/use-mark-pay-draft-order";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
@@ -25,12 +27,16 @@ export interface MarkPayDraftOrderData {
 }
 
 export interface IMarkPayDraftOrderModal {
-  data: MarkPayDraftOrderData;
+  draft_order_id: string;
+  redirect_url?: string;
 }
 
 export default function IMarkPayDraftOrderModal() {
-  const { onClose: closeModal, onUpdate: updatePayDraftOrder } =
-    useModal<IMarkPayDraftOrderModal>("mark-pay-draft-order-modal");
+  const {
+    props: { draft_order_id },
+    onClose: closeModal,
+    onUpdate: updatePayDraftOrder,
+  } = useModal<IMarkPayDraftOrderModal>("mark-pay-draft-order-modal");
   const { handleSubmit, control } = useForm<MarkPayDraftOrderData>({
     defaultValues: {
       transaction_id: "",
@@ -49,11 +55,28 @@ export default function IMarkPayDraftOrderModal() {
     },
     mode: "onChange",
   });
+  const {
+    mutate: markPayDraftOrderMutation,
+    data: result,
+    isSuccess,
+  } = useMarkPayDraftOrder();
 
   const onSubmit = (data: MarkPayDraftOrderData) => {
     console.log({ data });
-    updatePayDraftOrder({ data });
+    markPayDraftOrderMutation({
+      draft_order_id,
+      data,
+    });
+    if (result)
+      updatePayDraftOrder({
+        draft_order_id,
+        redirect_url: `/orders/${result.id}`,
+      });
   };
+
+  useEffect(() => {
+    if (isSuccess) closeModal();
+  }, [isSuccess]);
 
   return (
     <BaseModal
@@ -144,7 +167,6 @@ export default function IMarkPayDraftOrderModal() {
           />
           <ControlledField
             control={control}
-            required
             id="change.description"
             label="Description"
             variant="outlined"

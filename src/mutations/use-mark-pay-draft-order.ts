@@ -4,7 +4,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 import HTTPError from "src/utils/http-error";
 
@@ -31,10 +30,11 @@ async function markPayDraftOrder(
       change: { ...data.change, amount: Number(data.change.amount) },
     }),
   });
-  if (!response.ok)
-    throw new HTTPError("Failed on mark draft order as paid", response);
 
   const result = await response.json();
+  if (!response.ok) {
+    throw new HTTPError(result.message, response);
+  }
 
   return result.order;
 }
@@ -52,7 +52,6 @@ export function useMarkPayDraftOrder(): UseMutationResult<
 > {
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async ({ draft_order_id, data }: UseCreateLotArgs) => {
@@ -71,8 +70,6 @@ export function useMarkPayDraftOrder(): UseMutationResult<
     onSuccess(data) {
       // call pop up
       toast.success(`Draft order ${data.display_id} mark as paid`);
-
-      navigate(`/orders/${data.id}`);
     },
   });
 }
