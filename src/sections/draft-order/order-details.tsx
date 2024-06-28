@@ -2,7 +2,6 @@ import { DraftOrderResponse } from "@medusajs/types";
 import { MouseEvent, useState } from "react";
 
 import {
-  Button,
   Divider,
   IconButton,
   MenuItem,
@@ -15,6 +14,7 @@ import { DraftOrderStatus } from "src/enums";
 
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
+import Link from "src/components/link";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import { useDeleteDraftOrder } from "src/mutations/use-delete-draft-order";
@@ -49,7 +49,7 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
             Order #{data?.display_id}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
-            12 April 2024 05:05 pm
+            {data?.created_at}
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -62,7 +62,7 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
             {data.status}
           </Label>
           {data.status === DraftOrderStatus.COMPLETED ? (
-            <Button>Go to order</Button>
+            <Link to={`/orders/${data?.order_id}`}>Go to order</Link>
           ) : (
             <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
               <Iconify icon="bi-three-dots" />
@@ -89,7 +89,6 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem sx={{ fontSize: 12 }}>Generate Order</MenuItem>
         <MenuItem
           onClick={handleCancelOrder}
           sx={{ color: "error.main", fontSize: 12 }}

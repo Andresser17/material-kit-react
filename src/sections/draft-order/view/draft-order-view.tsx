@@ -81,7 +81,7 @@ export default function DraftOrderView({ draftOrder }: IDraftOrderView) {
         const newState = { ...prev };
         Object.keys(paymentAmounts).forEach((key) => {
           let amountArr = draftOrder.cart[key].toString().split("");
-          amountArr = amountArr.slice(0, amountArr.length - 2);
+          amountArr = amountArr.slice(0, amountArr.length - 2).join("");
           if (amountArr.length === 0) amountArr = ["0"];
           const amount = `${amountArr}.00`;
           newState[key] = amount;

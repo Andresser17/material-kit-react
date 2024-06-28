@@ -32,6 +32,7 @@ export const MUTATION_KEY = {
   update_lot: "update_lot",
   add_lot_product: "add_lot_product",
   remove_lot_product: "remove_lot_product",
+  create_line_item: "create_line_item",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

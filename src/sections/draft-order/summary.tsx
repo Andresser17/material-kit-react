@@ -1,11 +1,21 @@
-import { DraftOrderResponse } from "@medusajs/types";
+import { DraftOrderResponse, LineItem } from "@medusajs/types";
 
-import { Avatar, Box, Divider, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from "@mui/material";
 
-import { CartLineItem } from "@medusajs/types";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
+import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { IAddLineItemModal } from "src/modals/add-line-item-modal";
+import { useModal } from "src/modals/useModal";
 import { PaymentAmounts } from "./view/draft-order-view";
 
 interface ISummary {
@@ -14,12 +24,44 @@ interface ISummary {
 }
 
 export default function Summary({ data, paymentAmounts }: ISummary) {
+  const [open, setOpen] = useState<Element | null>(null);
+  const { onOpen: openModal, onUpdate: updateModal } =
+    useModal<IAddLineItemModal>("add-line-item-modal");
+
+  const handleOpenMenu = (e: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
+    setOpen(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
+  const handleCreateLineItems = () => {
+    openModal({ draft_order_id: data.id, line_items: data.cart.items });
+    handleCloseMenu();
+  };
+
+  useEffect(() => {
+    if (data.cart.items) {
+      updateModal({ draft_order_id: data.id, line_items: data.cart.items });
+    }
+  }, [data]);
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
-      <Typography variant="h4">Summary</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4">Summary</Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
+            <Iconify icon="bi-three-dots" />
+          </IconButton>
+        </Box>
+      </Box>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
       {data &&
-        data.cart.items.map((item: CartLineItem) => (
+        data.cart.items.map((item: LineItem) => (
           <CartItemSummary key={item.id} data={item} />
         ))}
       <SummaryField
@@ -42,12 +84,23 @@ export default function Summary({ data, paymentAmounts }: ISummary) {
         value={`$${paymentAmounts.total} USD`}
         bold
       />
+      <Popover
+        open={open != null}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem onClick={handleCreateLineItems} sx={{ fontSize: 12 }}>
+          Edit Line Items
+        </MenuItem>
+      </Popover>
     </SectionBox>
   );
 }
 
 interface ICartItemSummary {
-  data: CartLineItem;
+  data: LineItem;
 }
 
 function CartItemSummary({ data }: ICartItemSummary) {
@@ -63,7 +116,7 @@ function CartItemSummary({ data }: ICartItemSummary) {
         const newState = { ...prev };
         Object.keys(amounts).forEach((key) => {
           let amountArr = data[key].toString().split("");
-          amountArr = amountArr.slice(0, amountArr.length - 2);
+          amountArr = amountArr.slice(0, amountArr.length - 2).join("");
           if (amountArr.length === 0) amountArr = ["0"];
           const amount = `${amountArr}.00`;
           newState[key] = amount;

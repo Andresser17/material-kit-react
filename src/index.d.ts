@@ -199,19 +199,72 @@ export declare module "@medusajs/types" {
     status: DraftOrderStatus;
     billing_address: ShippingAddress;
     shipping_address: ShippingAddress;
-    items: DraftOrderLineItem[];
+    items: LineItem[];
     discounts: { code: string }[];
     customer_id: string;
     no_notification_order: boolean;
     metadata: Record<string, unknown>;
   }
 
-  interface DraftOrderLineItem {
-    quantity: number;
-    variant_id: string;
-    unit_price: number;
+  interface LineItem {
+    [key: string]:
+      | string
+      | Date
+      | null
+      | LineItem[]
+      | Region
+      | Discount[]
+      | GiftCard[]
+      | Customer
+      | PaymentSessionDTO
+      | ShippingMethod[]
+      | CartType
+      | SalesChannel
+      | SalesChannel[]
+      | number
+      | Record<string, unknown>;
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    cart_id: string;
+    cart: Cart;
+    order: Order;
+    swap_id: string;
+    swap: Swap;
+    claim_order_id: string;
+    claim_order: ClaimOrder;
+    tax_lines: LineItemTaxLine[];
+    adjustments: LIneItemAdjustment[];
     title: string;
-    metadata?: Record<string, unknown> | null;
+    description: null | string;
+    thumbnail: null | string;
+    is_return: boolean;
+    is_giftcard: boolean;
+    should_merge: boolean;
+    allow_discounts: boolean;
+    has_shipping: null | boolean;
+    unit_price: number;
+    variant_id: null | string;
+    variant: ProductVariant;
+    product_id: null | string;
+    quantity: number;
+    fulfilled_quantity: null | number;
+    returned_quantity: null | number;
+    shipped_quantity: null | number;
+    metadata: Record<string, unknown>;
+    includes_tax: boolean;
+    original_item_id: null | string;
+    order_edit_id: null | string;
+    order_edit: null | OrderEdit;
+    refundable: null | number;
+    subtotal: null | number;
+    tax_total: null | number;
+    total: null | number;
+    original_total: null | number;
+    original_tax_total: null | number;
+    discount_total: null | number;
+    raw_discount_total: null | number;
+    gift_card_total: null | number;
   }
 
   interface Cart {

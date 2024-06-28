@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { LotStatus } from "src/enums";
+import { IAddLineItemModal } from "src/modals/add-line-item-modal/add-line-item-modal";
 import { IAddProductModal } from "src/modals/add-product-modal";
 import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-order-modal/add-product-to-draft-order-modal";
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
@@ -66,6 +67,11 @@ const initialState = {
       open: false,
       props: {},
     } as Modal<IMarkPayDraftOrderModal>,
+    {
+      id: "add-line-item-modal",
+      open: false,
+      props: { draft_order_id: "" },
+    } as Modal<IAddLineItemModal>,
   ],
 };
 
