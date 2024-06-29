@@ -1,4 +1,4 @@
-import { DraftOrderResponse } from "@medusajs/types";
+import { DraftOrderResponse, PaymentAmounts } from "@medusajs/types";
 import { MouseEvent, useState } from "react";
 
 import {
@@ -18,14 +18,16 @@ import Link from "src/components/link";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import { useDeleteDraftOrder } from "src/mutations/use-delete-draft-order";
-import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IOrderDetails {
-  data: DraftOrderResponse;
+  draftOrder: DraftOrderResponse;
   paymentAmounts: PaymentAmounts;
 }
 
-export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
+export default function OrderDetails({
+  draftOrder,
+  paymentAmounts,
+}: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
   const { mutate: deleteDraftOrderMutation } = useDeleteDraftOrder();
 
@@ -38,7 +40,7 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
   };
 
   const handleCancelOrder = () => {
-    deleteDraftOrderMutation({ draft_order_id: data.id });
+    deleteDraftOrderMutation({ draft_order_id: draftOrder.id });
   };
 
   return (
@@ -46,23 +48,25 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            Order #{data?.display_id}
+            Order #{draftOrder?.display_id}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
-            {data?.created_at}
+            {draftOrder?.created_at}
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Label
             color={
-              data.status === DraftOrderStatus.COMPLETED ? "success" : "info"
+              draftOrder.status === DraftOrderStatus.COMPLETED
+                ? "success"
+                : "info"
             }
             sx={{ mr: 1 }}
           >
-            {data.status}
+            {draftOrder.status}
           </Label>
-          {data.status === DraftOrderStatus.COMPLETED ? (
-            <Link to={`/orders/${data?.order_id}`}>Go to order</Link>
+          {draftOrder.status === DraftOrderStatus.COMPLETED ? (
+            <Link to={`/orders/${draftOrder?.order_id}`}>Go to order</Link>
           ) : (
             <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
               <Iconify icon="bi-three-dots" />
@@ -72,10 +76,13 @@ export default function OrderDetails({ data, paymentAmounts }: IOrderDetails) {
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Email" value={data.cart?.email ?? "N/A"} />
+        <TitleValueField
+          title="Email"
+          value={draftOrder.cart?.email ?? "N/A"}
+        />
         <TitleValueField
           title="Phone"
-          value={data.cart?.customer?.phone ?? "N/A"}
+          value={draftOrder.cart?.customer?.phone ?? "N/A"}
         />
         <TitleValueField
           title="Amount USD"

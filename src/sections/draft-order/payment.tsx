@@ -1,3 +1,4 @@
+import { DraftOrder, PaymentAmounts } from "@medusajs/types";
 import { Button, Divider, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -5,16 +6,16 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { DraftOrderStatus } from "src/enums";
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { useModal } from "src/modals/useModal";
-import { PaymentAmounts } from "./view/draft-order-view";
 
 interface IPayment {
-  draftOrderId: string;
+  draftOrder: DraftOrder;
   paymentAmounts: PaymentAmounts;
 }
 
-export default function Payment({ draftOrderId, paymentAmounts }: IPayment) {
+export default function Payment({ draftOrder, paymentAmounts }: IPayment) {
   const navigate = useNavigate();
   const {
     props: { redirect_url },
@@ -29,14 +30,17 @@ export default function Payment({ draftOrderId, paymentAmounts }: IPayment) {
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4">Payment</Typography>
-        <Button
-          onClick={() => openModal({ draft_order_id: draftOrderId })}
-          size="small"
-          variant="outlined"
-          sx={{ fontWeight: "normal" }}
-        >
-          Mark as paid
-        </Button>
+
+        {draftOrder.status !== DraftOrderStatus.COMPLETED && (
+          <Button
+            onClick={() => openModal({ draft_order_id: draftOrder.id })}
+            size="small"
+            variant="outlined"
+            sx={{ fontWeight: "normal" }}
+          >
+            Mark as paid
+          </Button>
+        )}
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <SummaryField

@@ -141,6 +141,26 @@ export declare module "@medusajs/types" {
   }
 
   interface Order extends OrderDTO {
+    [key: string]:
+      | string
+      | Date
+      | null
+      | LineItem[]
+      | Region
+      | Discount[]
+      | GiftCard[]
+      | Customer
+      | PaymentSessionDTO
+      | ShippingMethod[]
+      | CartType
+      | SalesChannel
+      | SalesChannel[]
+      | number
+      | Record<string, unknown>;
+    created_at: Data;
+    cart_id: string;
+    items: LineItem[];
+    customer: CustomerDTO;
     display_id: number;
     fulfillment_status: FulfillmentStatus;
     payment_status: PaymentStatus;
@@ -531,5 +551,13 @@ export declare module "@medusajs/types" {
     }[];
     stock?: { variant_id: string; quantity: number }[];
     products?: Product[];
+  }
+
+  interface PaymentAmounts {
+    [key: string]: string;
+    total: string;
+    subtotal: string;
+    shipping_total: string;
+    tax_total: string;
   }
 }

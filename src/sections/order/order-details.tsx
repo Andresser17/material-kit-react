@@ -1,27 +1,28 @@
-import { useState, MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 
-import Box from "@mui/material/Box";
 import {
-  Button,
   Divider,
-  Popover,
-  MenuItem,
   IconButton,
+  MenuItem,
+  Popover,
   Typography,
 } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import { OrderStatus } from "src/enums";
 
-import Label from "src/components/label";
+import { Order } from "@medusajs/types";
 import Iconify from "src/components/iconify";
+import Label from "src/components/label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface IOrderDetails {
+  order: Order;
   status: OrderStatus;
 }
 
-export default function OrderDetails({ status }: IOrderDetails) {
+export default function OrderDetails({ order, status }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
@@ -39,10 +40,10 @@ export default function OrderDetails({ status }: IOrderDetails) {
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h4" sx={{ mb: 1 }}>
-            #26
+            #{order.display_id}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
-            12 April 2024 05:05 pm
+            {order.created_at}
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -52,20 +53,19 @@ export default function OrderDetails({ status }: IOrderDetails) {
           >
             {status}
           </Label>
-          {status === OrderStatus.COMPLETED ? (
-            <Button>Go to order</Button>
-          ) : (
-            <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
-              <Iconify icon="bi-three-dots" />
-            </IconButton>
-          )}
+          <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
+            <Iconify icon="bi-three-dots" />
+          </IconButton>
         </Box>
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Email" value="user@example.com" />
-        <TitleValueField title="Phone" value="N/A" />
-        <TitleValueField title="Payment" value="Manual-payment" />
+        <TitleValueField title="Email" value={order.email ?? "N/A"} />
+        <TitleValueField title="Phone" value={order.customer.phone ?? "N/A"} />
+        <TitleValueField
+          title="Payment"
+          value={order.payments[0].provider_id ?? "N/A"}
+        />
       </Box>
       <Popover
         open={open != null}
