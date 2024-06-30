@@ -2,6 +2,7 @@ export const QUERY_KEY = {
   user: "user",
   product: "product",
   regions: "regions",
+  list_customers: "list_customers",
   list_products: "list_products",
   list_draft_orders: "list_draft_orders",
   product_type: "productType",
@@ -13,7 +14,6 @@ export const QUERY_KEY = {
   get_lot: "get_lot",
   tag: "tag",
   collection: "collection",
-  customers: "customers",
   shipping_options: "shipping_options",
 };
 
@@ -34,6 +34,7 @@ export const MUTATION_KEY = {
   add_lot_product: "add_lot_product",
   remove_lot_product: "remove_lot_product",
   create_line_item: "create_line_item",
+  create_customer: "create_customer",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

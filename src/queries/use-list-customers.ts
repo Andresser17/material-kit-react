@@ -41,7 +41,7 @@ export function useListCustomers(): UseQueryResult<
   const { user } = useUser();
 
   return useQuery({
-    queryKey: [QUERY_KEY.customers, user?.access_token],
+    queryKey: [QUERY_KEY.list_customers, user?.access_token],
     queryFn: async ({ queryKey }): Promise<ListCustomersResponse | null> =>
       listCustomers(queryKey[1] as string),
     // refetchOnMount: false,

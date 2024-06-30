@@ -11,13 +11,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import Typography from "@mui/material/Typography";
 
-import { IAddProductModal } from "src/modals/add-product-modal";
 import { useModal } from "src/modals/useModal";
 
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 
 import { CustomerDTO } from "@medusajs/types";
+import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { emptyRows } from "src/utils/table-utils";
 import CustomerTableRow from "../customer-table-row";
 import ProductTableHead, { TableOrder } from "../product-table-head";
@@ -36,7 +36,7 @@ export default function CustomersView({ customers, count }: ICustomersView) {
     props: { redirect_url },
     onOpen: openModal,
     onUpdate: updateModal,
-  } = useModal<IAddProductModal>("add-product-modal");
+  } = useModal<ICreateCustomerModal>("create-customer-modal");
 
   const [page, setPage] = useState(0);
 
@@ -106,10 +106,10 @@ export default function CustomersView({ customers, count }: ICustomersView) {
     setFilterName(event.target.value);
   };
 
-  // redirect to product view after created a new one
+  // redirect to customer view after created a new one
   useEffect(() => {
     if (redirect_url) {
-      navigate(`/products/${redirect_url}`);
+      navigate(`/customers/${redirect_url}`);
       updateModal({ redirect_url: "" });
     }
   }, [redirect_url]);
