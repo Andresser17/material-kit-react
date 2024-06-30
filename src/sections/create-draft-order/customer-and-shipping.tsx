@@ -1,21 +1,21 @@
-import { Link } from "react-router-dom";
-import { Dispatch, useEffect, SetStateAction } from "react";
 import {
   CustomerDTO,
-  ShippingAddress,
   DraftOrderShippingMethod,
+  ShippingAddress,
 } from "@medusajs/types";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import {
   Box,
+  Button,
   Card,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Radio,
   Select,
-  Button,
-  MenuItem,
   Typography,
-  InputLabel,
-  FormControl,
 } from "@mui/material";
 
 import { useListCustomers } from "src/queries/use-list-customers";
@@ -49,7 +49,7 @@ export default function CustomerAndShipping({
   const { shipping_options } = useListShippingOptions({
     query: { region_id: regionId, is_return: false },
   });
-  const { customers } = useListCustomers();
+  const { data: customers } = useListCustomers();
 
   const handleShippingOptions = (e: { target: { value: string } }) => {
     const found = shipping_options.find(
@@ -64,8 +64,12 @@ export default function CustomerAndShipping({
   };
 
   const handleCustomers = (e: { target: { value: string } }) => {
-    const found = customers.find((customer) => customer.id === e.target.value);
-    setSelectedCustomer(found ?? null);
+    if (customers) {
+      const found = customers.customers.find(
+        (customer) => customer.id === e.target.value,
+      );
+      setSelectedCustomer(found ?? null);
+    }
   };
 
   useEffect(() => {
@@ -78,7 +82,8 @@ export default function CustomerAndShipping({
           price: option.amount,
         });
     }
-    if (customers.length > 0) setSelectedCustomer(customers[0]);
+    if (customers && customers.customers.length > 0)
+      setSelectedCustomer(customers.customers[0]);
   }, [shipping_options, customers]);
 
   useEffect(() => {
@@ -158,7 +163,7 @@ export default function CustomerAndShipping({
           onChange={handleCustomers}
         >
           {customers &&
-            customers.map((customer) => {
+            customers.customers.map((customer) => {
               const label =
                 customer.first_name && customer.last_name
                   ? `${customer.first_name} ${customer.last_name} (${customer.email})`
