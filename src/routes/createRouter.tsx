@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 
 import DashboardLayout from "src/layouts/dashboard";
 
@@ -22,6 +21,7 @@ export const LotPage = lazy(() => import("src/pages/lot"));
 export const CreateLotPage = lazy(() => import("src/pages/create-lot"));
 export const LoginPage = lazy(() => import("src/pages/login"));
 export const ErrorPage = lazy(() => import("src/pages/error-page"));
+export const CustomersPage = lazy(() => import("src/pages/customers"));
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +54,10 @@ export function createRouter(isLoggedIn: boolean) {
         { path: "lots", element: <LotsPage /> },
         { path: "lots/create", element: <CreateLotPage /> },
         { path: "lots/:id", element: <LotPage /> },
+        {
+          path: "customers",
+          element: <CustomersPage />,
+        },
       ],
       errorElement: <ErrorPage />,
     },

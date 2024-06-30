@@ -13,6 +13,7 @@ export const QUERY_KEY = {
   get_lot: "get_lot",
   tag: "tag",
   collection: "collection",
+  customers: "customers",
   shipping_options: "shipping_options",
 };
 

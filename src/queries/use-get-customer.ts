@@ -1,10 +1,10 @@
-import toast from "react-hot-toast";
 import { CustomerDTO } from "@medusajs/types";
-import { useQuery, useMutationState } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
+import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
@@ -28,10 +28,10 @@ async function getCustomerById(
   return await response.json();
 }
 
-export function useListCustomers(customer_id: string): GetCustomerByIdResponse {
+export function useGetCustomer(customer_id: string): UseQueryResult {
   const { user } = useUser();
 
-  const { data } = useQuery({
+  return useQuery({
     queryKey: [QUERY_KEY.shipping_options, user?.access_token, customer_id],
     queryFn: async ({ queryKey }): Promise<GetCustomerByIdResponse | null> =>
       getCustomerById(queryKey[1] as string, queryKey[2] as string),
@@ -44,13 +44,4 @@ export function useListCustomers(customer_id: string): GetCustomerByIdResponse {
       return false;
     },
   });
-
-  useMutationState({
-    filters: { mutationKey: [MUTATION_KEY], status: "pending" },
-    // select: (mutation) => mutation.state.variables,
-  });
-
-  return {
-    customer: data?.customer ? data.customer : null,
-  };
 }
