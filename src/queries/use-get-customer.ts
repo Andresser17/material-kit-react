@@ -8,32 +8,34 @@ import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
-interface GetCustomerByIdResponse {
-  customer: CustomerDTO | null;
-}
-
 async function getCustomerById(
   access_token: string,
   id: string,
-): Promise<GetCustomerByIdResponse> {
-  const url = new URL(`/admin/customers-v2/${id}`, BACKEND_URL);
+): Promise<CustomerDTO> {
+  const url = new URL(
+    `/admin/customers/${id}?expand=shipping_addresses`,
+    BACKEND_URL,
+  );
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok)
-    throw new HTTPError("Failed on get customer by id", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result.customer;
 }
 
-export function useGetCustomer(customer_id: string): UseQueryResult {
+export function useGetCustomer(
+  customer_id: string,
+): UseQueryResult<CustomerDTO, HTTPError> {
   const { user } = useUser();
 
   return useQuery({
     queryKey: [QUERY_KEY.shipping_options, user?.access_token, customer_id],
-    queryFn: async ({ queryKey }): Promise<GetCustomerByIdResponse | null> =>
+    queryFn: async ({ queryKey }): Promise<CustomerDTO> =>
       getCustomerById(queryKey[1] as string, queryKey[2] as string),
     // refetchOnMount: false,
     // refetchOnWindowFocus: false,

@@ -27,9 +27,11 @@ async function listCustomers(
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new HTTPError("Failed on get customers", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result;
 }
 
 export function useListCustomers(): UseQueryResult<

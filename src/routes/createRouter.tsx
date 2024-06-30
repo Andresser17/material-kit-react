@@ -22,6 +22,7 @@ export const CreateLotPage = lazy(() => import("src/pages/create-lot"));
 export const LoginPage = lazy(() => import("src/pages/login"));
 export const ErrorPage = lazy(() => import("src/pages/error-page"));
 export const CustomersPage = lazy(() => import("src/pages/customers"));
+export const CustomerPage = lazy(() => import("src/pages/customer"));
 
 // ----------------------------------------------------------------------
 
@@ -57,6 +58,10 @@ export function createRouter(isLoggedIn: boolean) {
         {
           path: "customers",
           element: <CustomersPage />,
+        },
+        {
+          path: "customers/:id",
+          element: <CustomerPage />,
         },
       ],
       errorElement: <ErrorPage />,

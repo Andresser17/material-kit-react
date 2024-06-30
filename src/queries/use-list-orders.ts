@@ -1,14 +1,14 @@
-import { OrderDTO } from "@medusajs/types";
-import { useQuery, useMutationState } from "@tanstack/react-query";
+import { Order } from "@medusajs/types";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 import HTTPError from "src/utils/http-error";
 
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
+import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
-interface OrdersResponse {
-  orders: OrderDTO[] | null;
+export interface OrdersResponse {
+  orders: Order[];
   count: number;
   offset: number;
   limit: number;
@@ -19,28 +19,36 @@ async function listOrders({
   query,
 }: IUseListOrders & { access_token: string }): Promise<OrdersResponse | null> {
   const url = new URL(`/admin/orders`, BACKEND_URL);
+
   if (query?.limit) url.searchParams.append("limit", query?.limit.toString());
+  if (query?.customer_id)
+    url.searchParams.append("customer_id", query?.customer_id);
+
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok)
-    throw new HTTPError("Failed on get orders request", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result;
 }
 
 interface IUseListOrders {
   query?: {
-    limit: number;
+    limit?: number;
+    customer_id?: string;
   };
 }
 
-export function useListOrders({ query }: IUseListOrders): OrdersResponse {
+export function useListOrders({
+  query,
+}: IUseListOrders): UseQueryResult<OrdersResponse, HTTPError> {
   const { user } = useUser();
 
-  const { data } = useQuery({
+  return useQuery({
     queryKey: [QUERY_KEY.order, user?.access_token, query],
     queryFn: async ({ queryKey }): Promise<OrdersResponse | null> =>
       listOrders({
@@ -55,20 +63,4 @@ export function useListOrders({ query }: IUseListOrders): OrdersResponse {
       return false;
     },
   });
-
-  useMutationState({
-    filters: { mutationKey: [MUTATION_KEY], status: "pending" },
-    // select: (mutation) => mutation.state.variables,
-  });
-
-  if (Array.isArray(data?.orders)) {
-    return data;
-  }
-
-  return {
-    orders: data?.orders ? [data.orders] : null,
-    count: data?.count ? data.count : 1,
-    offset: data?.offset ? data.offset : 0,
-    limit: data?.limit ? data.limit : 1,
-  };
 }
