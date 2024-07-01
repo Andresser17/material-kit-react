@@ -1,4 +1,4 @@
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -9,7 +9,7 @@ import { BACKEND_URL, QUERY_KEY } from "src/config";
 import { useUser } from "./use-user";
 
 interface ListCustomersResponse {
-  customers: CustomerDTO[];
+  customers: Customer[];
   count: number;
   offset: number;
   limit: number;

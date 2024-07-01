@@ -1,4 +1,4 @@
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -11,7 +11,7 @@ import { useUser } from "./use-user";
 async function getCustomerById(
   access_token: string,
   id: string,
-): Promise<CustomerDTO> {
+): Promise<Customer> {
   const url = new URL(
     `/admin/customers/${id}?expand=shipping_addresses`,
     BACKEND_URL,
@@ -30,12 +30,12 @@ async function getCustomerById(
 
 export function useGetCustomer(
   customer_id: string,
-): UseQueryResult<CustomerDTO, HTTPError> {
+): UseQueryResult<Customer, HTTPError> {
   const { user } = useUser();
 
   return useQuery({
-    queryKey: [QUERY_KEY.shipping_options, user?.access_token, customer_id],
-    queryFn: async ({ queryKey }): Promise<CustomerDTO> =>
+    queryKey: [QUERY_KEY.customer, user?.access_token, customer_id],
+    queryFn: async ({ queryKey }): Promise<Customer> =>
       getCustomerById(queryKey[1] as string, queryKey[2] as string),
     // refetchOnMount: false,
     // refetchOnWindowFocus: false,

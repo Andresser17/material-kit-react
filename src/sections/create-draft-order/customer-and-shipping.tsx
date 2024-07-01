@@ -1,19 +1,13 @@
-import {
-  CustomerDTO,
-  DraftOrderShippingMethod,
-  ShippingAddress,
-} from "@medusajs/types";
+import { Address, Customer, DraftOrderShippingMethod } from "@medusajs/types";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import {
   Box,
   Button,
-  Card,
   FormControl,
   InputLabel,
   MenuItem,
-  Radio,
   Select,
   Typography,
 } from "@mui/material";
@@ -21,6 +15,7 @@ import {
 import { useListCustomers } from "src/queries/use-list-customers";
 import { useListShippingOptions } from "src/queries/use-list-shipping-options";
 
+import AddressCard from "src/components/address-card";
 import SectionBox from "src/components/section-box";
 
 // ----------------------------------------------------------------------
@@ -30,10 +25,10 @@ interface ICustomerAndShipping {
   regionName: string;
   selectedMethod: DraftOrderShippingMethod | null;
   setSelectedMethod: Dispatch<SetStateAction<DraftOrderShippingMethod | null>>;
-  selectedCustomer: CustomerDTO | null;
-  setSelectedCustomer: Dispatch<SetStateAction<CustomerDTO | null>>;
-  selectedAddress: ShippingAddress | null;
-  setSelectedAddress: Dispatch<SetStateAction<ShippingAddress | null>>;
+  selectedCustomer: Customer | null;
+  setSelectedCustomer: Dispatch<SetStateAction<Customer | null>>;
+  selectedAddress: Address | null;
+  setSelectedAddress: Dispatch<SetStateAction<Address | null>>;
 }
 
 export default function CustomerAndShipping({
@@ -196,52 +191,5 @@ export default function CustomerAndShipping({
         </Typography>
       )}
     </SectionBox>
-  );
-}
-
-interface IAddressCard {
-  address: ShippingAddress;
-  selected: ShippingAddress | null;
-  setSelected: Dispatch<SetStateAction<ShippingAddress | null>>;
-}
-
-function AddressCard({ address, selected, setSelected }: IAddressCard) {
-  const handleClick = () => {
-    setSelected(address);
-  };
-
-  return (
-    <Card
-      onClick={handleClick}
-      sx={{
-        display: "flex",
-        p: 2,
-        mb: 2,
-        borderRadius: 1.5,
-        "&:last-child": { mb: 0 },
-        cursor: "pointer",
-      }}
-    >
-      <Radio
-        checked={selected?.id === address.id}
-        name={address.id}
-        value={address}
-        sx={{ mr: 2 }}
-      />
-      <Box>
-        <Typography variant="subtitle2">
-          {address.first_name} {address.last_name}
-        </Typography>
-        <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
-          {address.address_1}
-        </Typography>
-        <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
-          {address.address_2}
-        </Typography>
-        <Typography variant="subtitle2" sx={{ fontSize: 10, color: "#888" }}>
-          {address.city}
-        </Typography>
-      </Box>
-    </Card>
   );
 }

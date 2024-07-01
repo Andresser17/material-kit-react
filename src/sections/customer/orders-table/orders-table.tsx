@@ -1,12 +1,10 @@
 import { SetStateAction, useState } from "react";
 
 import {
-  Box,
   Table,
   TableBody,
   TableContainer,
   TablePagination,
-  Typography,
 } from "@mui/material";
 
 import { emptyRows } from "src/utils/table-utils";
@@ -14,7 +12,6 @@ import { emptyRows } from "src/utils/table-utils";
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
-import SectionBox from "src/components/section-box";
 import { OrdersResponse } from "src/queries/use-list-orders";
 import OrdersTableHead from "./orders-table-head";
 import OrdersTableRow from "./orders-table-row";
@@ -40,14 +37,7 @@ export default function OrdersTable({ orders }: IOrdersTable) {
   };
 
   return (
-    <SectionBox>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4">Orders {orders.count}</Typography>
-        <Typography variant="subtitle2" sx={{ color: "#888" }}>
-          An overview of Customers Orders
-        </Typography>
-      </Box>
-
+    <>
       <Scrollbar sx={null}>
         <TableContainer sx={{ overflow: "unset" }}>
           <Table>
@@ -90,6 +80,6 @@ export default function OrdersTable({ orders }: IOrdersTable) {
         rowsPerPageOptions={[5, 10, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </SectionBox>
+    </>
   );
 }

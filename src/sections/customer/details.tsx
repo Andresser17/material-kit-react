@@ -1,4 +1,4 @@
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import { MouseEvent, useState } from "react";
 
 import {
@@ -15,7 +15,7 @@ import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface IDetails {
-  customer: CustomerDTO;
+  customer: Customer;
 }
 
 export default function Details({ customer }: IDetails) {

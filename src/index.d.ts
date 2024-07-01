@@ -1,5 +1,4 @@
 import {
-  AddressDTO,
   CartLineItemDTO,
   MoneyAmountDTO,
   OrderDTO,
@@ -11,7 +10,6 @@ import {
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
-import { Address } from "cluster";
 import { Option } from "./components/controlled-select";
 import { DraftOrderStatus, LotStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
@@ -368,13 +366,44 @@ export declare module "@medusajs/types" {
       | Record<string, unknown>;
   }
 
-  interface ShippingAddress extends AddressDTO {
-    first_name: string;
-    last_name: string;
+  interface Address {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | Date;
+    customer_id: null | string;
+    customer: null | Customer;
+    company: null | string;
+    first_name: null | string;
+    last_name: null | string;
+    address_1: null | string;
+    address_2: null | string;
+    city: null | string;
+    country_code: null | string;
+    country: null | Country;
+    province: null | string;
+    postal_code: null | string;
+    phone: null | string;
+    metadata: Record<string, unknown>;
   }
 
-  interface CustomerDTO {
-    shipping_addresses: ShippingAddress[];
+  interface Customer {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | Date;
+    email: string;
+    first_name: string;
+    last_name: string;
+    billing_address_id: null | string;
+    billing_address: Address;
+    shipping_addresses: Address[];
+    password_hash: string;
+    phone: string;
+    has_account: boolean;
+    orders: Order[];
+    groups: CustomerGroup[];
+    metadata: Record<string, unknown>;
   }
 
   interface ProductVariant extends ProductVariantDTO {
