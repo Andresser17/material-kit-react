@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ControlledField from "src/components/controlled-field";
 import {
@@ -23,7 +24,7 @@ export default function AddShippingAddressModal() {
       last_name: "",
       address_1: "",
       city: "",
-      country_code: "",
+      country_code: "ve",
       postal_code: 0,
       phone: "",
       company: "",
@@ -32,7 +33,8 @@ export default function AddShippingAddressModal() {
     },
     mode: "onChange",
   });
-  const { mutate: addShippingAddressMutation } = useAddShippingAddress();
+  const { mutate: addShippingAddressMutation, isSuccess } =
+    useAddShippingAddress();
   const onSubmit = (data: AddShippingAddressRequest) => {
     addShippingAddressMutation({
       customer_id,
@@ -40,12 +42,9 @@ export default function AddShippingAddressModal() {
     });
   };
 
-  // useEffect(() => {
-  //   if (isSuccess && customer) {
-  //     updateModal({ redirect_url: customer.id });
-  //     closeModal(false);
-  //   }
-  // }, [isSuccess, customer]);
+  useEffect(() => {
+    if (isSuccess) closeModal();
+  }, [isSuccess]);
 
   return (
     <BaseModal
@@ -57,27 +56,10 @@ export default function AddShippingAddressModal() {
       onClose={() => closeModal()}
     >
       <form id="add-shipping-address-modal" onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="subtitle2" sx={{ fontSize: "16px", mb: 1 }}>
-          Account
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Personal Information
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 3 }}>
-          <ControlledField
-            id="email"
-            label="Email"
-            control={control}
-            sx={{ width: "48%" }}
-          />
-          <ControlledField
-            id="password"
-            label="Password"
-            control={control}
-            sx={{ width: "48%" }}
-          />
-        </Box>
-        <Typography variant="subtitle2" sx={{ fontSize: "16px", mb: 1 }}>
-          Customer Information
-        </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
           <ControlledField
             id="first_name"
             label="First Name"
@@ -93,6 +75,53 @@ export default function AddShippingAddressModal() {
           <ControlledField
             id="phone"
             label="Phone"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="company"
+            label="Company"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+        </Box>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Address
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 3 }}>
+          <ControlledField
+            id="address_1"
+            label="Address 1"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="address_2"
+            label="Address 2"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="city"
+            label="City"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          {/* <ControlledField
+            id="country_code"
+            label="Country Code"
+            control={control}
+            sx={{ width: "48%" }}
+          /> */}
+          <ControlledField
+            id="postal_code"
+            label="Postal Code"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="province"
+            label="Province (State)"
             control={control}
             sx={{ width: "48%" }}
           />

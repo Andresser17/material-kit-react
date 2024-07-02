@@ -17,8 +17,6 @@ export default function CustomersPage() {
 
   if (isLoading || isLoadingOrders) return <div>Loading!!!</div>;
 
-  console.log({ customer, orders });
-
   return (
     <div>
       <Helmet>

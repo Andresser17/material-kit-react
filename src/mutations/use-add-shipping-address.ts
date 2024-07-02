@@ -30,7 +30,7 @@ async function addShippingAddress(
   new_shipping_address: AddShippingAddressRequest,
 ): Promise<CustomerDTO> {
   const url = new URL(
-    `/admin/customers/${customer_id}/shipping_addresses`,
+    `/admin/customers-v2/${customer_id}/shipping_addresses`,
     BACKEND_URL,
   );
 
