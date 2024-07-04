@@ -13,14 +13,14 @@ import HTTPError from "src/utils/http-error";
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 
-interface CreateDraftOrderResponse {
+export interface DraftOrderResponse {
   draft_order: DraftOrder;
 }
 
 async function createDraftOrder(
   access_token: string | undefined,
   newDraftOrder: DraftOrderRequest,
-): Promise<CreateDraftOrderResponse> {
+): Promise<DraftOrderResponse> {
   const url = new URL("/admin/draft-orders", BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
@@ -37,7 +37,7 @@ async function createDraftOrder(
 }
 
 type IUseCreateDraftOrder = UseMutateFunction<
-  CreateDraftOrderResponse | undefined,
+  DraftOrderResponse | undefined,
   Error,
   { newDraftOrder: DraftOrderRequest },
   unknown

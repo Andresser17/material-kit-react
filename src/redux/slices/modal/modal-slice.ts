@@ -9,8 +9,10 @@ import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal"
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
+import { IEditDraftOrderShippingAddressModal } from "src/modals/edit-draft-order-shipping-address-modal";
 import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
 import { IEditOptionsModal } from "src/modals/edit-options-modal/edit-options-modal";
+import { IEditShippingAddressModal } from "src/modals/edit-shipping-address-modal";
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { Modal } from "src/modals/modal-provider";
 import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
@@ -87,8 +89,13 @@ const initialState = {
     {
       id: "edit-shipping-address-modal",
       open: false,
-      props: { customer_id: "", shipping_address: null },
-    } as Modal<IAddShippingAddressModal>,
+      props: { customer_id: "" },
+    } as Modal<IEditShippingAddressModal>,
+    {
+      id: "edit-draft-order-shipping-address-modal",
+      open: false,
+      props: { customer_id: "" },
+    } as Modal<IEditDraftOrderShippingAddressModal>,
   ],
 };
 

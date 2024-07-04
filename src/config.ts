@@ -29,6 +29,7 @@ export const MUTATION_KEY = {
   delete_product_variant: "delete_produdct_variant",
   delete_draft_order: "delete_draft_order",
   create_draft_order: "create_draft_order",
+  update_draft_order: "update_draft_order",
   create_lot: "create_lot",
   delete_lot: "delete_lot",
   update_lot: "update_lot",

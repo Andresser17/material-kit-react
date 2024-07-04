@@ -13,6 +13,7 @@ import { SetStateAction, useState } from "react";
 import Iconify from "src/components/iconify";
 
 import SectionBox from "src/components/section-box";
+import { useModal } from "src/modals/useModal";
 
 interface ShippingOptionData {
   first_name: string;
@@ -26,14 +27,17 @@ interface ShippingOptionData {
 }
 
 interface IShipping {
-  data: DraftOrderResponse;
+  draftOrder: DraftOrderResponse;
 }
 
-export default function Shipping({ data }: IShipping) {
+export default function Shipping({ draftOrder }: IShipping) {
   const theme = useTheme();
+  const { onOpen: openModal } = useModal(
+    "edit-draft-order-shipping-address-modal",
+  );
   const [open, setOpen] = useState<Element | null>(null);
-  const itemsLength = data?.cart.items.length;
-  const shippingMethodData = data.cart.shipping_methods.map((method) => {
+  const itemsLength = draftOrder?.cart.items.length;
+  const shippingMethodData = draftOrder.cart.shipping_methods.map((method) => {
     const data: ShippingOptionData = method.data;
 
     return (
@@ -80,16 +84,18 @@ export default function Shipping({ data }: IShipping) {
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4">Shipping</Typography>
-        <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
-          <Iconify icon="bi-three-dots" />
-        </IconButton>
+        {!draftOrder.order_id && (
+          <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
+            <Iconify icon="bi-three-dots" />
+          </IconButton>
+        )}
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Typography variant="body2" sx={{ color: "#888" }}>
         Shipping Method
       </Typography>
-      {data.cart.shipping_methods &&
-        data.cart.shipping_methods.map((method) => {
+      {draftOrder.cart.shipping_methods &&
+        draftOrder.cart.shipping_methods.map((method) => {
           return (
             <Box key={method.id}>
               <Typography variant="body2" sx={{ mb: 2 }}>
@@ -137,7 +143,16 @@ export default function Shipping({ data }: IShipping) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleCloseMenu} sx={{ fontSize: 12 }}>
+        <MenuItem
+          onClick={() => {
+            openModal({
+              draft_order: draftOrder,
+              customer_id: draftOrder.cart.customer_id,
+            });
+            handleCloseMenu();
+          }}
+          sx={{ fontSize: 12 }}
+        >
           Edit Shipping Address
         </MenuItem>
       </Popover>

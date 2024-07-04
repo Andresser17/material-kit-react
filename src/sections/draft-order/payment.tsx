@@ -63,11 +63,13 @@ export default function Payment({ draftOrder, paymentAmounts }: IPayment) {
         value={`$${paymentAmounts.total} USD`}
         bold
       />
-      <SummaryField
-        title="Payment Method"
-        value={draftOrder.cart.payment.data.payment.method.label}
-        bold
-      />
+      {draftOrder.cart.payment && (
+        <SummaryField
+          title="Payment Method"
+          value={draftOrder.cart.payment.data.payment.method.label}
+          bold
+        />
+      )}
       {/* <Typography variant="body2" sx={{ color: "#888", fontSize: 11 }}>
         Payment link: Configure payment link to store settings
       </Typography> */}

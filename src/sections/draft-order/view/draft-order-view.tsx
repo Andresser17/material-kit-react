@@ -61,7 +61,7 @@ export default function DraftOrderView({ draftOrder }: IDraftOrderView) {
         <OrderDetails draftOrder={draftOrder} paymentAmounts={paymentAmounts} />
         <Payment draftOrder={draftOrder} paymentAmounts={paymentAmounts} />
         <Summary data={draftOrder} paymentAmounts={paymentAmounts} />
-        <Shipping data={draftOrder} />
+        <Shipping draftOrder={draftOrder} />
         <Customer data={draftOrder} />
         <RawOrder data={draftOrder} />
       </Box>

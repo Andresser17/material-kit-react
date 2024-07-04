@@ -12,7 +12,7 @@ import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 import { AddShippingAddressRequest } from "./use-add-shipping-address";
 
-async function editShippingAddress(
+async function updateShippingAddress(
   access_token: string | undefined,
   customer_id: string,
   shipping_address_id: string,
@@ -24,7 +24,7 @@ async function editShippingAddress(
   );
 
   const response = await fetch(url, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
@@ -38,16 +38,16 @@ async function editShippingAddress(
   return result.customer;
 }
 
-interface UseEditShippingAddressParams {
+interface UseUpdateShippingAddressParams {
   customer_id: string;
   shipping_address_id: string;
   shipping_address: AddShippingAddressRequest;
 }
 
-export function useEditShippingAddress(): UseMutationResult<
+export function useUpdateShippingAddress(): UseMutationResult<
   Customer,
   HTTPError,
-  UseEditShippingAddressParams,
+  UseUpdateShippingAddressParams,
   unknown
 > {
   const queryClient = useQueryClient();
@@ -58,8 +58,8 @@ export function useEditShippingAddress(): UseMutationResult<
       customer_id,
       shipping_address_id,
       shipping_address,
-    }: UseEditShippingAddressParams) => {
-      return editShippingAddress(
+    }: UseUpdateShippingAddressParams) => {
+      return updateShippingAddress(
         user?.access_token,
         customer_id,
         shipping_address_id,

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ControlledField from "src/components/controlled-field";
 import { AddShippingAddressRequest } from "src/mutations/use-add-shipping-address";
-import { useEditShippingAddress } from "src/mutations/use-edit-shipping-address";
+import { useUpdateShippingAddress } from "src/mutations/use-update-shipping-address";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
@@ -35,7 +35,7 @@ export default function EditShippingAddressModal() {
       mode: "onChange",
     });
   const { mutate: editShippingAddressMutation, isSuccess } =
-    useEditShippingAddress();
+    useUpdateShippingAddress();
   const onSubmit = (data: AddShippingAddressRequest) => {
     editShippingAddressMutation({
       customer_id,
