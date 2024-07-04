@@ -84,6 +84,11 @@ const initialState = {
       open: false,
       props: { customer_id: "" },
     } as Modal<IAddShippingAddressModal>,
+    {
+      id: "edit-shipping-address-modal",
+      open: false,
+      props: { customer_id: "", shipping_address: null },
+    } as Modal<IAddShippingAddressModal>,
   ],
 };
 

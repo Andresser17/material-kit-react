@@ -80,12 +80,6 @@ export default function Customer({ data }: ICustomer) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
-          Edit Shipping Address
-        </MenuItem>
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
-          Edit Billing Address
-        </MenuItem>
         <MenuItem
           onClick={() => navigate(`/customers/${data.cart.customer_id}`)}
           sx={{ fontSize: 12 }}

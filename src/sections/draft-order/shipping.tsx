@@ -1,5 +1,5 @@
 import { DraftOrderResponse } from "@medusajs/types";
-import { useTheme } from "@mui/material";
+import { IconButton, MenuItem, Popover, useTheme } from "@mui/material";
 
 import {
   Accordion,
@@ -9,6 +9,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
+import { SetStateAction, useState } from "react";
 import Iconify from "src/components/iconify";
 
 import SectionBox from "src/components/section-box";
@@ -30,6 +31,7 @@ interface IShipping {
 
 export default function Shipping({ data }: IShipping) {
   const theme = useTheme();
+  const [open, setOpen] = useState<Element | null>(null);
   const itemsLength = data?.cart.items.length;
   const shippingMethodData = data.cart.shipping_methods.map((method) => {
     const data: ShippingOptionData = method.data;
@@ -64,9 +66,24 @@ export default function Shipping({ data }: IShipping) {
     );
   });
 
+  const handleOpenMenu = (e: {
+    currentTarget: SetStateAction<Element | null>;
+  }) => {
+    setOpen(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
-      <Typography variant="h4">Shipping</Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4">Shipping</Typography>
+        <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
+          <Iconify icon="bi-three-dots" />
+        </IconButton>
+      </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Typography variant="body2" sx={{ color: "#888" }}>
         Shipping Method
@@ -113,6 +130,17 @@ export default function Shipping({ data }: IShipping) {
           {shippingMethodData}
         </AccordionDetails>
       </Accordion>
+      <Popover
+        open={open != null}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem onClick={handleCloseMenu} sx={{ fontSize: 12 }}>
+          Edit Shipping Address
+        </MenuItem>
+      </Popover>
     </SectionBox>
   );
 }

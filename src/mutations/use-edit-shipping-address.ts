@@ -1,4 +1,4 @@
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import {
   UseMutationResult,
   useMutation,
@@ -10,27 +10,16 @@ import HTTPError from "src/utils/http-error";
 
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
+import { AddShippingAddressRequest } from "./use-add-shipping-address";
 
-export interface AddShippingAddressRequest {
-  first_name: string;
-  last_name: string;
-  address_1: string;
-  city: string;
-  country_code: string;
-  postal_code: string;
-  phone: string;
-  company: string;
-  address_2: string;
-  province: string;
-}
-
-async function addShippingAddress(
+async function editShippingAddress(
   access_token: string | undefined,
   customer_id: string,
-  new_shipping_address: AddShippingAddressRequest,
-): Promise<CustomerDTO> {
+  shipping_address_id: string,
+  shipping_address: AddShippingAddressRequest,
+): Promise<Customer> {
   const url = new URL(
-    `/admin/customers-v2/${customer_id}/shipping_addresses`,
+    `/admin/customers-v2/${customer_id}/shipping_addresses/${shipping_address_id}`,
     BACKEND_URL,
   );
 
@@ -40,7 +29,7 @@ async function addShippingAddress(
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(new_shipping_address),
+    body: JSON.stringify(shipping_address),
   });
 
   const result = await response.json();
@@ -49,15 +38,16 @@ async function addShippingAddress(
   return result.customer;
 }
 
-interface UseAddShippingAddressParams {
+interface UseEditShippingAddressParams {
   customer_id: string;
-  new_shipping_address: AddShippingAddressRequest;
+  shipping_address_id: string;
+  shipping_address: AddShippingAddressRequest;
 }
 
-export function useAddShippingAddress(): UseMutationResult<
-  CustomerDTO,
+export function useEditShippingAddress(): UseMutationResult<
+  Customer,
   HTTPError,
-  UseAddShippingAddressParams,
+  UseEditShippingAddressParams,
   unknown
 > {
   const queryClient = useQueryClient();
@@ -66,15 +56,17 @@ export function useAddShippingAddress(): UseMutationResult<
   return useMutation({
     mutationFn: async ({
       customer_id,
-      new_shipping_address,
-    }: UseAddShippingAddressParams) => {
-      return addShippingAddress(
+      shipping_address_id,
+      shipping_address,
+    }: UseEditShippingAddressParams) => {
+      return editShippingAddress(
         user?.access_token,
         customer_id,
-        new_shipping_address,
+        shipping_address_id,
+        shipping_address,
       );
     },
-    mutationKey: [MUTATION_KEY.add_customer_shipping_address],
+    mutationKey: [MUTATION_KEY.edit_customer_shipping_address],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.customer] }),
     onError: (err) => {
