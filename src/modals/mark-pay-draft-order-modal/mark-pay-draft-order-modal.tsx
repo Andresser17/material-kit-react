@@ -62,10 +62,31 @@ export default function IMarkPayDraftOrderModal() {
   } = useMarkPayDraftOrder();
 
   const onSubmit = (data: MarkPayDraftOrderData) => {
-    console.log({ data });
+    let paymentAmount = "";
+    if (data.payment.amount > 0) {
+      paymentAmount = data.payment.amount.toString();
+      paymentAmount = `${paymentAmount}00`;
+    }
+
+    let changeAmount = "";
+    if (data.change.amount > 0) {
+      changeAmount = data.change.amount.toString();
+      changeAmount = `${changeAmount}00`;
+    }
+
     markPayDraftOrderMutation({
       draft_order_id,
-      data,
+      data: {
+        ...data,
+        payment: {
+          ...data.payment,
+          amount: paymentAmount ? Number(paymentAmount) : data.payment.amount,
+        },
+        change: {
+          ...data.change,
+          amount: changeAmount ? Number(changeAmount) : data.change.amount,
+        },
+      },
     });
     if (result)
       updatePayDraftOrder({

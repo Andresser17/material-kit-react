@@ -1,9 +1,9 @@
-import { OrderDTO } from "@medusajs/types";
+import { Order } from "@medusajs/types";
 import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
-import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
 import { PaymentStatus } from "src/enums";
 
@@ -12,7 +12,7 @@ import Label from "src/components/label";
 // ----------------------------------------------------------------------
 
 interface IOrderTableRow {
-  order: OrderDTO;
+  order: Order;
   selectedRow: boolean;
 }
 

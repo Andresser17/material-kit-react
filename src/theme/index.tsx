@@ -1,17 +1,17 @@
-import { useMemo, ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 
-import CssBaseline from "@mui/material/CssBaseline";
 import {
-  createTheme,
-  ThemeOptions,
   ThemeProvider as MUIThemeProvider,
-} from "@mui/material/styles";
+  ThemeOptions,
+  createTheme,
+} from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 
+import { customShadows } from "./custom-shadows";
+import { overrides } from "./overrides";
 import { palette } from "./palette";
 import { shadows } from "./shadows";
-import { overrides } from "./overrides";
 import { typography } from "./typography";
-import { customShadows } from "./custom-shadows";
 
 // ----------------------------------------------------------------------
 

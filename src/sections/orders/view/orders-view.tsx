@@ -1,27 +1,31 @@
-import { useState, SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
-import Container from "@mui/material/Container";
 import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
-
-import { useListOrders } from "src/queries/use-list-orders";
+import Typography from "@mui/material/Typography";
 
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
-import { emptyRows } from "../utils";
+import { Order } from "@medusajs/types";
+import { emptyRows } from "src/utils/table-utils";
+import OrderTableHead, { TableOrder } from "../order-table-head";
 import OrderTableRow from "../order-table-row";
 import OrderTableToolbar from "../order-table-toolbar";
-import OrderTableHead, { TableOrder } from "../order-table-head";
 
 // ----------------------------------------------------------------------
 
-export default function OrdersView() {
+interface IOrdersView {
+  orders: Order[];
+  count: number;
+}
+
+export default function OrdersView({ orders, count }: IOrdersView) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState<TableOrder>(TableOrder.ASC);
@@ -33,8 +37,6 @@ export default function OrdersView() {
   const [filterName, setFilterName] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const { orders, count } = useListOrders({});
 
   const handleSort = (_event: unknown, id: SetStateAction<string>) => {
     const isAsc = orderBy === id && order === TableOrder.ASC;
@@ -102,15 +104,12 @@ export default function OrdersView() {
               <TableBody>
                 {orders &&
                   orders
-                    ?.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage,
-                    )
-                    .map((product) => (
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((order) => (
                       <OrderTableRow
-                        key={product.id}
-                        order={product}
-                        selectedRow={selected.indexOf(product.id) !== -1}
+                        key={order.id}
+                        order={order}
+                        selectedRow={selected.indexOf(order.id) !== -1}
                       />
                     ))}
 

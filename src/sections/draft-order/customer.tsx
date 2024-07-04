@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 
+import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
@@ -21,6 +22,7 @@ interface ICustomer {
 
 export default function Customer({ data }: ICustomer) {
   const [open, setOpen] = useState<Element | null>(null);
+  const navigate = useNavigate();
 
   const handleOpenMenu = (e: SyntheticEvent) => {
     setOpen(e.currentTarget);
@@ -53,22 +55,22 @@ export default function Customer({ data }: ICustomer) {
           // src={data.thumbnail as string}
           src="string"
           variant="square"
-          sx={{ width: 36, height: 36, mr: 2 }}
+          sx={{ width: 36, height: 36, mr: 1 }}
         />
         <TitleValueField
-          title={data?.cart.customer.email}
-          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+          title={data.cart.customer.email}
+          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
         />
       </Box>
       <Box sx={{ display: "flex" }}>
         <TitleValueField title="Contact" value={data?.cart.customer.email} />
         <TitleValueField
           title="Shipping"
-          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
         />
         <TitleValueField
           title="Billing"
-          value={`${data?.cart.shipping_address.city}, ${data?.cart.shipping_address.province}`}
+          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
         />
       </Box>
       <Popover
@@ -84,7 +86,10 @@ export default function Customer({ data }: ICustomer) {
         <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
           Edit Billing Address
         </MenuItem>
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
+        <MenuItem
+          onClick={() => navigate(`/customers/${data.cart.customer_id}`)}
+          sx={{ fontSize: 12 }}
+        >
           Go to Customer
         </MenuItem>
       </Popover>

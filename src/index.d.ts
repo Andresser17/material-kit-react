@@ -31,11 +31,10 @@ export declare module "@mui/material/styles" {
       z16: string;
       z20: string;
       z24: string;
-      //
+
       card: string;
       dropdown: string;
       dialog: string;
-      //
       primary: string;
       info: string;
       secondary: string;

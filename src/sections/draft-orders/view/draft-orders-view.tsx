@@ -1,15 +1,15 @@
+import { SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, SetStateAction } from "react";
 
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
+import Typography from "@mui/material/Typography";
 
 import { useListDraftOrders } from "src/queries/use-list-draft-orders";
 
@@ -17,10 +17,10 @@ import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 import TableEmptyRows from "src/components/table-empty-rows";
 
-import { emptyRows } from "../utils";
+import { emptyRows } from "src/utils/table-utils";
+import DraftOrdersTableHead, { TableOrder } from "../draft-orders-table-head";
 import DraftOrdersTableRow from "../draft-orders-table-row";
 import ProductTableToolbar from "../draft-orders-table-toolbar";
-import DraftOrdersTableHead, { TableOrder } from "../draft-orders-table-head";
 
 // ----------------------------------------------------------------------
 
