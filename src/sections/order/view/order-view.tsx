@@ -2,7 +2,7 @@ import { Order, PaymentAmounts } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 
-import { FulfillmentStatus, OrderStatus, PaymentStatus } from "src/enums";
+import { FulfillmentStatus, PaymentStatus } from "src/enums";
 
 import { useEffect, useState } from "react";
 import Customer from "../customer";
@@ -48,7 +48,7 @@ export default function OrderView({ order }: { order: Order }) {
       }}
     >
       <Box sx={{ width: "60%", maxWidth: "660px" }}>
-        <OrderDetails order={order} status={OrderStatus.PENDING} />
+        <OrderDetails order={order} />
         <Summary order={order} paymentAmounts={paymentAmounts} />
         <Payment order={order} status={PaymentStatus.CAPTURED} />
         <Fulfillment order={order} status={FulfillmentStatus.SHIPPED} />

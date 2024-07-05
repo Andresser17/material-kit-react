@@ -9,8 +9,6 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 
-import { OrderStatus } from "src/enums";
-
 import { Order } from "@medusajs/types";
 import Iconify from "src/components/iconify";
 import OrderStatusLabel from "src/components/order-status-label/order-status-label";
@@ -20,10 +18,9 @@ import { useCompleteOrder } from "src/mutations/use-complete-order";
 
 interface IOrderDetails {
   order: Order;
-  status: OrderStatus;
 }
 
-export default function OrderDetails({ order, status }: IOrderDetails) {
+export default function OrderDetails({ order }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
   const { mutate: completeOrder } = useCompleteOrder();
 
@@ -91,5 +88,3 @@ export default function OrderDetails({ order, status }: IOrderDetails) {
     </SectionBox>
   );
 }
-
-function LabelStatus() {}
