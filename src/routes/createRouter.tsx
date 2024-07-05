@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
+import Invoice from "src/components/invoice";
 
 import DashboardLayout from "src/layouts/dashboard";
 
@@ -69,6 +70,10 @@ export function createRouter(isLoggedIn: boolean) {
     {
       path: "/login",
       element: !isLoggedIn ? <LoginPage /> : <Navigate to="/"></Navigate>,
+    },
+    {
+      path: "/invoice",
+      element: <Invoice />,
     },
   ]);
 }
