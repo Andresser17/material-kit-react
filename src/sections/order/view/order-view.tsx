@@ -50,9 +50,9 @@ export default function OrderView({ order }: { order: Order }) {
       <Box sx={{ width: "60%", maxWidth: "660px" }}>
         <OrderDetails order={order} status={OrderStatus.PENDING} />
         <Summary order={order} paymentAmounts={paymentAmounts} />
-        <Payment status={PaymentStatus.CAPTURED} />
-        <Fulfillment status={FulfillmentStatus.SHIPPED} />
-        <Customer />
+        <Payment order={order} status={PaymentStatus.CAPTURED} />
+        <Fulfillment order={order} status={FulfillmentStatus.SHIPPED} />
+        <Customer order={order} />
       </Box>
       <Box sx={{ width: "40%", maxWidth: "450px" }}>
         <TimelineSection />

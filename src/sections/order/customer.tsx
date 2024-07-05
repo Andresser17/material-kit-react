@@ -10,12 +10,19 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 
+import { Order } from "@medusajs/types";
+import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
-export default function Customer() {
+interface ICustomer {
+  order: Order;
+}
+
+export default function Customer({ order }: ICustomer) {
   const [open, setOpen] = useState<Element | null>(null);
+  const navigate = useNavigate();
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -52,12 +59,17 @@ export default function Customer() {
           variant="square"
           sx={{ width: 36, height: 36, mr: 2 }}
         />
-        <TitleValueField title="user@example.com" value=", Venezuela" />
+        <TitleValueField
+          title={order.customer.email}
+          value={order.region.name}
+        />
       </Box>
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Contact" value="user@example.com" />
-        <TitleValueField title="Shipping" value=", VE" />
-        <TitleValueField title="Billing" value="N/A" />
+        <TitleValueField title="Contact" value={order.customer.phone} />
+        <TitleValueField
+          title="Shipping"
+          value={`${order.shipping_address?.city}, ${order.shipping_address?.country_code?.toUpperCase()}`}
+        />
       </Box>
       <Popover
         open={open != null}
@@ -66,10 +78,13 @@ export default function Customer() {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
+        <MenuItem
+          onClick={() => navigate(`/customers/${order.customer_id}`)}
+          sx={{ fontSize: 12 }}
+        >
           Go to Customer
         </MenuItem>
-        <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
+        {/* <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
           Transfer ownership
         </MenuItem>
         <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
@@ -77,7 +92,7 @@ export default function Customer() {
         </MenuItem>
         <MenuItem onClick={handleCancelOrder} sx={{ fontSize: 12 }}>
           Edit Email Address
-        </MenuItem>
+        </MenuItem> */}
       </Popover>
     </SectionBox>
   );

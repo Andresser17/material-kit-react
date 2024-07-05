@@ -48,8 +48,6 @@ export default function Summary({ order, paymentAmounts }: ISummary) {
     }
   }, [order]);
 
-  console.log({ order });
-
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>

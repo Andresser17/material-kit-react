@@ -163,6 +163,30 @@ export declare module "@medusajs/types" {
     payment_status: PaymentStatus;
     sales_channel: SalesChannelDTO;
     payments: Payment[];
+    shipping_methods: ShippingMethod[];
+  }
+
+  interface ShippingMethod {
+    id: string;
+    shipping_option_id: string;
+    order_id: string;
+    order: Order;
+    claim_order_id: null | string;
+    claim_order: ClaimOrder;
+    cart_id: string;
+    cart: Cart;
+    swap_id: string;
+    swap: Swap;
+    return_id: string;
+    return_order: Return;
+    shipping_option: ShippingOption;
+    tax_lines: ShippingMethodTaxLine[];
+    price: number;
+    data: ShippingMethodData;
+    includes_tax: boolean;
+    subtotal: number;
+    total: number;
+    tax_total: number;
   }
 
   interface DraftOrder {
@@ -522,6 +546,7 @@ export declare module "@medusajs/types" {
     destination_agency: string;
     destination_city: string;
     destination_state: string;
+    shipping_option_id: string;
   }
 
   interface DraftOrderShippingMethod {
