@@ -13,9 +13,10 @@ import { OrderStatus } from "src/enums";
 
 import { Order } from "@medusajs/types";
 import Iconify from "src/components/iconify";
-import Label from "src/components/label";
+import OrderStatusLabel from "src/components/order-status-label/order-status-label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { useCompleteOrder } from "src/mutations/use-complete-order";
 
 interface IOrderDetails {
   order: Order;
@@ -24,6 +25,7 @@ interface IOrderDetails {
 
 export default function OrderDetails({ order, status }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
+  const { mutate: completeOrder } = useCompleteOrder();
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
@@ -33,7 +35,14 @@ export default function OrderDetails({ order, status }: IOrderDetails) {
     setOpen(null);
   };
 
-  const handleCancelOrder = () => {};
+  const handleCompleteOrder = () => {
+    completeOrder({ order_id: order.id });
+    handleCloseMenu();
+  };
+
+  const handleCancelOrder = () => {
+    handleCloseMenu();
+  };
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
@@ -47,19 +56,14 @@ export default function OrderDetails({ order, status }: IOrderDetails) {
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Label
-            color={status === OrderStatus.COMPLETED ? "success" : "info"}
-            sx={{ mr: 1 }}
-          >
-            {status}
-          </Label>
+          <OrderStatusLabel status={order.status} />
           <IconButton onClick={handleOpenMenu} sx={{ borderRadius: "5px" }}>
             <Iconify icon="bi-three-dots" />
           </IconButton>
         </Box>
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         <TitleValueField title="Email" value={order.email ?? "N/A"} />
         <TitleValueField title="Phone" value={order.customer.phone ?? "N/A"} />
         <TitleValueField
@@ -74,6 +78,9 @@ export default function OrderDetails({ order, status }: IOrderDetails) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
+        <MenuItem onClick={handleCompleteOrder} sx={{ fontSize: 12 }}>
+          Complete Order
+        </MenuItem>
         <MenuItem
           onClick={handleCancelOrder}
           sx={{ color: "error.main", fontSize: 12 }}
@@ -84,3 +91,5 @@ export default function OrderDetails({ order, status }: IOrderDetails) {
     </SectionBox>
   );
 }
+
+function LabelStatus() {}
