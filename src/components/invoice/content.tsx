@@ -1,3 +1,4 @@
+import { LineItem } from "@medusajs/types";
 import {
   Box,
   List,
@@ -9,11 +10,15 @@ import {
 import Iconify from "../iconify";
 import ItemsTable from "./items-table";
 
-export default function Header() {
+interface IHeader {
+  items: LineItem[];
+}
+
+export default function Header({ items }: IHeader) {
   return (
     <>
       {/* Items */}
-      <ItemsTable />
+      <ItemsTable items={items} />
 
       {/* Warranty */}
       <Box sx={{ mt: 2, mb: 12 }}>
@@ -81,7 +86,15 @@ export default function Header() {
 
       {/* Firmas */}
       <Box
-        sx={{ display: "flex", justifyContent: "space-between", px: 4, mb: 6 }}
+        sx={{
+          width: "100%",
+          p: "22.5mm",
+          display: "flex",
+          justifyContent: "space-between",
+          position: "absolute",
+          left: 0,
+          bottom: "25mm",
+        }}
       >
         <Box
           sx={{

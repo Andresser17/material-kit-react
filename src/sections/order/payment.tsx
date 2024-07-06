@@ -7,6 +7,8 @@ import { Order } from "@medusajs/types";
 import Label from "src/components/label";
 import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
+import { formatCurrency } from "src/utils/format-number";
+import { formatToLocalTimeEs } from "src/utils/format-time";
 
 interface IPayment {
   order: Order;
@@ -38,13 +40,13 @@ export default function Payment({ order, status }: IPayment) {
 
       {order.payments.map((payment) => {
         return (
-          <Box>
+          <Box key={payment.id}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               {payment.id}
             </Typography>
             <SummaryField
-              title={payment.created_at}
-              value="$50.00 USD"
+              title={formatToLocalTimeEs(payment.created_at)}
+              value={formatCurrency(payment.amount)}
               sx={{ color: "#888", fontSize: 14 }}
             />
           </Box>
@@ -52,35 +54,10 @@ export default function Payment({ order, status }: IPayment) {
       })}
       <SummaryField
         title="Total paid"
-        value={convertToCurrency(totalAmount)}
+        value={formatCurrency(totalAmount)}
         bold
         sx={{ mt: 2 }}
       />
     </SectionBox>
   );
 }
-
-function convertToCurrency(amount: number) {
-  let newAmount = "";
-  let amountArr = amount.toString().split("");
-  amountArr = amountArr.slice(0, amountArr.length - 2);
-  if (amountArr.length === 0) amountArr.push("0");
-  newAmount = `${amountArr.join("")}.00`;
-
-  return newAmount;
-}
-
-// function convertToCurrency(amounts: Record<string, number>) {
-//   const keys = Object.keys(amounts);
-
-//   const newAmounts: Record<string, string> = {};
-//   for (const key of keys) {
-//     let amountArr = amounts[key].toString().split("");
-//     amountArr = amountArr.slice(0, amountArr.length - 2);
-//     if (amountArr.length === 0) amountArr.push("0");
-//     const amount = `${amountArr.join("")}.00`;
-//     newAmounts[key] = amount;
-//   }
-
-//   return newAmounts;
-// }

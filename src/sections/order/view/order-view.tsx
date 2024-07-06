@@ -49,7 +49,7 @@ export default function OrderView({ order }: { order: Order }) {
     >
       <Box sx={{ width: "60%", maxWidth: "660px" }}>
         <OrderDetails order={order} />
-        <Summary order={order} paymentAmounts={paymentAmounts} />
+        <Summary order={order} />
         <Payment order={order} status={PaymentStatus.CAPTURED} />
         <Fulfillment order={order} status={FulfillmentStatus.SHIPPED} />
         <Customer order={order} />

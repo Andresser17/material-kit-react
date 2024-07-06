@@ -1,6 +1,19 @@
+import { Address, Customer } from "@medusajs/types";
 import { Box, Typography } from "@mui/material";
 
-export default function Header() {
+interface IHeader {
+  invoiceNumber: number;
+  customer: Customer;
+  shippingAddress: Address;
+  orderDate: string;
+}
+
+export default function Header({
+  invoiceNumber,
+  customer,
+  shippingAddress,
+  orderDate,
+}: IHeader) {
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
@@ -23,7 +36,7 @@ export default function Header() {
             NOTA DE ENTREGA
           </Typography>
           <Typography variant="h5" sx={{ fontWeight: "normal" }}>
-            N.º 252
+            N.º {invoiceNumber}
           </Typography>
         </Box>
       </Box>
@@ -32,21 +45,21 @@ export default function Header() {
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
         <Box>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            <strong>Cliente:</strong> Alejandro
+            <strong>Cliente:</strong> {customer.first_name} {customer.last_name}
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            <strong>Dirección:</strong> Sector Giraldot
+            <strong>Dirección:</strong> {shippingAddress.address_1}
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            <strong>Cedula o RIF:</strong> V 12345678
+            <strong>Cedula o RIF:</strong>
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            <strong>Teléfono:</strong> 04248599379
+            <strong>Teléfono:</strong> {shippingAddress.phone}
           </Typography>
         </Box>
         <Box>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            05 de julio de 2024
+            {orderDate}
           </Typography>
         </Box>
       </Box>

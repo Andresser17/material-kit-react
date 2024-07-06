@@ -1,28 +1,19 @@
 import { Table, TableBody, TableContainer } from "@mui/material";
 
+import { LineItem } from "@medusajs/types";
+import { formatCurrency } from "src/utils/format-number";
 import ItemsTableHead from "./items-table-head";
 import ItemsTableRow from "./items-table-row";
 import ItemsTableRowTotal from "./items-table-row-total";
 
-export default function ItemsTable() {
-  const items = [
-    {
-      id: "item-1",
-      concepto:
-        "Memoria Ram Ddr3 8gb (4 Gb X 2) Kit 1333mhz Pc3-10600 1.5v KTH9600B/4G 9905471-021.A00LF",
-      cantidad: 1,
-      precioUnitario: "$11.99",
-      subtotal: "$11.99",
-    },
-    {
-      id: "item-2",
-      concepto:
-        "Memoria Ram Ddr3 8gb (4 Gb X 2) Kit 1333mhz Pc3-10600 1.5v KTH9600B/4G 9905471-021.A00LF",
-      cantidad: 1,
-      precioUnitario: "$11.99",
-      subtotal: "$11.99",
-    },
-  ];
+interface IItems {
+  items: LineItem[];
+}
+
+export default function ItemsTable({ items }: IItems) {
+  const totalAmount = items.reduce((prev, current) => {
+    return current.unit_price + prev;
+  }, 0);
 
   return (
     <TableContainer>
@@ -40,7 +31,7 @@ export default function ItemsTable() {
             items.map((item) => {
               return <ItemsTableRow key={item.id} item={item} />;
             })}
-          <ItemsTableRowTotal totalAmount="$24" />
+          <ItemsTableRowTotal totalAmount={formatCurrency(totalAmount)} />
         </TableBody>
       </Table>
     </TableContainer>

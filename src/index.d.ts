@@ -164,6 +164,7 @@ export declare module "@medusajs/types" {
     sales_channel: SalesChannelDTO;
     payments: Payment[];
     shipping_methods: ShippingMethod[];
+    shipping_address: Address;
   }
 
   interface ShippingMethod {

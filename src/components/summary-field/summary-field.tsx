@@ -14,7 +14,14 @@ export default function SummaryField({
   sx,
 }: ISummaryField) {
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+    <Box
+      sx={{
+        display: "flex",
+
+        justifyContent: "space-between",
+        mb: 2,
+      }}
+    >
       <Typography
         variant="subtitle2"
         sx={{ fontWeight: bold ? "bold" : "normal", ...sx }}

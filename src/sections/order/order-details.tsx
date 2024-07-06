@@ -17,6 +17,7 @@ import OrderStatusLabel from "src/components/order-status-label/order-status-lab
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import { useCompleteOrder } from "src/mutations/use-complete-order";
+import { formatToLocalTimeEs } from "src/utils/format-time";
 
 interface IOrderDetails {
   order: Order;
@@ -54,8 +55,8 @@ export default function OrderDetails({ order }: IOrderDetails) {
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
-      <Box sx={{ display: "box" }}>
-        <Invoice ref={invoicePrintRef} />
+      <Box sx={{ display: "none" }}>
+        <Invoice ref={invoicePrintRef} order={order} />
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -64,7 +65,7 @@ export default function OrderDetails({ order }: IOrderDetails) {
             #{order.display_id}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: 12, color: "#888" }}>
-            {order.created_at}
+            {formatToLocalTimeEs(order.created_at)}
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
