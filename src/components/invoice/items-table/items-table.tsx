@@ -2,6 +2,7 @@ import { Table, TableBody, TableContainer } from "@mui/material";
 
 import ItemsTableHead from "./items-table-head";
 import ItemsTableRow from "./items-table-row";
+import ItemsTableRowTotal from "./items-table-row-total";
 
 export default function ItemsTable() {
   const items = [
@@ -24,7 +25,7 @@ export default function ItemsTable() {
   ];
 
   return (
-    <TableContainer sx={{ overflow: "unset" }}>
+    <TableContainer>
       <Table>
         <ItemsTableHead
           headLabel={[
@@ -39,6 +40,7 @@ export default function ItemsTable() {
             items.map((item) => {
               return <ItemsTableRow key={item.id} item={item} />;
             })}
+          <ItemsTableRowTotal totalAmount="$24" />
         </TableBody>
       </Table>
     </TableContainer>

@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 
 import {
   Divider,
@@ -10,7 +10,9 @@ import {
 import Box from "@mui/material/Box";
 
 import { Order } from "@medusajs/types";
+import { useReactToPrint } from "react-to-print";
 import Iconify from "src/components/iconify";
+import { Invoice } from "src/components/invoice";
 import OrderStatusLabel from "src/components/order-status-label/order-status-label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
@@ -23,6 +25,10 @@ interface IOrderDetails {
 export default function OrderDetails({ order }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
   const { mutate: completeOrder } = useCompleteOrder();
+  const invoicePrintRef = useRef<HTMLDivElement | null>(null);
+  const handlePrint = useReactToPrint({
+    content: () => invoicePrintRef.current,
+  });
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
@@ -30,6 +36,11 @@ export default function OrderDetails({ order }: IOrderDetails) {
 
   const handleCloseMenu = () => {
     setOpen(null);
+  };
+
+  const handlePrintVoice = () => {
+    handlePrint();
+    handleCloseMenu();
   };
 
   const handleCompleteOrder = () => {
@@ -43,6 +54,10 @@ export default function OrderDetails({ order }: IOrderDetails) {
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
+      <Box sx={{ display: "box" }}>
+        <Invoice ref={invoicePrintRef} />
+      </Box>
+
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box>
           <Typography variant="h4" sx={{ mb: 1 }}>
@@ -75,7 +90,13 @@ export default function OrderDetails({ order }: IOrderDetails) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem onClick={handleCompleteOrder} sx={{ fontSize: 12 }}>
+        <MenuItem onClick={handlePrintVoice} sx={{ fontSize: 12 }}>
+          Print Invoice
+        </MenuItem>
+        <MenuItem
+          onClick={handleCompleteOrder}
+          sx={{ color: "success.main", fontSize: 12 }}
+        >
           Complete Order
         </MenuItem>
         <MenuItem

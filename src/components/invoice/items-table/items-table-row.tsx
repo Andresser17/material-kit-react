@@ -17,20 +17,28 @@ interface IItemsTableRow {
 export default function ItemsTableRow({ item }: IItemsTableRow) {
   return (
     <TableRow>
-      <TableCell>
-        <Typography variant="body1">{item.concepto}</Typography>
+      <TableCell sx={{ backgroundColor: "#fff", color: "#000" }}>
+        <Typography variant="body1" sx={{ fontSize: "12px" }}>
+          {item.concepto}
+        </Typography>
       </TableCell>
 
-      <TableCell>
-        <Typography variant="body1">{item.cantidad}</Typography>
+      <TableCell sx={{ backgroundColor: "#fff", color: "#000" }}>
+        <Typography variant="body1" sx={{ fontSize: "12px" }}>
+          {item.cantidad}
+        </Typography>
       </TableCell>
 
-      <TableCell>
-        <Typography variant="body1">{item.precioUnitario}</Typography>
+      <TableCell sx={{ backgroundColor: "#fff", color: "#000" }}>
+        <Typography variant="body1" sx={{ fontSize: "12px" }}>
+          {item.precioUnitario}
+        </Typography>
       </TableCell>
 
-      <TableCell>
-        <Typography variant="body1">{item.subtotal}</Typography>
+      <TableCell sx={{ backgroundColor: "#fff", color: "#000" }}>
+        <Typography variant="body1" sx={{ fontSize: "12px" }}>
+          {item.subtotal}
+        </Typography>
       </TableCell>
     </TableRow>
   );
