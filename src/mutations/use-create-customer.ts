@@ -27,7 +27,7 @@ async function createCustomer(
   access_token: string | undefined,
   newCustomer: CreateCustomerRequest,
 ): Promise<Customer> {
-  const url = new URL("/admin/customers", BACKEND_URL);
+  const url = new URL("/admin/customers-v2", BACKEND_URL);
 
   const response = await fetch(url, {
     method: "POST",

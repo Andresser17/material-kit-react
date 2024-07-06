@@ -2,7 +2,6 @@ import { Address } from "@medusajs/types";
 import { Box, Button, Typography } from "@mui/material";
 import AddressCard from "src/components/address-card";
 import Iconify from "src/components/iconify";
-import Link from "src/components/link";
 import SectionBox from "src/components/section-box";
 import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal";
 import { useModal } from "src/modals/useModal";
@@ -36,7 +35,8 @@ export default function ShippingAddresses({
         </Button>
       </Box>
 
-      {addresses && addresses.length > 0 ? (
+      {addresses &&
+        addresses.length > 0 &&
         addresses.map((address) => (
           <AddressCard
             key={address.id}
@@ -44,12 +44,7 @@ export default function ShippingAddresses({
             selected={address}
             setSelected={() => {}}
           />
-        ))
-      ) : (
-        <Typography variant="subtitle2">
-          Shipping addresses not found: <Link to="#">add an address</Link>
-        </Typography>
-      )}
+        ))}
     </SectionBox>
   );
 }

@@ -51,7 +51,7 @@ export default function Header({
             <strong>Dirección:</strong> {shippingAddress.address_1}
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
-            <strong>Cedula o RIF:</strong>
+            <strong>Cedula o RIF:</strong> {customer.document}
           </Typography>
           <Typography variant="body1" sx={{ fontSize: "12px" }}>
             <strong>Teléfono:</strong> {shippingAddress.phone}

@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { formatToLocalTimeEs } from "src/utils/format-time";
 
 interface IDetails {
   customer: Customer;
@@ -20,7 +21,6 @@ interface IDetails {
 
 export default function Details({ customer }: IDetails) {
   const [open, setOpen] = useState<Element | null>(null);
-  // const { mutate: deleteDraftOrderMutation } = useDeleteDraftOrder();
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
@@ -30,8 +30,8 @@ export default function Details({ customer }: IDetails) {
     setOpen(null);
   };
 
-  const handleCancelOrder = () => {
-    // deleteDraftOrderMutation({ draft_order_id: custo.id });
+  const handleEdit = () => {
+    handleCloseMenu();
   };
 
   return (
@@ -54,14 +54,14 @@ export default function Details({ customer }: IDetails) {
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <Box sx={{ display: "flex" }}>
         <TitleValueField
-          title="First seen"
-          value={customer.created_at.toLocaleString()}
+          title="Created"
+          value={formatToLocalTimeEs(customer.created_at)}
         />
         <TitleValueField
           title="Phone"
           value={customer.phone?.toString() ?? "N/A"}
         />
-        <TitleValueField title="Orders" value="0" />
+        <TitleValueField title="Document" value={customer.document} />
         <TitleValueField
           title="User"
           value={customer.has_account ? "Registered" : "Guest"}
@@ -74,11 +74,8 @@ export default function Details({ customer }: IDetails) {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuItem
-          onClick={handleCancelOrder}
-          sx={{ color: "error.main", fontSize: 12 }}
-        >
-          Cancel Draft Order
+        <MenuItem onClick={handleEdit} sx={{ fontSize: 12 }}>
+          Edit
         </MenuItem>
       </Popover>
     </SectionBox>
