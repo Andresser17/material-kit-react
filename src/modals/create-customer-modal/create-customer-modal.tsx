@@ -23,6 +23,10 @@ export default function CreateCustomerModal() {
       first_name: "",
       last_name: "",
       password: "12345678",
+      document: "",
+      mercado_libre: "",
+      instagram: "",
+      facebook: "",
       phone: "",
     },
     mode: "onChange",
@@ -91,6 +95,30 @@ export default function CreateCustomerModal() {
           <ControlledField
             id="phone"
             label="Phone"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="document"
+            label="Document"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="mercado_libre"
+            label="ML Account"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="facebook"
+            label="Facebook Account"
+            control={control}
+            sx={{ width: "48%" }}
+          />
+          <ControlledField
+            id="instagram"
+            label="Instagram Account"
             control={control}
             sx={{ width: "48%" }}
           />

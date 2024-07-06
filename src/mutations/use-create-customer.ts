@@ -1,4 +1,4 @@
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import {
   UseMutationResult,
   useMutation,
@@ -16,13 +16,17 @@ export interface CreateCustomerRequest {
   first_name: string;
   last_name: string;
   password: string;
+  document: string;
+  mercado_libre: string;
+  instagram: string;
+  facebook: string;
   phone: string;
 }
 
 async function createCustomer(
   access_token: string | undefined,
   newCustomer: CreateCustomerRequest,
-): Promise<CustomerDTO> {
+): Promise<Customer> {
   const url = new URL("/admin/customers", BACKEND_URL);
 
   const response = await fetch(url, {
@@ -45,7 +49,7 @@ interface UseAddProductParams {
 }
 
 export function useCreateCustomer(): UseMutationResult<
-  CustomerDTO,
+  Customer,
   HTTPError,
   UseAddProductParams,
   unknown

@@ -419,6 +419,10 @@ export declare module "@medusajs/types" {
     email: string;
     first_name: string;
     last_name: string;
+    document: string;
+    mercado_libre: string;
+    instagram: string;
+    facebook: string;
     billing_address_id: null | string;
     billing_address: Address;
     shipping_addresses: Address[];
