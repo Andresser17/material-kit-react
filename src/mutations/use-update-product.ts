@@ -21,7 +21,7 @@ async function updateProduct(
   product: ProductRequest,
   images: SortableImageType[] | undefined,
 ): Promise<Product> {
-  const url = new URL(`/admin/products/${product_id}`, BACKEND_URL);
+  const url = new URL(`/admin/products-v2/${product_id}`, BACKEND_URL);
 
   const newImages =
     images && images.length > 0

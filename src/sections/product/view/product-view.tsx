@@ -46,7 +46,7 @@ export default function ProductView() {
     },
     mode: "onChange",
   });
-  const product = useGetProduct(product_id ?? "");
+  const { data: product } = useGetProduct(product_id ?? "");
   const { mutate: updateProductMutation } = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
     updateProductMutation({

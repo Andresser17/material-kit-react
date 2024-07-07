@@ -15,6 +15,8 @@ interface IHeader {
 }
 
 export default function Header({ items }: IHeader) {
+  const warranty_time: number = 0;
+
   return (
     <>
       {/* Items */}
@@ -24,7 +26,7 @@ export default function Header({ items }: IHeader) {
       <Box sx={{ mt: 2, mb: 12 }}>
         <Typography variant="h6">Garantía:</Typography>
         <Typography variant="body1" sx={{ fontSize: "12px", mb: 2 }}>
-          30 días de garantía contra defecto de fábrica.
+          {warranty_time} días de garantía contra defecto de fábrica.
         </Typography>
         <Typography
           variant="body1"
