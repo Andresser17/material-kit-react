@@ -1,4 +1,4 @@
-import { DraftOrderResponse, PaymentAmounts } from "@medusajs/types";
+import { DraftOrder } from "@medusajs/types";
 import { MouseEvent, useState } from "react";
 
 import {
@@ -18,16 +18,13 @@ import Link from "src/components/link";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import { useDeleteDraftOrder } from "src/mutations/use-delete-draft-order";
+import { formatCurrency } from "src/utils/format-number";
 
 interface IOrderDetails {
-  draftOrder: DraftOrderResponse;
-  paymentAmounts: PaymentAmounts;
+  draftOrder: DraftOrder;
 }
 
-export default function OrderDetails({
-  draftOrder,
-  paymentAmounts,
-}: IOrderDetails) {
+export default function OrderDetails({ draftOrder }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
   const { mutate: deleteDraftOrderMutation } = useDeleteDraftOrder();
 
@@ -86,7 +83,7 @@ export default function OrderDetails({
         />
         <TitleValueField
           title="Amount USD"
-          value={`$${paymentAmounts.total}`}
+          value={`${formatCurrency(draftOrder.cart.total)}`}
         />
       </Box>
       <Popover

@@ -1,4 +1,4 @@
-import { DraftOrderResponse } from "@medusajs/types";
+import { DraftOrder } from "@medusajs/types";
 
 import {
   Accordion,
@@ -13,11 +13,11 @@ import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 
 interface IRawOrder {
-  data: DraftOrderResponse;
+  draftOrder: DraftOrder;
 }
 
-export default function RawOrder({ data }: IRawOrder) {
-  const rawDataLength = Object.keys(data ?? {}).length;
+export default function RawOrder({ draftOrder }: IRawOrder) {
+  const rawDataLength = Object.keys(draftOrder ?? {}).length;
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>

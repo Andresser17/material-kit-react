@@ -57,10 +57,10 @@ export function useMarkPayDraftOrder(): UseMutationResult<
     mutationFn: async ({ draft_order_id, data }: UseCreateLotArgs) => {
       return markPayDraftOrder(user?.access_token, draft_order_id, data);
     },
-    mutationKey: [MUTATION_KEY.delete_draft_order],
+    mutationKey: [MUTATION_KEY.mark_pay_draft_order],
     onSettled: () =>
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.list_draft_orders],
+        queryKey: [QUERY_KEY.draft_order],
       }),
     onError: (err) => {
       console.log(err);

@@ -107,7 +107,7 @@ export default function CreateDraftOrderView() {
                 data: {
                   first_name: selectedCustomer?.first_name,
                   last_name: selectedCustomer?.last_name,
-                  document: selectedCustomer?.id, // replace with selectedCustomer?.document on future
+                  document: selectedCustomer?.document,
                   phone: selectedCustomer?.phone,
                   destination_agency: "Zoom MRW Tealca Placeholder",
                   destination_city: "Placeholder",

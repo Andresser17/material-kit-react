@@ -41,6 +41,7 @@ export const MUTATION_KEY = {
   update_customer: "update_customer",
   add_customer_shipping_address: "add_customer_shipping_address",
   edit_customer_shipping_address: "edit_customer_shipping_address",
+  mark_pay_draft_order: "mark_pay_draft_order",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

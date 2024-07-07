@@ -1,4 +1,4 @@
-import { DraftOrderResponse, LineItem } from "@medusajs/types";
+import { DraftOrder, LineItem } from "@medusajs/types";
 
 import {
   Avatar,
@@ -16,14 +16,13 @@ import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
 import { IAddLineItemModal } from "src/modals/add-line-item-modal";
 import { useModal } from "src/modals/useModal";
-import { PaymentAmounts } from "./view/draft-order-view";
+import { formatCurrency } from "src/utils/format-number";
 
 interface ISummary {
-  data: DraftOrderResponse;
-  paymentAmounts: PaymentAmounts;
+  draftOrder: DraftOrder;
 }
 
-export default function Summary({ data, paymentAmounts }: ISummary) {
+export default function Summary({ draftOrder: draftOrder }: ISummary) {
   const [open, setOpen] = useState<Element | null>(null);
   const { onOpen: openModal, onUpdate: updateModal } =
     useModal<IAddLineItemModal>("add-line-item-modal");
@@ -39,15 +38,21 @@ export default function Summary({ data, paymentAmounts }: ISummary) {
   };
 
   const handleCreateLineItems = () => {
-    openModal({ draft_order_id: data.id, line_items: data.cart.items });
+    openModal({
+      draft_order_id: draftOrder.id,
+      line_items: draftOrder.cart.items,
+    });
     handleCloseMenu();
   };
 
   useEffect(() => {
-    if (data.cart.items) {
-      updateModal({ draft_order_id: data.id, line_items: data.cart.items });
+    if (draftOrder.cart.items) {
+      updateModal({
+        draft_order_id: draftOrder.id,
+        line_items: draftOrder.cart.items,
+      });
     }
-  }, [data]);
+  }, [draftOrder]);
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
@@ -60,28 +65,28 @@ export default function Summary({ data, paymentAmounts }: ISummary) {
         </Box>
       </Box>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
-      {data &&
-        data.cart.items.map((item: LineItem) => (
+      {draftOrder &&
+        draftOrder.cart.items.map((item: LineItem) => (
           <CartItemSummary key={item.id} data={item} />
         ))}
       <SummaryField
         title="Subtotal"
-        value={`$${paymentAmounts.subtotal} USD`}
+        value={`${formatCurrency(draftOrder.cart.subtotal)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Shipping"
-        value={`$${paymentAmounts.shipping_total} USD`}
+        value={`${formatCurrency(draftOrder.cart.shipping_total)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Tax"
-        value={`$${paymentAmounts.tax_total} USD`}
+        value={`${formatCurrency(draftOrder.cart.tax_total ?? 0)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Total to pay"
-        value={`$${paymentAmounts.total} USD`}
+        value={`${formatCurrency(draftOrder.cart.total)} USD`}
         bold
       />
       <Popover

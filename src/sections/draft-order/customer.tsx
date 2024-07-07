@@ -1,4 +1,4 @@
-import { DraftOrderResponse } from "@medusajs/types";
+import { DraftOrder } from "@medusajs/types";
 import { SyntheticEvent, useState } from "react";
 
 import {
@@ -17,10 +17,10 @@ import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 
 interface ICustomer {
-  data: DraftOrderResponse;
+  draftOrder: DraftOrder;
 }
 
-export default function Customer({ data }: ICustomer) {
+export default function Customer({ draftOrder }: ICustomer) {
   const [open, setOpen] = useState<Element | null>(null);
   const navigate = useNavigate();
 
@@ -58,19 +58,22 @@ export default function Customer({ data }: ICustomer) {
           sx={{ width: 36, height: 36, mr: 1 }}
         />
         <TitleValueField
-          title={data.cart.customer.email}
-          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
+          title={draftOrder.cart.customer.email}
+          value={`${draftOrder.cart?.shipping_address?.city}, ${draftOrder.cart?.shipping_address?.province}`}
         />
       </Box>
       <Box sx={{ display: "flex" }}>
-        <TitleValueField title="Contact" value={data?.cart.customer.email} />
+        <TitleValueField
+          title="Contact"
+          value={draftOrder?.cart.customer.email}
+        />
         <TitleValueField
           title="Shipping"
-          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
+          value={`${draftOrder.cart?.shipping_address?.city}, ${draftOrder.cart?.shipping_address?.province}`}
         />
         <TitleValueField
           title="Billing"
-          value={`${data.cart?.shipping_address?.city}, ${data.cart?.shipping_address?.province}`}
+          value={`${draftOrder.cart?.shipping_address?.city}, ${draftOrder.cart?.shipping_address?.province}`}
         />
       </Box>
       <Popover
@@ -81,7 +84,7 @@ export default function Customer({ data }: ICustomer) {
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <MenuItem
-          onClick={() => navigate(`/customers/${data.cart.customer_id}`)}
+          onClick={() => navigate(`/customers/${draftOrder.cart.customer_id}`)}
           sx={{ fontSize: 12 }}
         >
           Go to Customer

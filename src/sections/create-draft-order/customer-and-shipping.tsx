@@ -187,7 +187,8 @@ export default function CustomerAndShipping({
         ))
       ) : (
         <Typography variant="subtitle2">
-          Shipping addresses not found: <Link to="#">add an address</Link>
+          Shipping addresses not found:{" "}
+          <Link to={`/customers/${selectedCustomer?.id}`}>Add an address</Link>
         </Typography>
       )}
     </SectionBox>

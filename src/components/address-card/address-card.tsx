@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface IAddressCard {
   address: Address;
-  disabled: boolean;
+  disabled?: boolean;
   selected: Address | null;
   setSelected: Dispatch<SetStateAction<Address | null>>;
 }

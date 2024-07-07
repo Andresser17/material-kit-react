@@ -1,4 +1,4 @@
-import { DraftOrder, PaymentAmounts } from "@medusajs/types";
+import { DraftOrder } from "@medusajs/types";
 import { Button, Divider, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -9,13 +9,13 @@ import SummaryField from "src/components/summary-field";
 import { DraftOrderStatus } from "src/enums";
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { useModal } from "src/modals/useModal";
+import { formatCurrency } from "src/utils/format-number";
 
 interface IPayment {
   draftOrder: DraftOrder;
-  paymentAmounts: PaymentAmounts;
 }
 
-export default function Payment({ draftOrder, paymentAmounts }: IPayment) {
+export default function Payment({ draftOrder }: IPayment) {
   const navigate = useNavigate();
   const {
     props: { redirect_url },
@@ -45,22 +45,22 @@ export default function Payment({ draftOrder, paymentAmounts }: IPayment) {
       <Divider orientation="horizontal" flexItem sx={{ mt: 2, mb: 3 }} />
       <SummaryField
         title="Subtotal"
-        value={`$${paymentAmounts.subtotal} USD`}
+        value={`${formatCurrency(draftOrder.cart.subtotal)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Shipping"
-        value={`$${paymentAmounts.shipping_total} USD`}
+        value={`${formatCurrency(draftOrder.cart.shipping_total)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Tax"
-        value={`$${paymentAmounts.tax_total} USD`}
+        value={`${formatCurrency(draftOrder.cart.tax_total ?? 0)} USD`}
         sx={{ color: "#888", fontSize: 14 }}
       />
       <SummaryField
         title="Total to pay"
-        value={`$${paymentAmounts.total} USD`}
+        value={`${formatCurrency(draftOrder.cart.otal)} USD`}
         bold
       />
       {draftOrder.cart.payment && (

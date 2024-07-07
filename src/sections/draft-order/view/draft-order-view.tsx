@@ -1,7 +1,6 @@
-import { DraftOrder, PaymentAmounts } from "@medusajs/types";
-import { useEffect, useState } from "react";
+import { DraftOrder } from "@medusajs/types";
 
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 
 import Customer from "../customer";
 import OrderDetails from "../order-details";
@@ -17,30 +16,6 @@ interface IDraftOrderView {
 }
 
 export default function DraftOrderView({ draftOrder }: IDraftOrderView) {
-  const [paymentAmounts, setPaymentAmounts] = useState<PaymentAmounts>({
-    total: "0.00",
-    subtotal: "0.00",
-    shipping_total: "0.00",
-    tax_total: "0.00",
-  });
-
-  useEffect(() => {
-    if (draftOrder) {
-      setPaymentAmounts((prev) => {
-        const newState = { ...prev };
-        Object.keys(paymentAmounts).forEach((key) => {
-          let amountArr = draftOrder.cart[key].toString().split("");
-          amountArr = amountArr.slice(0, amountArr.length - 2).join("");
-          if (amountArr.length === 0) amountArr = ["0"];
-          const amount = `${amountArr}.00`;
-          newState[key] = amount;
-        });
-
-        return newState;
-      });
-    }
-  }, [draftOrder]);
-
   return (
     <Box
       sx={{
@@ -58,12 +33,12 @@ export default function DraftOrderView({ draftOrder }: IDraftOrderView) {
           },
         }}
       >
-        <OrderDetails draftOrder={draftOrder} paymentAmounts={paymentAmounts} />
-        <Payment draftOrder={draftOrder} paymentAmounts={paymentAmounts} />
-        <Summary data={draftOrder} paymentAmounts={paymentAmounts} />
+        <OrderDetails draftOrder={draftOrder} />
+        <Payment draftOrder={draftOrder} />
+        <Summary draftOrder={draftOrder} />
         <Shipping draftOrder={draftOrder} />
-        <Customer data={draftOrder} />
-        <RawOrder data={draftOrder} />
+        <Customer draftOrder={draftOrder} />
+        <RawOrder draftOrder={draftOrder} />
       </Box>
     </Box>
   );

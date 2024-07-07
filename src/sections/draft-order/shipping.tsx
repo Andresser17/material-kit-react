@@ -1,4 +1,4 @@
-import { DraftOrderResponse } from "@medusajs/types";
+import { DraftOrder } from "@medusajs/types";
 import { IconButton, MenuItem, Popover, useTheme } from "@mui/material";
 
 import {
@@ -27,7 +27,7 @@ interface ShippingOptionData {
 }
 
 interface IShipping {
-  draftOrder: DraftOrderResponse;
+  draftOrder: DraftOrder;
 }
 
 export default function Shipping({ draftOrder }: IShipping) {
