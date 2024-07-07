@@ -174,6 +174,26 @@ export default function Attributes({ control }: IAttributes) {
           ))}
         </ControlledField> */}
       </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
+        <Typography>Warranty Time</Typography>
+        <ControlledField<ProductRequest>
+          control={control}
+          id="warranty"
+          variant="outlined"
+          sx={{ width: 250 }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Days</InputAdornment>,
+          }}
+        />
+      </Box>
     </SectionBox>
   );
 }

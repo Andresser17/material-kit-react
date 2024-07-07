@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import { PaymentStatus } from "src/enums";
 
 import Label from "src/components/label";
+import { formatToLocalTimeEs } from "src/utils/format-time";
 
 // ----------------------------------------------------------------------
 
@@ -39,11 +40,13 @@ export default function OrderTableRow({ order, selectedRow }: IOrderTableRow) {
           variant="subtitle2"
           noWrap
         >
-          {/* #{order.id.split("").slice(5)} */}#{order.display_id}
+          #{order.display_id}
         </Typography>
       </TableCell>
 
-      <TableCell align="center">{order.created_at?.toString()}</TableCell>
+      <TableCell align="center">
+        {formatToLocalTimeEs(order.created_at)}
+      </TableCell>
 
       <TableCell align="center">{order.email}</TableCell>
 

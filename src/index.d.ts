@@ -472,6 +472,7 @@ export declare module "@medusajs/types" {
     mid_code: string;
     material: string;
     metadata: Record<string, unknown>;
+    warranty: number;
   }
 
   interface ProductType {

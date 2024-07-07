@@ -42,11 +42,12 @@ export default function ProductView() {
       collection_id: "",
       tags: [],
       type: null,
+      warranty: 0,
     },
     mode: "onChange",
   });
   const product = useGetProduct(product_id ?? "");
-  const updateProductMutation = useUpdateProduct();
+  const { mutate: updateProductMutation } = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
     updateProductMutation({
       id: product_id ?? "",

@@ -1,15 +1,15 @@
-import toast from "react-hot-toast";
 import { Product, ProductRequest } from "@medusajs/types";
 import {
+  UseMutationResult,
   useMutation,
   useQueryClient,
-  UseMutateFunction,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 import HTTPError from "src/utils/http-error";
 
+import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
 
 import { SortableImageType } from "src/sections/product/add-images";
 
@@ -17,11 +17,11 @@ import uploadImages from "./upload-images";
 
 async function updateProduct(
   access_token: string | undefined,
-  id: string,
+  product_id: string,
   product: ProductRequest,
   images: SortableImageType[] | undefined,
 ): Promise<Product> {
-  const url = new URL(`/admin/products/${id}`, BACKEND_URL);
+  const url = new URL(`/admin/products/${product_id}`, BACKEND_URL);
 
   const newImages =
     images && images.length > 0
@@ -47,9 +47,10 @@ async function updateProduct(
       }),
     }),
   });
-  if (!response.ok) throw new HTTPError("Failed on updating product", response);
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
 
-  return await response.json();
+  return result;
 }
 
 interface UseUpdateProductArgs {
@@ -58,18 +59,16 @@ interface UseUpdateProductArgs {
   toUpload: SortableImageType[];
 }
 
-type IUseUpdateProduct = UseMutateFunction<
+export function useUpdateProduct(): UseMutationResult<
   Product,
-  Error,
+  HTTPError,
   UseUpdateProductArgs,
   unknown
->;
-
-export function useUpdateProduct(): IUseUpdateProduct {
+> {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn: async ({ id, product, toUpload }: UseUpdateProductArgs) => {
       if (toUpload.length > 0) {
         const uploads = await uploadImages(user?.access_token, toUpload);
@@ -115,6 +114,4 @@ export function useUpdateProduct(): IUseUpdateProduct {
       toast.success("Product updated successfully");
     },
   });
-
-  return mutate;
 }
