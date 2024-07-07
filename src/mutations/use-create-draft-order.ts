@@ -1,6 +1,6 @@
 import { DraftOrder, DraftOrderRequest } from "@medusajs/types";
 import {
-  UseMutateFunction,
+  UseMutationResult,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -30,32 +30,31 @@ async function createDraftOrder(
     },
     body: JSON.stringify(newDraftOrder),
   });
-  if (!response.ok)
-    throw new HTTPError("Failed on creating new draft order", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result;
 }
 
-type IUseCreateDraftOrder = UseMutateFunction<
-  DraftOrderResponse | undefined,
-  Error,
-  { newDraftOrder: DraftOrderRequest },
-  unknown
->;
+interface IUseCreateDraftOrderArgs {
+  newDraftOrder: DraftOrderRequest;
+}
 
 export function useCreateDraftOrder(
   resetForm: UseFormReset<DraftOrder>,
-): IUseCreateDraftOrder {
+): UseMutationResult<
+  DraftOrderResponse,
+  HTTPError,
+  IUseCreateDraftOrderArgs,
+  unknown
+> {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
-    mutationFn: async ({
-      newDraftOrder,
-    }: {
-      newDraftOrder: DraftOrderRequest;
-    }) => {
+  return useMutation({
+    mutationFn: async ({ newDraftOrder }: IUseCreateDraftOrderArgs) => {
       return createDraftOrder(user?.access_token, newDraftOrder);
     },
     mutationKey: [MUTATION_KEY.create_draft_order],
@@ -73,6 +72,4 @@ export function useCreateDraftOrder(
       navigate(`/draft-orders/${data.draft_order.id}`);
     },
   });
-
-  return mutate;
 }

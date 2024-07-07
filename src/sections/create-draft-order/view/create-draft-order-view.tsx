@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import {
-  Region,
-  CustomerDTO,
-  ShippingAddress,
+  Address,
+  Customer,
   DraftOrderRequest,
-  DraftOrderLineItem,
   DraftOrderShippingMethod,
+  LineItem,
+  Region,
 } from "@medusajs/types";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import { DraftOrderStatus } from "src/enums";
 import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
@@ -24,14 +24,13 @@ export default function CreateDraftOrderView() {
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [selectedMethod, setSelectedMethod] =
     useState<DraftOrderShippingMethod | null>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<CustomerDTO | null>(
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   );
-  const [selectedAddress, setSelectedAddress] =
-    useState<ShippingAddress | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
   const [status, setStatus] = useState(DraftOrderStatus.OPEN);
-  const [lineItems, setLineItems] = useState<DraftOrderLineItem[]>([]);
+  const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const { handleSubmit, reset } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
@@ -63,8 +62,36 @@ export default function CreateDraftOrderView() {
     reset();
     setStatus(DraftOrderStatus.OPEN);
   };
-  const createDraftOrder = useCreateDraftOrder(resetForm);
+  const { mutate: createDraftOrder } = useCreateDraftOrder(resetForm);
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
+    const shipping_address = selectedAddress
+      ? {
+          first_name: selectedAddress.first_name,
+          last_name: selectedAddress.last_name,
+          phone: selectedAddress.phone,
+          company: selectedAddress.company,
+          address_1: selectedAddress.address_1,
+          address_2: selectedAddress.address_2,
+          city: selectedAddress.city,
+          country_code: selectedAddress.country_code,
+          province: selectedAddress.province,
+          postal_code: selectedAddress.postal_code,
+          metadata: selectedAddress.metadata,
+        }
+      : {
+          first_name: "",
+          last_name: "",
+          phone: "",
+          company: "",
+          address_1: "",
+          address_2: "",
+          city: "",
+          country_code: "ve",
+          province: "",
+          postal_code: "",
+          metadata: {},
+        };
+
     createDraftOrder({
       newDraftOrder: {
         ...data,
@@ -89,60 +116,8 @@ export default function CreateDraftOrderView() {
               },
             ]
           : [],
-        billing_address: selectedAddress
-          ? {
-              first_name: selectedAddress.first_name,
-              last_name: selectedAddress.last_name,
-              phone: selectedAddress.phone,
-              company: selectedAddress.company,
-              address_1: selectedAddress.address_1,
-              address_2: selectedAddress.address_2,
-              city: selectedAddress.city,
-              country_code: selectedAddress.country_code,
-              province: selectedAddress.province,
-              postal_code: selectedAddress.postal_code,
-              metadata: selectedAddress.metadata,
-            }
-          : {
-              first_name: "",
-              last_name: "",
-              phone: "",
-              company: "",
-              address_1: "",
-              address_2: "",
-              city: "",
-              country_code: "ve",
-              province: "",
-              postal_code: "",
-              metadata: {},
-            },
-        shipping_address: selectedAddress
-          ? {
-              first_name: selectedAddress.first_name,
-              last_name: selectedAddress.last_name,
-              phone: selectedAddress.phone,
-              company: selectedAddress.company,
-              address_1: selectedAddress.address_1,
-              address_2: selectedAddress.address_2,
-              city: selectedAddress.city,
-              country_code: selectedAddress.country_code,
-              province: selectedAddress.province,
-              postal_code: selectedAddress.postal_code,
-              metadata: selectedAddress.metadata,
-            }
-          : {
-              first_name: "",
-              last_name: "",
-              phone: "",
-              company: "",
-              address_1: "",
-              address_2: "",
-              city: "",
-              country_code: "ve",
-              province: "",
-              postal_code: "",
-              metadata: {},
-            },
+        billing_address: shipping_address,
+        shipping_address,
       },
     });
   };
