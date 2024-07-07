@@ -92,6 +92,7 @@ export declare module "@medusajs/types" {
     updated_at: string;
     deleted_at: string | null;
     metadata: Record<string, unknown>;
+    warranty_time: number;
   }
 
   interface ProductOption {
@@ -472,7 +473,7 @@ export declare module "@medusajs/types" {
     mid_code: string;
     material: string;
     metadata: Record<string, unknown>;
-    warranty: number;
+    warranty_time: number;
   }
 
   interface ProductType {

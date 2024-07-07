@@ -42,7 +42,7 @@ export default function ProductView() {
       collection_id: "",
       tags: [],
       type: null,
-      warranty: 0,
+      warranty_time: 0,
     },
     mode: "onChange",
   });
@@ -108,6 +108,8 @@ export default function ProductView() {
       // if (product.type_id) setValue("type_id", product.type_id);
       if (product.type) setValue("type", product.type);
       setStatus(product.status);
+      if (product.warranty_time)
+        setValue("warranty_time", product.warranty_time);
     }
   }, [product]);
 

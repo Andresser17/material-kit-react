@@ -186,7 +186,7 @@ export default function Attributes({ control }: IAttributes) {
         <Typography>Warranty Time</Typography>
         <ControlledField<ProductRequest>
           control={control}
-          id="warranty"
+          id="warranty_time"
           variant="outlined"
           sx={{ width: 250 }}
           InputProps={{
