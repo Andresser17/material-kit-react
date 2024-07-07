@@ -10,32 +10,22 @@ import HTTPError from "src/utils/http-error";
 
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
+import { CustomerRequest } from "./use-create-customer";
 
-export interface CustomerRequest {
-  email: string;
-  first_name: string;
-  last_name: string;
-  password: string;
-  document: string;
-  mercado_libre: string;
-  instagram: string;
-  facebook: string;
-  phone: string;
-}
-
-async function createCustomer(
+async function updateCustomer(
   access_token: string | undefined,
-  newCustomer: CustomerRequest,
+  customer_id: string,
+  customer: CustomerRequest,
 ): Promise<Customer> {
-  const url = new URL("/admin/customers-v2", BACKEND_URL);
+  const url = new URL(`/admin/customers-v2/${customer_id}`, BACKEND_URL);
 
   const response = await fetch(url, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(newCustomer),
+    body: JSON.stringify(customer),
   });
 
   const result = await response.json();
@@ -44,26 +34,27 @@ async function createCustomer(
   return result.customer;
 }
 
-interface UseAddProductParams {
-  newCustomer: CustomerRequest;
+interface UseUpdateCustomerParams {
+  customer_id: string;
+  customer: CustomerRequest;
 }
 
-export function useCreateCustomer(): UseMutationResult<
+export function useUpdateCustomer(): UseMutationResult<
   Customer,
   HTTPError,
-  UseAddProductParams,
+  UseUpdateCustomerParams,
   unknown
 > {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
   return useMutation({
-    mutationFn: async ({ newCustomer }: UseAddProductParams) => {
-      return createCustomer(user?.access_token, newCustomer);
+    mutationFn: async ({ customer_id, customer }: UseUpdateCustomerParams) => {
+      return updateCustomer(user?.access_token, customer_id, customer);
     },
-    mutationKey: [MUTATION_KEY.create_customer],
+    mutationKey: [MUTATION_KEY.update_customer],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_customers] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.customer] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
@@ -71,7 +62,7 @@ export function useCreateCustomer(): UseMutationResult<
     },
     onSuccess() {
       // call pop up
-      toast.success("Customer added successfully");
+      toast.success("Customer edited successfully");
     },
   });
 }

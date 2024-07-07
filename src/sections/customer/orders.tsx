@@ -11,7 +11,7 @@ export default function Orders({ orders }: IOrders) {
   return (
     <SectionBox>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4">Orders {orders.count}</Typography>
+        <Typography variant="h4">Orders ({orders.count})</Typography>
         <Typography variant="subtitle2" sx={{ color: "#888" }}>
           An overview of Customers Orders
         </Typography>

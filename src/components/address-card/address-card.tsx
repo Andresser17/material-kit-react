@@ -4,12 +4,14 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface IAddressCard {
   address: Address;
+  disabled: boolean;
   selected: Address | null;
   setSelected: Dispatch<SetStateAction<Address | null>>;
 }
 
 export default function AddressCard({
   address,
+  disabled,
   selected,
   setSelected,
 }: IAddressCard) {
@@ -26,7 +28,9 @@ export default function AddressCard({
         mb: 2,
         borderRadius: 1.5,
         "&:last-child": { mb: 0 },
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        pointerEvents: disabled ? "none" : "auto",
+        opacity: disabled ? 0.8 : 1,
       }}
     >
       <Radio

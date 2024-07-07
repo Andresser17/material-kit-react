@@ -1,28 +1,27 @@
-import { useEffect } from "react";
-
+import { Customer } from "@medusajs/types";
 import { Box, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import ControlledField from "src/components/controlled-field";
-import {
-  CustomerRequest,
-  useCreateCustomer,
-} from "src/mutations/use-create-customer";
+import { CustomerRequest } from "src/mutations/use-create-customer";
+import { useUpdateCustomer } from "src/mutations/use-update-customer";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
 
-export interface ICreateCustomerModal {
-  redirect_url: string;
+export interface IEditCustomerModal {
+  customer: Customer;
 }
 
 export default function CreateCustomerModal() {
-  const { onClose: closeModal, onUpdate: updateModal } =
-    useModal<ICreateCustomerModal>("create-customer-modal");
-  const { handleSubmit, control } = useForm<CustomerRequest>({
+  const {
+    props: { customer },
+    onClose: closeModal,
+  } = useModal<IEditCustomerModal>("edit-customer-modal");
+  const { handleSubmit, control, setValue } = useForm<CustomerRequest>({
     defaultValues: {
       email: "",
       first_name: "",
       last_name: "",
-      password: "12345678",
       document: "",
       mercado_libre: "",
       instagram: "",
@@ -31,34 +30,40 @@ export default function CreateCustomerModal() {
     },
     mode: "onChange",
   });
-  const {
-    data: customer,
-    mutate: createCustomerMutation,
-    isSuccess,
-  } = useCreateCustomer();
+  const { mutate: updateCustomerMutation, isSuccess } = useUpdateCustomer();
   const onSubmit = (data: CustomerRequest) => {
-    createCustomerMutation({
-      newCustomer: data,
+    updateCustomerMutation({
+      customer_id: customer.id,
+      customer: data,
     });
   };
 
   useEffect(() => {
-    if (isSuccess && customer) {
-      updateModal({ redirect_url: customer.id });
-      closeModal(false);
+    if (isSuccess) closeModal();
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (customer) {
+      setValue("email", customer.email);
+      setValue("first_name", customer.first_name);
+      setValue("last_name", customer.last_name);
+      setValue("document", customer.document);
+      setValue("mercado_libre", customer.mercado_libre);
+      setValue("instagram", customer.instagram);
+      setValue("facebook", customer.facebook);
+      setValue("phone", customer.phone);
     }
-  }, [isSuccess, customer]);
+  }, [customer]);
 
   return (
     <BaseModal
-      modalId="create-customer-modal"
-      title="Create Customer"
+      modalId="edit-customer-modal"
+      title="Edit Customer"
       open
       closeOnTap
-      onSubmit={() => {}}
       onClose={() => closeModal()}
     >
-      <form id="create-customer-modal" onSubmit={handleSubmit(onSubmit)}>
+      <form id="edit-customer-modal" onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="subtitle2" sx={{ fontSize: "16px", mb: 1 }}>
           Account
         </Typography>
@@ -66,12 +71,6 @@ export default function CreateCustomerModal() {
           <ControlledField
             id="email"
             label="Email"
-            control={control}
-            sx={{ width: "48%" }}
-          />
-          <ControlledField
-            id="password"
-            label="Password"
             control={control}
             sx={{ width: "48%" }}
           />

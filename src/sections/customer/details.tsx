@@ -13,6 +13,8 @@ import Box from "@mui/material/Box";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { IEditCustomerModal } from "src/modals/edit-customer-modal";
+import { useModal } from "src/modals/useModal";
 import { formatToLocalTimeEs } from "src/utils/format-time";
 
 interface IDetails {
@@ -21,6 +23,9 @@ interface IDetails {
 
 export default function Details({ customer }: IDetails) {
   const [open, setOpen] = useState<Element | null>(null);
+  const { onOpen: openModal } = useModal<IEditCustomerModal>(
+    "edit-customer-modal",
+  );
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setOpen(e.currentTarget);
@@ -31,6 +36,7 @@ export default function Details({ customer }: IDetails) {
   };
 
   const handleEdit = () => {
+    openModal({ customer });
     handleCloseMenu();
   };
 
@@ -77,6 +83,7 @@ export default function Details({ customer }: IDetails) {
         <MenuItem onClick={handleEdit} sx={{ fontSize: 12 }}>
           Edit
         </MenuItem>
+        <MenuItem sx={{ fontSize: 12 }}>Change Password</MenuItem>
       </Popover>
     </SectionBox>
   );

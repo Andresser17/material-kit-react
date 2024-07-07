@@ -38,6 +38,7 @@ export const MUTATION_KEY = {
   remove_lot_product: "remove_lot_product",
   create_line_item: "create_line_item",
   create_customer: "create_customer",
+  update_customer: "update_customer",
   add_customer_shipping_address: "add_customer_shipping_address",
   edit_customer_shipping_address: "edit_customer_shipping_address",
 };

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import { FulfillmentStatus, PaymentStatus } from "src/enums";
+import { formatToLocalTimeEs } from "src/utils/format-time";
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +70,9 @@ export default function OrdersTableRow({ order }: IOrdersTableRow) {
           />
         </TableCell>
 
-        <TableCell align="center">{order.created_at}</TableCell>
+        <TableCell align="center">
+          {formatToLocalTimeEs(order.created_at)}
+        </TableCell>
 
         <TableCell>
           <Label

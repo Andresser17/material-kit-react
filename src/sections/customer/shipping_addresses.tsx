@@ -23,7 +23,7 @@ export default function ShippingAddresses({
     <SectionBox>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
         <Typography variant="h6">
-          Shipping Addresses {addresses.length}
+          Shipping Addresses ({addresses.length})
         </Typography>
         <Button
           onClick={() => openModal({ customer_id })}
@@ -41,7 +41,8 @@ export default function ShippingAddresses({
           <AddressCard
             key={address.id}
             address={address}
-            selected={address}
+            selected={null}
+            disabled
             setSelected={() => {}}
           />
         ))}

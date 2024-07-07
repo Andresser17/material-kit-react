@@ -9,6 +9,7 @@ import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal"
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
+import { IEditCustomerModal } from "src/modals/edit-customer-modal";
 import { IEditDraftOrderShippingAddressModal } from "src/modals/edit-draft-order-shipping-address-modal";
 import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
 import { IEditOptionsModal } from "src/modals/edit-options-modal/edit-options-modal";
@@ -96,6 +97,11 @@ const initialState = {
       open: false,
       props: { customer_id: "" },
     } as Modal<IEditDraftOrderShippingAddressModal>,
+    {
+      id: "edit-customer-modal",
+      open: false,
+      props: {},
+    } as Modal<IEditCustomerModal>,
   ],
 };
 
