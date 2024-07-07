@@ -67,12 +67,14 @@ export default function CreateCustomerModal() {
             id="email"
             label="Email"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
           <ControlledField
             id="password"
             label="Password"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
         </Box>
@@ -84,24 +86,28 @@ export default function CreateCustomerModal() {
             id="first_name"
             label="First Name"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
           <ControlledField
             id="last_name"
             label="Last Name"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
           <ControlledField
             id="phone"
             label="Phone"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
           <ControlledField
             id="document"
             label="Document"
             control={control}
+            required
             sx={{ width: "48%" }}
           />
           <ControlledField
