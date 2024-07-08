@@ -11,6 +11,7 @@ import OrderDetails from "../order-details";
 import Payment from "../payment";
 import Summary from "../summary";
 import TimelineSection from "../timeline-section";
+import Warranties from "../warranties";
 
 // ----------------------------------------------------------------------
 
@@ -56,6 +57,7 @@ export default function OrderView({ order }: { order: Order }) {
       </Box>
       <Box sx={{ width: "40%", maxWidth: "450px" }}>
         <TimelineSection />
+        <Warranties order={order} />
       </Box>
     </Box>
   );

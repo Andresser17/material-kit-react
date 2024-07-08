@@ -620,4 +620,28 @@ export declare module "@medusajs/types" {
     shipping_total: string;
     tax_total: string;
   }
+
+  interface Warranty {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    time: string;
+    expiration_date: Date;
+    barcodes: {
+      type: string;
+      description: string;
+      value: string;
+    }[];
+    photos: {
+      product: {
+        url: string;
+        key: string;
+      };
+      package: {
+        url: string;
+        key: string;
+      };
+    };
+    order: Order;
+  }
 }
