@@ -5,6 +5,7 @@ export const QUERY_KEY = {
   list_customers: "list_customers",
   list_products: "list_products",
   list_draft_orders: "list_draft_orders",
+  list_warranties: "list_warranties",
   product_type: "productType",
   product_option: "productOption",
   product_variant: "productVariant",
@@ -42,6 +43,8 @@ export const MUTATION_KEY = {
   add_customer_shipping_address: "add_customer_shipping_address",
   edit_customer_shipping_address: "edit_customer_shipping_address",
   mark_pay_draft_order: "mark_pay_draft_order",
+  create_warranty: "create_warranty",
+  delete_warranty: "delete_warranty",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

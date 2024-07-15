@@ -1,13 +1,14 @@
-import { memo, forwardRef } from "react";
+import { forwardRef, memo } from "react";
 
 import Box from "@mui/material/Box";
 
-import { StyledScrollbar, StyledRootScrollbar } from "./styles";
+import { SxProps } from "@mui/material";
+import { StyledRootScrollbar, StyledScrollbar } from "./styles";
 // ----------------------------------------------------------------------
 
 interface ScrollbarProps {
   children: React.ReactNode;
-  sx: import("@mui/material").SxProps;
+  sx?: SxProps;
 }
 
 const Scrollbar = forwardRef<typeof StyledRootScrollbar, ScrollbarProps>(

@@ -1,10 +1,9 @@
-import { Order, PaymentAmounts } from "@medusajs/types";
+import { Order } from "@medusajs/types";
 
 import Box from "@mui/material/Box";
 
 import { FulfillmentStatus, PaymentStatus } from "src/enums";
 
-import { useEffect, useState } from "react";
 import Customer from "../customer";
 import Fulfillment from "../fulfillment";
 import OrderDetails from "../order-details";
@@ -16,30 +15,6 @@ import Warranties from "../warranties";
 // ----------------------------------------------------------------------
 
 export default function OrderView({ order }: { order: Order }) {
-  const [paymentAmounts, setPaymentAmounts] = useState<PaymentAmounts>({
-    total: "0.00",
-    subtotal: "0.00",
-    shipping_total: "0.00",
-    tax_total: "0.00",
-  });
-
-  useEffect(() => {
-    if (order) {
-      setPaymentAmounts((prev) => {
-        const newState = { ...prev };
-        Object.keys(paymentAmounts).forEach((key) => {
-          let amountArr = order[key].toString().split("");
-          amountArr = amountArr.slice(0, amountArr.length - 2).join("");
-          if (amountArr.length === 0) amountArr = ["0"];
-          const amount = `${amountArr}.00`;
-          newState[key] = amount;
-        });
-
-        return newState;
-      });
-    }
-  }, [order]);
-
   return (
     <Box
       sx={{

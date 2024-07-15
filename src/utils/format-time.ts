@@ -5,7 +5,7 @@ import { format, formatDistanceToNow, getTime } from "date-fns";
 export function formatToLocalTimeEs(date: Date) {
   const newDate = new Date(date);
 
-  return newDate.toLocaleDateString("es-ES", {
+  return newDate.toLocaleDateString("es-VE", {
     year: "numeric",
     month: "long",
     day: "numeric",

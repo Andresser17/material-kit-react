@@ -13,7 +13,7 @@ import { useUser } from "src/queries/use-user";
 
 import { SortableImageType } from "src/sections/product/add-images";
 
-import uploadImages from "./upload-images";
+import uploadSortableImages from "./upload-sortable-images";
 
 async function updateProduct(
   access_token: string | undefined,
@@ -71,7 +71,10 @@ export function useUpdateProduct(): UseMutationResult<
   return useMutation({
     mutationFn: async ({ id, product, toUpload }: UseUpdateProductArgs) => {
       if (toUpload.length > 0) {
-        const uploads = await uploadImages(user?.access_token, toUpload);
+        const uploads = await uploadSortableImages(
+          user?.access_token,
+          toUpload,
+        );
         return updateProduct(user?.access_token, id, product, uploads);
       }
 

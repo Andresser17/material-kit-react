@@ -438,6 +438,7 @@ export declare module "@medusajs/types" {
   interface ProductVariant extends ProductVariantDTO {
     product_id: string;
     prices: MoneyAmountDTO[];
+    product: Product;
   }
 
   interface ShippingOptionDTO {

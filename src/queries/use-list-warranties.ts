@@ -11,7 +11,7 @@ async function listWarranties({
   access_token,
   query,
 }: IUseListWarranties & { access_token: string }): Promise<Warranty[]> {
-  const url = new URL(`/admin/orders`, BACKEND_URL);
+  const url = new URL(`/admin/warranties`, BACKEND_URL);
 
   if (query?.order_id)
     url.searchParams.append("order_id", query?.order_id.toString());
@@ -40,7 +40,7 @@ export function useListWarranties({
   const { user } = useUser();
 
   return useQuery({
-    queryKey: [QUERY_KEY.order, user?.access_token, query],
+    queryKey: [QUERY_KEY.list_warranties, user?.access_token, query],
     queryFn: async ({ queryKey }): Promise<Warranty[]> =>
       listWarranties({
         access_token: queryKey[1] as string,
