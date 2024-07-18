@@ -26,7 +26,9 @@ export default function Warranties({ order }: IWarranties) {
   const { onOpen: openModal } = useModal<ICreateWarrantyModal>(
     "create-warranty-modal",
   );
-  const { data: warranties } = useListWarranties({});
+  const { data: warranties } = useListWarranties({
+    query: { order_id: order.id },
+  });
 
   const handleOpenMenu = (e: {
     currentTarget: SetStateAction<Element | null>;

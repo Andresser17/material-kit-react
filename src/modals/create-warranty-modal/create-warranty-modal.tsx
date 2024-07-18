@@ -27,12 +27,13 @@ export default function CreateWarrantyModal() {
           expiration_date: moment().add(time, "days").toDate(),
           barcodes: [],
           photos: [],
+          line_item_id: sel.id,
         },
       });
     });
-  };
 
-  console.log({ date: moment().add(90, "days").toDate() });
+    closeModal();
+  };
 
   // useEffect(() => {
   //   if (isSuccess) closeModal();

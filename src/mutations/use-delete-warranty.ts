@@ -49,7 +49,7 @@ export function useDeleteWarranty(): UseMutationResult<
     },
     mutationKey: [MUTATION_KEY.delete_warranty],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.order] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_warranties] }),
     onError: (err) => {
       console.log(err);
       // call error pop up

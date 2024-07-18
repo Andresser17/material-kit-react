@@ -634,15 +634,10 @@ export declare module "@medusajs/types" {
       value: string;
     }[];
     photos: {
-      product: {
-        url: string;
-        key: string;
-      };
-      package: {
-        url: string;
-        key: string;
-      };
-    };
+      url: string;
+      key: string;
+    }[];
     order: Order;
+    line_item: LineItem;
   }
 }

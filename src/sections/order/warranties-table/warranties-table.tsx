@@ -11,35 +11,34 @@ interface IWarrantiesTable {
 }
 
 export default function WarrantiesTable({ warranties }: IWarrantiesTable) {
+  console.log({ warranties });
   return (
-    <>
-      <Scrollbar>
-        <TableContainer sx={{ overflow: "unset" }}>
-          <Table>
-            <WarrantiesTableHead
-              headLabel={[
-                { id: "product", label: "Product" },
-                { id: "avatar", label: "" },
-                { id: "total_time", label: "Total Time" },
-                {
-                  id: "expiration_date",
-                  label: "Expiration Date",
-                  align: "center",
-                },
-                { id: "options", label: "" },
-              ]}
-            />
-            <TableBody>
-              {warranties &&
-                warranties.map((warranty) => {
-                  return (
-                    <WarrantiesTableRow key={warranty.id} warranty={warranty} />
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Scrollbar>
-    </>
+    <Scrollbar>
+      <TableContainer sx={{ overflow: "unset" }}>
+        <Table>
+          <WarrantiesTableHead
+            headLabel={[
+              { id: "product", label: "Product" },
+              { id: "avatar", label: "" },
+              { id: "total_time", label: "Total Time" },
+              {
+                id: "expiration_date",
+                label: "Expiration Date",
+                align: "center",
+              },
+              { id: "options", label: "" },
+            ]}
+          />
+          <TableBody>
+            {warranties &&
+              warranties.map((warranty) => {
+                return (
+                  <WarrantiesTableRow key={warranty.id} warranty={warranty} />
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Scrollbar>
   );
 }

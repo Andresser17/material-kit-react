@@ -16,6 +16,7 @@ export interface WarrantyRequest {
   expiration_date: Date;
   barcodes: { type: string; description: string; value: string }[];
   photos: File[];
+  line_item_id: string;
 }
 
 async function createWarranty(
@@ -67,7 +68,7 @@ export function useCreateWarranty(): UseMutationResult<
     },
     mutationKey: [MUTATION_KEY.create_warranty],
     onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.order] }),
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.list_warranties] }),
     onError: (err) => {
       console.log(err);
       // call error pop up
