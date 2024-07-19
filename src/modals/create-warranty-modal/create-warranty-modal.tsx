@@ -1,6 +1,6 @@
-import { LineItem, Order } from "@medusajs/types";
+import { LineItem, Order, Warranty } from "@medusajs/types";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreateWarranty } from "src/mutations/use-create-warranty";
 import BaseModal from "../base-modal";
 import { useModal } from "../useModal";
@@ -8,17 +8,23 @@ import LineItemsTable from "./line-items-table";
 
 export interface ICreateWarrantyModal {
   order: Order;
+  warranties: Warranty[];
 }
 
 export default function CreateWarrantyModal() {
   const {
-    props: { order },
+    props: { order, warranties },
     onClose: closeModal,
   } = useModal<ICreateWarrantyModal>("create-warranty-modal");
   const [selected, setSelected] = useState<LineItem[]>([]);
   const { mutate: createWarrantyMutation } = useCreateWarranty();
   const handleSubmit = () => {
     selected.forEach((sel) => {
+      const found = warranties.find(
+        (warranty) => warranty.line_item.id === sel.id,
+      );
+      if (found) return;
+
       const time = sel.variant.product.warranty_time;
       createWarrantyMutation({
         order_id: order.id,
@@ -35,22 +41,18 @@ export default function CreateWarrantyModal() {
     closeModal();
   };
 
-  // useEffect(() => {
-  //   if (isSuccess) closeModal();
-  // }, [isSuccess]);
-
-  // useEffect(() => {
-  //   if (customer) {
-  //     setValue("email", customer.email);
-  //     setValue("first_name", customer.first_name);
-  //     setValue("last_name", customer.last_name);
-  //     setValue("document", customer.document);
-  //     setValue("mercado_libre", customer.mercado_libre);
-  //     setValue("instagram", customer.instagram);
-  //     setValue("facebook", customer.facebook);
-  //     setValue("phone", customer.phone);
-  //   }
-  // }, [customer]);
+  useEffect(() => {
+    if (warranties) {
+      const newSelected: LineItem[] = [];
+      for (const warranty of warranties) {
+        const found = order.items.find(
+          (item) => item.id === warranty.line_item.id,
+        );
+        if (found) newSelected.push(found);
+      }
+      setSelected(newSelected);
+    }
+  }, [warranties]);
 
   return (
     <BaseModal

@@ -22,7 +22,8 @@ export default function LineItemsTable({
     setSelected((prev) => {
       const found = prev.find((sel) => sel.id === item.id);
 
-      if (found) return prev.filter((sel) => sel.id !== item.id);
+      // if (found) return prev.filter((sel) => sel.id !== item.id);
+      if (found) return prev;
 
       return [...prev, item];
     });

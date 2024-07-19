@@ -41,7 +41,7 @@ export default function Warranties({ order }: IWarranties) {
   };
 
   const handleCreateWarranty = () => {
-    openModal({ order });
+    openModal({ order, warranties: warranties ?? [] });
     handleCloseMenu();
   };
 

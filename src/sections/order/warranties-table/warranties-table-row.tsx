@@ -50,23 +50,23 @@ export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
   return (
     <>
       <TableRow>
+        <TableCell align="center">
+          <Avatar
+            alt={warranty.line_item.title}
+            src={warranty.line_item.thumbnail as string}
+            variant="square"
+            sx={{ width: 64, height: 64 }}
+          />
+        </TableCell>
+
         <TableCell>
           <Typography
             sx={{ fontSize: 10, color: "#888" }}
             variant="subtitle2"
             noWrap
           >
-            {warranty.time} Days
+            {warranty.line_item.title}
           </Typography>
-        </TableCell>
-
-        <TableCell align="center">
-          <Avatar
-            // alt={customer.thumbnail as string}
-            // src={customer.thumbnail as string}
-            variant="square"
-            sx={{ width: 32, height: 32 }}
-          />
         </TableCell>
 
         <TableCell>

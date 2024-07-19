@@ -11,15 +11,14 @@ interface IWarrantiesTable {
 }
 
 export default function WarrantiesTable({ warranties }: IWarrantiesTable) {
-  console.log({ warranties });
   return (
     <Scrollbar>
       <TableContainer sx={{ overflow: "unset" }}>
         <Table>
           <WarrantiesTableHead
             headLabel={[
-              { id: "product", label: "Product" },
               { id: "avatar", label: "" },
+              { id: "product", label: "Product" },
               { id: "total_time", label: "Total Time" },
               {
                 id: "expiration_date",
