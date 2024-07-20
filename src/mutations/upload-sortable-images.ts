@@ -25,11 +25,11 @@ export default async function uploadSortableImages(
     body,
   });
 
-  const { uploads } = await response.json();
-  if (!response.ok) throw new HTTPError("Failed uploading files", response);
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
 
-  const result = images.map((image) => {
-    const found = uploads.find((upload: UploadedFile) => {
+  const photos = images.map((image) => {
+    const found = result.uploads.find((upload: UploadedFile) => {
       const key = upload.key.split("-")[1];
       if (image.id === key) return upload;
     });
@@ -47,5 +47,5 @@ export default async function uploadSortableImages(
     return image;
   });
 
-  return result;
+  return photos;
 }

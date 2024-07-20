@@ -11,7 +11,7 @@ import HTTPError from "src/utils/http-error";
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 
-export interface WarrantyRequest {
+interface WarrantyRequest {
   time: number;
   expiration_date: Date;
   barcodes: { type: string; description: string; value: string }[];

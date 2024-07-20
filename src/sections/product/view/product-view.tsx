@@ -1,14 +1,12 @@
-import { ProductRequest } from "@medusajs/types";
+import { Product, ProductRequest } from "@medusajs/types";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 
 import { ProductStatus as ProductStatusEnum } from "src/enums";
 import { useUpdateProduct } from "src/mutations/use-update-product";
-import { useGetProduct } from "src/queries/use-get-product";
 
 import AddImages, { SortableImageType } from "../add-images";
 import Attributes from "../attributes";
@@ -19,8 +17,11 @@ import Variants from "../variants";
 
 // ----------------------------------------------------------------------
 
-export default function ProductView() {
-  const { id: product_id } = useParams();
+interface IProductView {
+  product: Product;
+}
+
+export default function ProductView({ product }: IProductView) {
   const [images, setImages] = useState<SortableImageType[]>([]);
   const [status, setStatus] = useState(ProductStatusEnum.DRAFT);
   const { handleSubmit, control, setValue } = useForm<ProductRequest>({
@@ -46,11 +47,11 @@ export default function ProductView() {
     },
     mode: "onChange",
   });
-  const { data: product } = useGetProduct(product_id ?? "");
+
   const { mutate: updateProductMutation } = useUpdateProduct();
   const onSubmit: SubmitHandler<ProductRequest> = (data) => {
     updateProductMutation({
-      id: product_id ?? "",
+      id: product.id ?? "",
       product: {
         ...data,
         status,
@@ -113,6 +114,7 @@ export default function ProductView() {
     }
   }, [product]);
 
+  // map images to SortableImageType
   useEffect(() => {
     if (product?.thumbnail && product.images) {
       const thumbnail = {

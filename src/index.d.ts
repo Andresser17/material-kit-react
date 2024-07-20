@@ -626,7 +626,7 @@ export declare module "@medusajs/types" {
     id: string;
     created_at: Date;
     updated_at: Date;
-    time: string;
+    time: number;
     expiration_date: Date;
     barcodes: {
       type: string;

@@ -7,6 +7,7 @@ import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-or
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
 import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
+import { IAddWarrantyPhotosModal } from "src/modals/add-warranty-photos-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { ICreateWarrantyModal } from "src/modals/create-warranty-modal";
@@ -108,6 +109,11 @@ const initialState = {
       open: false,
       props: {},
     } as Modal<ICreateWarrantyModal>,
+    {
+      id: "add-warranty-photos-modal",
+      open: false,
+      props: {},
+    } as Modal<IAddWarrantyPhotosModal>,
   ],
 };
 

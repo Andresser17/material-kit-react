@@ -23,7 +23,7 @@ import Iconify from "src/components/iconify";
 import { useDeleteProductVariant } from "src/mutations/use-delete-product-variant";
 
 interface IVariants {
-  product: Product | undefined;
+  product: Product;
 }
 
 export default function Variants({ product }: IVariants) {
@@ -61,7 +61,9 @@ export default function Variants({ product }: IVariants) {
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h4">Variants (0)</Typography>
+        <Typography variant="h4">
+          Variants ({product.variants.length})
+        </Typography>
         <IconButton id="section-op" onClick={handleOpenMenu}>
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton>

@@ -45,6 +45,7 @@ export const MUTATION_KEY = {
   mark_pay_draft_order: "mark_pay_draft_order",
   create_warranty: "create_warranty",
   delete_warranty: "delete_warranty",
+  update_warranty: "update_warranty",
 };
 
 export const BASE_URL = import.meta.env.VITE_BASE_URL;

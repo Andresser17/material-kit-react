@@ -11,8 +11,9 @@ import {
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-import { useNavigate } from "react-router-dom";
 import Iconify from "src/components/iconify";
+import { IAddWarrantyPhotosModal } from "src/modals/add-warranty-photos-modal";
+import { useModal } from "src/modals/useModal";
 import { useDeleteWarranty } from "src/mutations/use-delete-warranty";
 import { formatToLocalTimeEs } from "src/utils/format-time";
 
@@ -23,8 +24,10 @@ interface IWarrantiesTableRow {
 }
 
 export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
-  const navigate = useNavigate();
   const [open, setOpen] = useState<Element | null>(null);
+  const { onOpen: openModal } = useModal<IAddWarrantyPhotosModal>(
+    "add-warranty-photos-modal",
+  );
   const { mutate: deleteWarrantyMutation } = useDeleteWarranty();
 
   const handleOpenMenu = (event: {
@@ -37,9 +40,9 @@ export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
     setOpen(null);
   };
 
-  const handleEdit = () => {
+  const handleAddPhotos = () => {
+    openModal({ warranty });
     handleCloseMenu();
-    navigate(`/orders/${warranty.id}`);
   };
 
   const handleDelete = () => {
@@ -100,6 +103,10 @@ export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
         <MenuItem>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           View
+        </MenuItem>
+        <MenuItem onClick={handleAddPhotos}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Add Photos
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
