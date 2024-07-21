@@ -1,4 +1,4 @@
-import { Product, ProductOptionRequest } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import { useEffect, useState } from "react";
 
 import { Box, Button, IconButton, TextField } from "@mui/material";
@@ -19,10 +19,8 @@ export default function EditOptionsModal() {
     props: { product },
     onClose: closeModal,
   } = useModal<IEditOptionsModal>("edit-options-modal");
-  const [options, setOptions] = useState<ProductOptionRequest[]>(
-    product.options,
-  );
-  const addProductOptionMutation = useAddProductOption();
+  const [options, setOptions] = useState<{ id: string; title: string }[]>([]);
+  const { mutate: addProductOptionMutation } = useAddProductOption();
 
   const handleAddOption = () => {
     setOptions((prev) => [
@@ -62,6 +60,9 @@ export default function EditOptionsModal() {
 
   useEffect(() => {
     if (options && options.length === 0) handleAddOption();
+    else {
+      setOptions(product.options);
+    }
   }, []);
 
   return (
@@ -73,28 +74,33 @@ export default function EditOptionsModal() {
       onClose={closeModal}
       onSubmit={handleSave}
     >
-      <>
-        {options &&
-          options.map((option) => (
-            <OptionField
-              key={option.id}
-              title={option.title}
-              id={option.id}
-              handleUpdateOption={handleUpdateOption}
-              handleDeleteOption={() => {
-                handleDeleteOption(option.id);
-              }}
-            />
-          ))}
-        <Button
-          onClick={handleAddOption}
-          sx={{ width: "100%", mt: 4, border: `1px solid ${grey[700]}` }}
-        >
-          <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
-        </Button>
-      </>
+      {options &&
+        options.map((option) => (
+          <OptionField
+            key={option.id}
+            title={option.title}
+            id={option.id}
+            handleUpdateOption={handleUpdateOption}
+            handleDeleteOption={() => {
+              handleDeleteOption(option.id);
+            }}
+          />
+        ))}
+      <Button
+        onClick={handleAddOption}
+        sx={{ width: "100%", mt: 4, border: `1px solid ${grey[700]}` }}
+      >
+        <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
+      </Button>
     </BaseModal>
   );
+}
+
+interface IOptionField {
+  id: string;
+  title: string;
+  handleUpdateOption: (id: string, newTitle: string) => void;
+  handleDeleteOption: () => void;
 }
 
 function OptionField({
@@ -102,12 +108,7 @@ function OptionField({
   title,
   handleUpdateOption,
   handleDeleteOption,
-}: {
-  id: string;
-  title: string;
-  handleUpdateOption: (id: string, newTitle: string) => void;
-  handleDeleteOption: () => void;
-}) {
+}: IOptionField) {
   const [text, setText] = useState("");
 
   const handleSaveOption = (id: string, title: string) => {

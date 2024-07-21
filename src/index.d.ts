@@ -512,12 +512,6 @@ export declare module "@medusajs/types" {
     value: string;
   }
 
-  interface ProductOptionRequest {
-    option_id: string;
-    title: string;
-    value: string;
-  }
-
   interface ProductVariantRequest {
     title?: string;
     sku?: string | null;

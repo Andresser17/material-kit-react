@@ -1,7 +1,7 @@
-import { ProductDTO, ProductOptionRequest } from "@medusajs/types";
+import { Product } from "@medusajs/types";
 import {
-  UseMutateFunction,
   useMutation,
+  UseMutationResult,
   useQueryClient,
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -11,11 +11,15 @@ import HTTPError from "src/utils/http-error";
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 
+interface ProductOptionRequest {
+  title: string;
+}
+
 async function addProductOption(
   access_token: string | undefined,
   product_id: string,
-  newProductOption: ProductOptionRequest,
-): Promise<ProductDTO> {
+  new_product_option: ProductOptionRequest,
+): Promise<Product> {
   const url = new URL(`/admin/products/${product_id}/options`, BACKEND_URL);
   const response = await fetch(url, {
     method: "POST",
@@ -24,13 +28,14 @@ async function addProductOption(
       Authorization: `Bearer ${access_token}`,
     },
     body: JSON.stringify({
-      title: newProductOption.title,
+      title: new_product_option.title,
     }),
   });
-  if (!response.ok)
-    throw new HTTPError("Failed on creating new product option", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result;
 }
 
 interface IUseAddProductOptionArgs {
@@ -38,18 +43,16 @@ interface IUseAddProductOptionArgs {
   newProductOption: ProductOptionRequest;
 }
 
-type IUseAddProductOption = UseMutateFunction<
-  ProductDTO | undefined,
-  Error,
+export function useAddProductOption(): UseMutationResult<
+  Product,
+  HTTPError,
   IUseAddProductOptionArgs,
   unknown
->;
-
-export function useAddProductOption(): IUseAddProductOption {
+> {
   const queryClient = useQueryClient();
   const { user } = useUser();
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn: async ({
       product_id,
       newProductOption,
@@ -69,6 +72,4 @@ export function useAddProductOption(): IUseAddProductOption {
       toast.success("Product option added successfully");
     },
   });
-
-  return mutate;
 }

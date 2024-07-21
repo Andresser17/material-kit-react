@@ -56,3 +56,11 @@ export enum LotCourier {
   ORDER_PROBLEM = "order_problem",
   FUTURE_PURCHASE = "future_purchase",
 }
+
+export enum BarcodeType {
+  QR_CODE = "qr_code",
+  UNI_CODE = "universal_code",
+  PART_NUMBER = "part_number",
+  SERIAL_NUMBER = "serial_number",
+  OTHER = "other",
+}

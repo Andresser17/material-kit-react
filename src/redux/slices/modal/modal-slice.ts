@@ -7,7 +7,6 @@ import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-or
 import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-product-to-lot-modal";
 import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
-import { IAddWarrantyPhotosModal } from "src/modals/add-warranty-photos-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { ICreateWarrantyModal } from "src/modals/create-warranty-modal";
@@ -19,6 +18,7 @@ import { IEditShippingAddressModal } from "src/modals/edit-shipping-address-moda
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { Modal } from "src/modals/modal-provider";
 import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
+import { IUpdateWarrantyModal } from "src/modals/update-warranty-modal";
 import type { RootState } from "src/redux/store";
 
 // Define a type for the slice state
@@ -110,10 +110,10 @@ const initialState = {
       props: {},
     } as Modal<ICreateWarrantyModal>,
     {
-      id: "add-warranty-photos-modal",
+      id: "update-warranty-modal",
       open: false,
       props: {},
-    } as Modal<IAddWarrantyPhotosModal>,
+    } as Modal<IUpdateWarrantyModal>,
   ],
 };
 

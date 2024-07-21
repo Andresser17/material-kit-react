@@ -12,12 +12,7 @@ import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 import { SortableImageType } from "src/sections/product/add-images";
 import uploadSortableImages from "./upload-sortable-images";
-
-interface WarrantyRequest {
-  time: number;
-  expiration_date: Date;
-  barcodes: { type: string; description: string; value: string }[];
-}
+import { WarrantyRequest } from "./use-create-warranty";
 
 async function updateWarranty(
   access_token: string | undefined,
@@ -28,7 +23,9 @@ async function updateWarranty(
   const url = new URL(`/admin/warranties/${warranty_id}`, BACKEND_URL);
 
   const newPhotos =
-    photos && photos.length > 0 ? photos?.map((photo) => photo.url) : [];
+    photos && photos.length > 0
+      ? photos?.map((photo) => ({ url: photo.url, key: photo.id }))
+      : [];
   const response = await fetch(url, {
     method: "PUT",
     headers: {

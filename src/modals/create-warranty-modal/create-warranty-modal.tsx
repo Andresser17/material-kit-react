@@ -28,13 +28,13 @@ export default function CreateWarrantyModal() {
       const time = sel.variant.product.warranty_time;
       createWarrantyMutation({
         order_id: order.id,
+        line_item_id: sel.id,
         new_warranty: {
           time,
           expiration_date: moment().add(time, "days").toDate(),
           barcodes: [],
-          photos: [],
-          line_item_id: sel.id,
         },
+        toUpload: [],
       });
     });
 

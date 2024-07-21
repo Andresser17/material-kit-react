@@ -12,7 +12,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
 import Iconify from "src/components/iconify";
-import { IAddWarrantyPhotosModal } from "src/modals/add-warranty-photos-modal";
+import { IUpdateWarrantyModal } from "src/modals/update-warranty-modal";
 import { useModal } from "src/modals/useModal";
 import { useDeleteWarranty } from "src/mutations/use-delete-warranty";
 import { formatToLocalTimeEs } from "src/utils/format-time";
@@ -25,8 +25,8 @@ interface IWarrantiesTableRow {
 
 export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
   const [open, setOpen] = useState<Element | null>(null);
-  const { onOpen: openModal } = useModal<IAddWarrantyPhotosModal>(
-    "add-warranty-photos-modal",
+  const { onOpen: openModal } = useModal<IUpdateWarrantyModal>(
+    "update-warranty-modal",
   );
   const { mutate: deleteWarrantyMutation } = useDeleteWarranty();
 
