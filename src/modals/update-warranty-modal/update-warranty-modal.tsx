@@ -42,13 +42,12 @@ export default function UpdateWarrantyModal() {
     },
     mode: "onChange",
   });
-  const onSubmit = () => {
+  const onSubmit = (data: WarrantyRequest) => {
     updateWarrantyMutation({
       warranty_id: warranty.id,
       update_warranty: {
-        time: warranty.time,
-        expiration_date: warranty.expiration_date,
-        barcodes,
+        time: data.time,
+        expiration_date: data.expiration_date,
       },
       toUpload: images,
     });
@@ -58,19 +57,16 @@ export default function UpdateWarrantyModal() {
     if (warranty) {
       setValue("time", warranty.time);
       setValue("expiration_date", warranty.expiration_date);
-    }
-  }, [warranty]);
-
-  useEffect(() => {
-    if (warranty.photos) {
-      const photos = warranty.photos.map((photo) => ({
-        id: photo.key,
-        title: photo.key,
-        img: null,
-        url: photo.url,
-        toUpload: false,
-      }));
-      setImages(photos);
+      if (warranty.photos) {
+        const photos = warranty.photos.map((photo) => ({
+          id: photo.key,
+          title: photo.key,
+          img: null,
+          url: photo.url,
+          toUpload: false,
+        }));
+        setImages(photos);
+      }
     }
   }, [warranty]);
 
@@ -119,10 +115,9 @@ export default function UpdateWarrantyModal() {
       title="Update Warranty"
       open
       closeOnTap
-      onSubmit={handleSubmit(onSubmit)}
       onClose={() => closeModal()}
     >
-      <form id="edit-customer-modal" onSubmit={handleSubmit(onSubmit)}>
+      <form id="update-warranty-modal" onSubmit={handleSubmit(onSubmit)}>
         <Box
           sx={{
             display: "flex",
@@ -178,7 +173,7 @@ export default function UpdateWarrantyModal() {
               },
             });
           }}
-          sx={{ width: "100%", my: 2, border: `1px solid ${grey[700]}` }}
+          sx={{ width: "100%", mb: 2, border: `1px solid ${grey[700]}` }}
         >
           <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
         </Button>
@@ -319,6 +314,7 @@ function BarcodeField({ barcode, setBarcodes }: IBarcodeField) {
           color: theme.palette.error.main,
           borderRadius: 1,
           border: `1px solid ${theme.palette.error.dark}`,
+          mb: 2,
         }}
       >
         <Iconify icon="eva:trash-2-outline" width={28} sx={{ p: "3px" }} />

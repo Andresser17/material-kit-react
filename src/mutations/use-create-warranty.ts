@@ -16,7 +16,6 @@ import uploadSortableImages from "./upload-sortable-images";
 export interface WarrantyRequest {
   time: number;
   expiration_date: Date;
-  barcodes: { type: string; description: string; value: string }[];
 }
 
 async function createWarranty(

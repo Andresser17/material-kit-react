@@ -106,7 +106,7 @@ export default function OrdersTableRow({ warranty }: IWarrantiesTableRow) {
         </MenuItem>
         <MenuItem onClick={handleAddPhotos}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Add Photos
+          Edit Warranty
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
