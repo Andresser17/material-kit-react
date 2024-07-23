@@ -16,8 +16,26 @@ import ProductStatus from "./sections/add-product/product-status";
 import HTTPError from "./utils/http-error";
 
 export declare module "@mui/material/styles" {
+  interface Color {
+    lighter: string;
+    light: string;
+    main: string;
+    dark: string;
+    darker: string;
+    contrastText: string;
+  }
   interface Theme {
-    palette: OriginalTheme.palette & {
+    palette: {
+      primary: Color;
+      secondary: Color;
+      info: Color;
+      success: Color;
+      warning: Color;
+      error: Color;
+      common: {
+        black: string;
+        white: string;
+      };
       background: palette.background & {
         neutral: string;
       };
@@ -622,16 +640,19 @@ export declare module "@medusajs/types" {
     updated_at: Date;
     time: number;
     expiration_date: Date;
-    barcodes: {
-      type: string;
-      description: string;
-      value: string;
-    }[];
+    barcodes: Barcode[];
     photos: {
       url: string;
       key: string;
     }[];
     order: Order;
     line_item: LineItem;
+  }
+
+  interface Barcode {
+    id: string;
+    type: string;
+    value: string;
+    description: string;
   }
 }

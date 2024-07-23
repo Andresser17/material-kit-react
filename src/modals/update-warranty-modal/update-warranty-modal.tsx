@@ -1,14 +1,17 @@
-import { Warranty } from "@medusajs/types";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Barcode, Warranty } from "@medusajs/types";
+import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ControlledField from "src/components/controlled-field";
 import ControlledSelect from "src/components/controlled-select";
 import Iconify from "src/components/iconify";
 import SortableContainer from "src/components/sortable-container";
 import { BarcodeType } from "src/enums";
+import { useCreateBarcode } from "src/mutations/use-create-barcode";
 import { WarrantyRequest } from "src/mutations/use-create-warranty";
+import { useDeleteBarcode } from "src/mutations/use-delete-barcode";
+import { useUpdateBarcode } from "src/mutations/use-update-barcode";
 import { useUpdateWarranty } from "src/mutations/use-update-warranty";
 import { SortableImageType } from "src/sections/product/add-images";
 import BaseModal from "../base-modal";
@@ -25,7 +28,13 @@ export default function UpdateWarrantyModal() {
   } = useModal<IUpdateWarrantyModal>("update-warranty-modal");
   const [images, setImages] = useState<SortableImageType[]>([]);
   const [barcodes, setBarcodes] = useState<Barcode[]>([]);
-  const { mutate: updateWarrantyMutation } = useUpdateWarranty();
+  const { mutate: updateWarrantyMutation, isSuccess } = useUpdateWarranty();
+  const {
+    data: newBarcode,
+    mutate: createBarcodeMutation,
+    isSuccess: isSuccessCreateBarcode,
+  } = useCreateBarcode();
+
   const { handleSubmit, control, setValue } = useForm<WarrantyRequest>({
     defaultValues: {
       time: 0,
@@ -43,33 +52,6 @@ export default function UpdateWarrantyModal() {
       },
       toUpload: images,
     });
-
-    closeModal();
-  };
-
-  const handleAddOption = () => {
-    setBarcodes((prev) => [
-      ...prev,
-      {
-        id: `default_${prev.length + 1}`,
-        type: BarcodeType.SERIAL_NUMBER,
-        description: "",
-        value: "",
-      },
-    ]);
-  };
-
-  const handleUpdateOption = (newBarcode: Barcode) => {
-    setBarcodes((prev) =>
-      prev.map((barcode) => {
-        if (newBarcode.id) return newBarcode;
-        return barcode;
-      }),
-    );
-  };
-
-  const handleDeleteOption = (id: string) => {
-    setBarcodes((prev) => prev.filter((option) => option.id != id));
   };
 
   useEffect(() => {
@@ -92,12 +74,12 @@ export default function UpdateWarrantyModal() {
     }
   }, [warranty]);
 
+  // map existing barcodes
   useEffect(() => {
-    if (barcodes && barcodes.length === 0) handleAddOption();
-    else {
+    if (warranty.barcodes && warranty.barcodes.length > 0) {
       setBarcodes(
         warranty.barcodes.map((barcode) => ({
-          id: `default_${warranty.barcodes.length + 1}`,
+          id: barcode.id,
           type: barcode.type,
           description: barcode.description,
           value: barcode.value,
@@ -106,12 +88,35 @@ export default function UpdateWarrantyModal() {
     }
   }, []);
 
-  console.log({ barcodes });
+  // update barcodes after creating a new one
+  useEffect(() => {
+    if (isSuccessCreateBarcode && newBarcode) {
+      setBarcodes((prev) => {
+        const newPrev = [
+          ...prev,
+          {
+            id: newBarcode.id,
+            type: BarcodeType.SERIAL_NUMBER,
+            description: "",
+            value: "",
+          },
+        ];
+
+        return newPrev;
+      });
+    }
+  }, [isSuccessCreateBarcode, newBarcode]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      closeModal();
+    }
+  }, [isSuccess]);
 
   return (
     <BaseModal
       modalId="update-warranty-modal"
-      title="Add Photos"
+      title="Update Warranty"
       open
       closeOnTap
       onSubmit={handleSubmit(onSubmit)}
@@ -158,15 +163,21 @@ export default function UpdateWarrantyModal() {
               <BarcodeField
                 key={barcode.id}
                 barcode={barcode}
-                handleUpdateOption={handleUpdateOption}
-                handleDeleteOption={() => {
-                  handleDeleteOption(barcode.id);
-                }}
+                setBarcodes={setBarcodes}
               />
             ))}
         </Box>
         <Button
-          onClick={handleAddOption}
+          onClick={() => {
+            createBarcodeMutation({
+              warranty_id: warranty.id,
+              new_barcode: {
+                type: BarcodeType.PART_NUMBER,
+                description: "",
+                value: "",
+              },
+            });
+          }}
           sx={{ width: "100%", my: 2, border: `1px solid ${grey[700]}` }}
         >
           <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
@@ -177,24 +188,13 @@ export default function UpdateWarrantyModal() {
   );
 }
 
-type Barcode = {
-  id: string;
-  type: string;
-  description: string;
-  value: string;
-};
-
 interface IBarcodeField {
   barcode: Barcode;
-  handleUpdateOption: (newBarcode: Barcode) => void;
-  handleDeleteOption: () => void;
+  setBarcodes: Dispatch<SetStateAction<Barcode[]>>;
 }
 
-function BarcodeField({
-  barcode,
-  handleUpdateOption,
-  handleDeleteOption,
-}: IBarcodeField) {
+function BarcodeField({ barcode, setBarcodes }: IBarcodeField) {
+  const theme = useTheme();
   const types = [
     { inputValue: "", id: BarcodeType.QR_CODE, label: "QR Code" },
     { inputValue: "", id: BarcodeType.SERIAL_NUMBER, label: "Serial Number" },
@@ -210,13 +210,44 @@ function BarcodeField({
     },
     mode: "onChange",
   });
+  const { mutate: deleteBarcodeMutation, isSuccess: isSuccessDeleteBarcode } =
+    useDeleteBarcode();
+  const { mutate: updateBarcodeMutation, isSuccess: isSuccessUpdateBarcode } =
+    useUpdateBarcode();
 
-  const handleSaveOption = () => {
+  const handleUpdateBarcode = () => {
     const type = getValues("type");
     const description = getValues("description");
     const value = getValues("value");
-    handleUpdateOption({ id: barcode.id, type, description, value });
+
+    updateBarcodeMutation({
+      barcode_id: barcode.id,
+      update_barcode: { type: type as BarcodeType, description, value },
+    });
   };
+
+  // update barcodes after delete;
+  useEffect(() => {
+    if (isSuccessDeleteBarcode)
+      setBarcodes((prev) => prev.filter((bar) => bar.id != barcode.id));
+  }, [isSuccessDeleteBarcode]);
+
+  // update barcodes after update;
+  useEffect(() => {
+    if (isSuccessUpdateBarcode) {
+      const type = getValues("type");
+      const description = getValues("description");
+      const value = getValues("value");
+      setBarcodes((prev) =>
+        prev.map((bar) => ({
+          ...bar,
+          type,
+          description,
+          value,
+        })),
+      );
+    }
+  }, [isSuccessUpdateBarcode]);
 
   useEffect(() => {
     if (barcode) {
@@ -262,7 +293,7 @@ function BarcodeField({
           size="medium"
           placeholder="Value"
           sx={{ width: "48%" }}
-          onBlur={() => handleSaveOption()}
+          onBlur={() => handleUpdateBarcode()}
         />
       </Box>
       <ControlledField
@@ -275,13 +306,20 @@ function BarcodeField({
         multiline
         rows="5"
         sx={{ mb: 2 }}
-        onBlur={() => handleSaveOption()}
+        onBlur={() => handleUpdateBarcode()}
       />
       <IconButton
-        onClick={handleDeleteOption}
+        onClick={() => {
+          deleteBarcodeMutation({ barcode_id: barcode.id });
+        }}
         aria-label="Delete option"
         size="small"
-        sx={{ borderRadius: 1, border: `1px solid ${grey[700]}` }}
+        sx={{
+          width: "100%",
+          color: theme.palette.error.main,
+          borderRadius: 1,
+          border: `1px solid ${theme.palette.error.dark}`,
+        }}
       >
         <Iconify icon="eva:trash-2-outline" width={28} sx={{ p: "3px" }} />
       </IconButton>
