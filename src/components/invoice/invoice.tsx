@@ -1,4 +1,4 @@
-import { Order } from "@medusajs/types";
+import { Order, Warranty } from "@medusajs/types";
 import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { formatToLocalTimeEs } from "src/utils/format-time";
@@ -7,11 +7,12 @@ import Header from "./header";
 
 interface IInvoice {
   order: Order;
+  warranties: Warranty[];
 }
 
 export const Invoice = React.forwardRef<HTMLDivElement, IInvoice>(
   (props, ref) => {
-    const { order } = props;
+    const { order, warranties } = props;
 
     return (
       <Box
@@ -36,10 +37,12 @@ export const Invoice = React.forwardRef<HTMLDivElement, IInvoice>(
           />
         </Box>
 
+        {/* Content */}
         <Box>
-          <Content items={order.items} />
+          <Content items={order.items} warranties={warranties} />
         </Box>
 
+        {/* Footer */}
         <Box
           sx={{
             width: "100%",

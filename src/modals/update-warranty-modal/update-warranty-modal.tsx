@@ -175,7 +175,7 @@ export default function UpdateWarrantyModal() {
           }}
           sx={{ width: "100%", mb: 2, border: `1px solid ${grey[700]}` }}
         >
-          <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add an option
+          <Iconify icon="eva:plus-square-fill" sx={{ mr: 1 }} /> Add New Barcode
         </Button>
         <SortableContainer images={images} setImages={setImages} />
       </form>
@@ -215,10 +215,16 @@ function BarcodeField({ barcode, setBarcodes }: IBarcodeField) {
     const description = getValues("description");
     const value = getValues("value");
 
-    updateBarcodeMutation({
-      barcode_id: barcode.id,
-      update_barcode: { type: type as BarcodeType, description, value },
-    });
+    if (
+      type !== barcode.type ||
+      description !== barcode.description ||
+      value !== barcode.value
+    ) {
+      updateBarcodeMutation({
+        barcode_id: barcode.id,
+        update_barcode: { type: type as BarcodeType, description, value },
+      });
+    }
   };
 
   // update barcodes after delete;

@@ -1,4 +1,4 @@
-import { LineItem } from "@medusajs/types";
+import { LineItem, Warranty } from "@medusajs/types";
 import {
   Box,
   List,
@@ -12,10 +12,14 @@ import ItemsTable from "./items-table";
 
 interface IHeader {
   items: LineItem[];
+  warranties: Warranty[];
 }
 
-export default function Header({ items }: IHeader) {
-  const warranty_time: number = 0;
+export default function Header({ items, warranties }: IHeader) {
+  const warranty_time = warranties.reduce((prev, current) => {
+    if (current.time > prev) return current.time;
+    return prev;
+  }, 0);
 
   return (
     <>

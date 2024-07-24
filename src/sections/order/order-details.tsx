@@ -17,6 +17,7 @@ import OrderStatusLabel from "src/components/order-status-label/order-status-lab
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
 import { useCompleteOrder } from "src/mutations/use-complete-order";
+import { useListWarranties } from "src/queries/use-list-warranties";
 import { formatToLocalTimeEs } from "src/utils/format-time";
 
 interface IOrderDetails {
@@ -29,6 +30,9 @@ export default function OrderDetails({ order }: IOrderDetails) {
   const invoicePrintRef = useRef<HTMLDivElement | null>(null);
   const handlePrint = useReactToPrint({
     content: () => invoicePrintRef.current,
+  });
+  const { data: warranties } = useListWarranties({
+    query: { order_id: order.id },
   });
 
   const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
@@ -56,7 +60,11 @@ export default function OrderDetails({ order }: IOrderDetails) {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Box sx={{ display: "none" }}>
-        <Invoice ref={invoicePrintRef} order={order} />
+        <Invoice
+          ref={invoicePrintRef}
+          order={order}
+          warranties={warranties ?? []}
+        />
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
