@@ -15,15 +15,16 @@ interface CreateLineItemResponse {
   draft_order: DraftOrder;
 }
 
-interface CreateLineItemRequest {
+export interface LineItemRequest {
   variant_id: string;
   quantity: number;
+  unit_price?: number;
 }
 
 async function createLineItem(
   access_token: string | undefined,
   draft_order_id: string,
-  new_line_item: CreateLineItemRequest,
+  new_line_item: LineItemRequest,
 ): Promise<CreateLineItemResponse> {
   const url = new URL(
     `/admin/draft-orders/${draft_order_id}/line-items`,
@@ -48,7 +49,7 @@ async function createLineItem(
 
 interface IUseCreateLineItem {
   draft_order_id: string;
-  new_line_item: CreateLineItemRequest;
+  new_line_item: LineItemRequest;
 }
 
 export function useCreateLineItem(): UseMutationResult<

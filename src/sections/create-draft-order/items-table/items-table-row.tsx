@@ -1,4 +1,4 @@
-import { DraftOrderLineItem, ProductVariant } from "@medusajs/types";
+import { LineItem, ProductVariant } from "@medusajs/types";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 import {
@@ -20,7 +20,7 @@ import { useModal } from "src/modals/useModal";
 
 interface IItemsTableRow {
   variant: ProductVariant;
-  setLineItems: Dispatch<SetStateAction<DraftOrderLineItem[]>>;
+  setLineItems: Dispatch<SetStateAction<LineItem[]>>;
 }
 
 export default function ItemsTableRow({

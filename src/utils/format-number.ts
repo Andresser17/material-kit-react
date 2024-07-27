@@ -12,6 +12,11 @@ export function formatCurrency(amount: number): string {
   return result.format();
 }
 
+export function formatCurrencyToCents(amount: string): number {
+  const result = currency(amount);
+  return result.intValue;
+}
+
 export function fPercent(amount: number) {
   const format = amount ? numeral(Number(amount) / 100).format("0.0%") : "";
 
