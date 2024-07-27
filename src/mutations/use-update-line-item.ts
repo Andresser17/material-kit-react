@@ -11,20 +11,20 @@ import HTTPError from "src/utils/http-error";
 import { BACKEND_URL, MUTATION_KEY, QUERY_KEY } from "src/config";
 import { useUser } from "src/queries/use-user";
 
-export interface LineItemRequest {
-  variant_id: string;
+interface LineItemRequest {
+  title?: string;
   quantity: number;
   unit_price?: number;
-  title?: string;
 }
 
-async function createLineItem(
+async function updateLineItem(
   access_token: string | undefined,
   draft_order_id: string,
-  new_line_item: LineItemRequest,
+  line_item_id: string,
+  update_line_item: LineItemRequest,
 ): Promise<DraftOrder> {
   const url = new URL(
-    `/admin/draft-orders/${draft_order_id}/line-items`,
+    `/admin/draft-orders/${draft_order_id}/line-items/${line_item_id}`,
     BACKEND_URL,
   );
   const response = await fetch(url, {
@@ -33,26 +33,25 @@ async function createLineItem(
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(new_line_item),
+    body: JSON.stringify(update_line_item),
   });
 
   const result = await response.json();
-  if (!response.ok) {
-    throw new HTTPError(result.message, response);
-  }
+  if (!response.ok) throw new HTTPError(result.message, response);
 
   return result.draft_order;
 }
 
-interface IUseCreateLineItem {
+interface UseUpdateLineItemArgs {
   draft_order_id: string;
-  new_line_item: LineItemRequest;
+  line_item_id: string;
+  update_line_item: LineItemRequest;
 }
 
-export function useCreateLineItem(): UseMutationResult<
+export function useUpdateLineItem(): UseMutationResult<
   DraftOrder,
   HTTPError,
-  IUseCreateLineItem,
+  UseUpdateLineItemArgs,
   unknown
 > {
   const queryClient = useQueryClient();
@@ -61,11 +60,17 @@ export function useCreateLineItem(): UseMutationResult<
   return useMutation({
     mutationFn: async ({
       draft_order_id,
-      new_line_item,
-    }: IUseCreateLineItem) => {
-      return createLineItem(user?.access_token, draft_order_id, new_line_item);
+      line_item_id,
+      update_line_item,
+    }: UseUpdateLineItemArgs) => {
+      return updateLineItem(
+        user?.access_token,
+        draft_order_id,
+        line_item_id,
+        update_line_item,
+      );
     },
-    mutationKey: [MUTATION_KEY.create_line_item],
+    mutationKey: [MUTATION_KEY.update_line_item],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draft_order] }),
     onError: (err) => {
@@ -75,7 +80,7 @@ export function useCreateLineItem(): UseMutationResult<
     },
     onSuccess() {
       // call pop up
-      toast.success("Line Item created successfully");
+      toast.success("Line Item updated successfully");
     },
   });
 }

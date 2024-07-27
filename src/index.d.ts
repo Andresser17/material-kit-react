@@ -36,7 +36,14 @@ export declare module "@mui/material/styles" {
         black: string;
         white: string;
       };
-      background: palette.background & {
+      text: {
+        primary: string;
+        secondary: string;
+        disabled: string;
+      };
+      background: {
+        paper: string;
+        default: string;
         neutral: string;
       };
     };

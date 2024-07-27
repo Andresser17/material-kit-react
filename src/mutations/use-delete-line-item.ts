@@ -61,7 +61,7 @@ export function useDeleteLineItem(): UseMutationResult<
     }: IUseDeleteLineItem) => {
       return deleteLineItem(user?.access_token, draft_order_id, line_item_id);
     },
-    mutationKey: [MUTATION_KEY.create_line_item],
+    mutationKey: [MUTATION_KEY.delete_line_item],
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.draft_order] }),
     onError: (err) => {

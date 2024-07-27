@@ -14,10 +14,12 @@ import {
 import { SetStateAction, useEffect, useState } from "react";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
+import Sentence from "src/components/sentence";
 import SummaryField from "src/components/summary-field";
 import { IAddLineItemModal } from "src/modals/add-line-item-modal";
 import { useModal } from "src/modals/useModal";
 import { useDeleteLineItem } from "src/mutations/use-delete-line-item";
+import { useUpdateLineItem } from "src/mutations/use-update-line-item";
 import { formatCurrency } from "src/utils/format-number";
 
 interface ISummary {
@@ -117,8 +119,25 @@ interface ICartItemSummary {
 
 function CartItemSummary({ draftOrderId, data }: ICartItemSummary) {
   const theme = useTheme();
+  const [title, setTitle] = useState("");
+
+  const { mutate: updateLineItemMutation } = useUpdateLineItem();
 
   const { mutate: deleteLineItemMutation } = useDeleteLineItem();
+
+  const handleUpdate = () => {
+    if (title === data.title) return;
+
+    updateLineItemMutation({
+      draft_order_id: draftOrderId,
+      line_item_id: data.id,
+      update_line_item: {
+        title,
+        unit_price: data.unit_price,
+        quantity: data.quantity,
+      },
+    });
+  };
 
   const handleDelete = () => {
     deleteLineItemMutation({
@@ -126,6 +145,10 @@ function CartItemSummary({ draftOrderId, data }: ICartItemSummary) {
       line_item_id: data.id,
     });
   };
+
+  useEffect(() => {
+    if (data.title) setTitle(data.title);
+  }, []);
 
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
@@ -141,9 +164,13 @@ function CartItemSummary({ draftOrderId, data }: ICartItemSummary) {
           variant="square"
           sx={{ width: 24, height: 24, mr: 2 }}
         />
-        <Typography sx={{ fontSize: 12 }} variant="subtitle2" noWrap>
-          {data.title}
-        </Typography>
+        <Sentence
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
+          onBlur={() => handleUpdate()}
+        />
       </Box>
       <Box sx={{ display: "flex" }}>
         <Typography
