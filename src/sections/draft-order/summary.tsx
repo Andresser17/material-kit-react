@@ -8,6 +8,7 @@ import {
   MenuItem,
   Popover,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 import { SetStateAction, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import SectionBox from "src/components/section-box";
 import SummaryField from "src/components/summary-field";
 import { IAddLineItemModal } from "src/modals/add-line-item-modal";
 import { useModal } from "src/modals/useModal";
+import { useDeleteLineItem } from "src/mutations/use-delete-line-item";
 import { formatCurrency } from "src/utils/format-number";
 
 interface ISummary {
@@ -67,7 +69,11 @@ export default function Summary({ draftOrder: draftOrder }: ISummary) {
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
       {draftOrder &&
         draftOrder.cart.items.map((item: LineItem) => (
-          <CartItemSummary key={item.id} data={item} />
+          <CartItemSummary
+            key={item.id}
+            draftOrderId={draftOrder.id}
+            data={item}
+          />
         ))}
       <SummaryField
         title="Subtotal"
@@ -105,40 +111,28 @@ export default function Summary({ draftOrder: draftOrder }: ISummary) {
 }
 
 interface ICartItemSummary {
+  draftOrderId: string;
   data: LineItem;
 }
 
-function CartItemSummary({ data }: ICartItemSummary) {
-  const [amounts, setAmounts] = useState<{
-    [x: string]: string;
-    unit_price: string;
-    total: string;
-  }>({ unit_price: "", total: "" });
+function CartItemSummary({ draftOrderId, data }: ICartItemSummary) {
+  const theme = useTheme();
 
-  useEffect(() => {
-    if (data) {
-      setAmounts((prev) => {
-        const newState = { ...prev };
-        Object.keys(amounts).forEach((key) => {
-          let amountArr = data[key].toString().split("");
-          amountArr = amountArr.slice(0, amountArr.length - 2).join("");
-          if (amountArr.length === 0) amountArr = ["0"];
-          const amount = `${amountArr}.00`;
-          newState[key] = amount;
-        });
+  const { mutate: deleteLineItemMutation } = useDeleteLineItem();
 
-        return newState;
-      });
-    }
-  }, [data]);
+  const handleDelete = () => {
+    deleteLineItemMutation({
+      draft_order_id: draftOrderId,
+      line_item_id: data.id,
+    });
+  };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          mb: 3,
         }}
       >
         <Avatar
@@ -157,10 +151,10 @@ function CartItemSummary({ data }: ICartItemSummary) {
           variant="subtitle2"
           noWrap
         >
-          ${amounts.unit_price} x{data.quantity}
+          {formatCurrency(data.unit_price)} x{data.quantity}
         </Typography>
         <Typography sx={{ fontSize: 12, mr: 0.8 }} variant="subtitle2" noWrap>
-          ${amounts.total}
+          {data.total && formatCurrency(data.total)}
         </Typography>
         <Typography
           sx={{ fontSize: 12, color: "#888" }}
@@ -170,6 +164,20 @@ function CartItemSummary({ data }: ICartItemSummary) {
           USD
         </Typography>
       </Box>
+      <IconButton
+        onClick={handleDelete}
+        sx={{
+          p: "5px",
+          borderRadius: "5px",
+        }}
+      >
+        <Iconify
+          icon="mdi:trash-outline"
+          sx={{
+            color: theme.palette.error.main,
+          }}
+        />
+      </IconButton>
     </Box>
   );
 }
