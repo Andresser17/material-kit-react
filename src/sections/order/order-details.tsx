@@ -16,6 +16,9 @@ import { Invoice } from "src/components/invoice";
 import OrderStatusLabel from "src/components/order-status-label/order-status-label";
 import SectionBox from "src/components/section-box";
 import TitleValueField from "src/components/title-value-field";
+import { OrderStatus } from "src/enums";
+import { useArchiveOrder } from "src/mutations/use-archive-order";
+import { useCancelOrder } from "src/mutations/use-cancel-order";
 import { useCompleteOrder } from "src/mutations/use-complete-order";
 import { useListWarranties } from "src/queries/use-list-warranties";
 import { formatToLocalTimeEs } from "src/utils/format-time";
@@ -26,11 +29,13 @@ interface IOrderDetails {
 
 export default function OrderDetails({ order }: IOrderDetails) {
   const [open, setOpen] = useState<Element | null>(null);
-  const { mutate: completeOrder } = useCompleteOrder();
   const invoicePrintRef = useRef<HTMLDivElement | null>(null);
   const handlePrint = useReactToPrint({
     content: () => invoicePrintRef.current,
   });
+  const { mutate: completeOrderMutation } = useCompleteOrder();
+  const { mutate: cancelOrderMutation } = useCancelOrder();
+  const { mutate: archiveOrderMutation } = useArchiveOrder();
   const { data: warranties } = useListWarranties({
     query: { order_id: order.id },
   });
@@ -48,14 +53,67 @@ export default function OrderDetails({ order }: IOrderDetails) {
     handleCloseMenu();
   };
 
+  const handleArchiveOrder = () => {
+    archiveOrderMutation({ order_id: order.id });
+    handleCloseMenu();
+  };
+
   const handleCompleteOrder = () => {
-    completeOrder({ order_id: order.id });
+    completeOrderMutation({ order_id: order.id });
     handleCloseMenu();
   };
 
   const handleCancelOrder = () => {
+    cancelOrderMutation({ order_id: order.id });
     handleCloseMenu();
   };
+
+  let options;
+  switch (order.status) {
+    case OrderStatus.PENDING:
+      options = (
+        <>
+          <MenuItem onClick={handleArchiveOrder} sx={{ fontSize: 12 }}>
+            Archive Order
+          </MenuItem>
+          <MenuItem
+            onClick={handleCompleteOrder}
+            sx={{ color: "success.main", fontSize: 12 }}
+          >
+            Complete Order
+          </MenuItem>
+          <MenuItem
+            onClick={handleCancelOrder}
+            sx={{ color: "error.main", fontSize: 12 }}
+          >
+            Cancel Order
+          </MenuItem>
+        </>
+      );
+      break;
+    case OrderStatus.COMPLETED:
+      options = (
+        <>
+          <MenuItem onClick={handleArchiveOrder} sx={{ fontSize: 12 }}>
+            Archive Order
+          </MenuItem>
+          <MenuItem
+            onClick={handleCancelOrder}
+            sx={{ color: "error.main", fontSize: 12 }}
+          >
+            Cancel Order
+          </MenuItem>
+        </>
+      );
+      break;
+    case OrderStatus.CANCELED:
+      options = (
+        <MenuItem onClick={handleArchiveOrder} sx={{ fontSize: 12 }}>
+          Archive Order
+        </MenuItem>
+      );
+      break;
+  }
 
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
@@ -102,18 +160,7 @@ export default function OrderDetails({ order }: IOrderDetails) {
         <MenuItem onClick={handlePrintVoice} sx={{ fontSize: 12 }}>
           Print Invoice
         </MenuItem>
-        <MenuItem
-          onClick={handleCompleteOrder}
-          sx={{ color: "success.main", fontSize: 12 }}
-        >
-          Complete Order
-        </MenuItem>
-        <MenuItem
-          onClick={handleCancelOrder}
-          sx={{ color: "error.main", fontSize: 12 }}
-        >
-          Cancel Order
-        </MenuItem>
+        {options}
       </Popover>
     </SectionBox>
   );

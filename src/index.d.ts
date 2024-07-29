@@ -11,9 +11,11 @@ import { Theme as OriginalTheme } from "@mui/material/styles";
 
 import { CurrencyDTO } from "@medusajs/types";
 import { Option } from "./components/controlled-select";
-import { DraftOrderStatus, LotStatus } from "./enums";
+import { DraftOrderStatus, LotStatus, OrderStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
 import HTTPError from "./utils/http-error";
+
+import { FulfillmentStatus, PaymentStatus } from "./enums";
 
 export declare module "@mui/material/styles" {
   interface Color {
@@ -200,6 +202,7 @@ export declare module "@medusajs/types" {
     items: LineItem[];
     customer: CustomerDTO;
     display_id: number;
+    status: OrderStatus;
     fulfillment_status: FulfillmentStatus;
     payment_status: PaymentStatus;
     sales_channel: SalesChannelDTO;
