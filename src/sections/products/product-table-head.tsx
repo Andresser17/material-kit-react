@@ -1,13 +1,12 @@
 import { SetStateAction } from "react";
 
 import Box from "@mui/material/Box";
-import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
-import TableHead from "@mui/material/TableHead";
-import TableSortLabel from "@mui/material/TableSortLabel";
 import TableCell, { TableCellProps } from "@mui/material/TableCell";
-
-import { visuallyHidden } from "./utils";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import { visuallyHidden } from "src/utils/table-utils";
 
 // ----------------------------------------------------------------------
 
@@ -46,7 +45,7 @@ export default function ProductTableHead({
   const onSort = (id: SetStateAction<string>) => (event: unknown) => {
     onRequestSort(event, id);
   };
-  
+
   return (
     <TableHead>
       <TableRow>

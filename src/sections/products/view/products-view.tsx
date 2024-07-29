@@ -18,11 +18,11 @@ import { useListProducts } from "src/queries/use-list-products";
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 
+import { emptyRows } from "src/utils/table-utils";
 import ProductTableHead, { TableOrder } from "../product-table-head";
 import ProductTableRow from "../product-table-row";
 import ProductTableToolbar from "../product-table-toolbar";
 import TableEmptyRows from "../table-empty-rows";
-import { emptyRows } from "../utils";
 
 // ----------------------------------------------------------------------
 

@@ -20,7 +20,10 @@ import {
 import { useModal } from "src/modals/useModal";
 
 import Iconify from "src/components/iconify";
+import SectionBox from "src/components/section-box";
+import { IEditVariantModal } from "src/modals/edit-variant-modal";
 import { useDeleteProductVariant } from "src/mutations/use-delete-product-variant";
+import { formatCurrency } from "src/utils/format-number";
 
 interface IVariants {
   product: Product;
@@ -52,11 +55,8 @@ export default function Variants({ product }: IVariants) {
   };
 
   return (
-    <Box
+    <SectionBox
       sx={{
-        backgroundColor: "background.paper",
-        borderRadius: 1,
-        p: 3,
         mb: 3,
       }}
     >
@@ -83,7 +83,13 @@ export default function Variants({ product }: IVariants) {
           <TableBody>
             {product &&
               product.variants.map((variant) => {
-                return <VariantTableRow key={variant.id} variant={variant} />;
+                return (
+                  <VariantTableRow
+                    key={variant.id}
+                    product={product}
+                    variant={variant}
+                  />
+                );
               })}
           </TableBody>
         </Table>
@@ -111,19 +117,20 @@ export default function Variants({ product }: IVariants) {
           Edit Options
         </MenuItem>
       </Popover>
-    </Box>
+    </SectionBox>
   );
 }
 
 interface IVariantTableRow {
+  product: Product;
   variant: ProductVariant;
 }
 
-function VariantTableRow({ variant }: IVariantTableRow) {
+function VariantTableRow({ product, variant }: IVariantTableRow) {
   const [open, setOpen] = useState<Element | null>(null);
-  const priceAmount = variant.prices[0].amount.toString().split("");
-  const formatedPriceAmount = priceAmount.slice(0, priceAmount.length - 2);
-
+  const price = variant.prices.find((price) => price.currency_code === "usd");
+  const { onOpen: openModal } =
+    useModal<IEditVariantModal>("edit-variant-modal");
   const deleteProductVariantMutation = useDeleteProductVariant();
 
   const handleOpenMenu = (event: {
@@ -137,6 +144,7 @@ function VariantTableRow({ variant }: IVariantTableRow) {
   };
 
   const handleEdit = () => {
+    openModal({ product, variant });
     handleCloseMenu();
   };
 
@@ -159,7 +167,9 @@ function VariantTableRow({ variant }: IVariantTableRow) {
           {variant.title}
         </TableCell>
         <TableCell align="right">{variant.sku}</TableCell>
-        <TableCell align="right">${formatedPriceAmount}</TableCell>
+        <TableCell align="right">
+          {price ? formatCurrency(price.amount) : "$0.00"}
+        </TableCell>
         <TableCell align="right">{variant.inventory_quantity}</TableCell>
         <TableCell align="right">
           <IconButton id="table-row-op" onClick={handleOpenMenu}>

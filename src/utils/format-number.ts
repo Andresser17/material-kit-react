@@ -3,8 +3,8 @@ import numeral from "numeral";
 
 // ----------------------------------------------------------------------
 
-export function fNumber(amount: number) {
-  return numeral(amount).format();
+export function formatAmount(amount: number): string {
+  return currency(amount, { fromCents: true }).toString();
 }
 
 export function formatCurrency(amount: number): string {

@@ -1,15 +1,15 @@
 import {
   CartLineItemDTO,
-  MoneyAmountDTO,
   OrderDTO,
   PaymentSessionDTO,
-  ProductOptionValueDTO,
+  PriceListDTO,
   ProductVariantDTO,
   SalesChannelDTO,
 } from "@medusajs/types";
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
 
+import { CurrencyDTO } from "@medusajs/types";
 import { Option } from "./components/controlled-select";
 import { DraftOrderStatus, LotStatus } from "./enums";
 import ProductStatus from "./sections/add-product/product-status";
@@ -126,10 +126,25 @@ export declare module "@medusajs/types" {
     updated_at: Date;
     deleted_at: Date;
     title: string;
-    values: ProductOptionValueDTO[];
+    values: ProductOptionValue[];
     product_id: string;
     product: Product;
     metadata: Record<string, unknown>;
+  }
+
+  interface ProductOptionValue {
+    id: string;
+    value: string;
+    option: ProductOption;
+    variant: ProductVariant;
+    metadata: null | Record<string, unknown>;
+    deleted_at: string | Date;
+  }
+
+  interface ProductOptionRequest {
+    option_id: string;
+    title: string;
+    value: string;
   }
 
   interface Image {
@@ -462,7 +477,7 @@ export declare module "@medusajs/types" {
 
   interface ProductVariant extends ProductVariantDTO {
     product_id: string;
-    prices: MoneyAmountDTO[];
+    prices: MoneyAmount[];
     product: Product;
   }
 
@@ -555,14 +570,16 @@ export declare module "@medusajs/types" {
     mid_code?: string | null;
     material?: string | null;
     metadata?: Record<string, unknown>;
-    prices?: {
-      amount: number;
-      region_id?: string;
-      currency_code?: string;
-      min_quantity: number;
-      max_quantity: number;
-    }[];
+    prices?: PriceAmountRequest[];
     options?: { option_id: string; value: string }[];
+  }
+
+  interface PriceAmountRequest {
+    amount: number;
+    region_id: string | null;
+    currency_code: string | null;
+    min_quantity: number | null;
+    max_quantity: number | null;
   }
 
   interface ShippingMethodData {
@@ -661,5 +678,24 @@ export declare module "@medusajs/types" {
     type: string;
     value: string;
     description: string;
+  }
+
+  interface MoneyAmount {
+    id: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: null | date;
+    currency_code: string;
+    amount: number;
+    min_quantity: null | number;
+    max_quantity: null | number;
+    price_list_id: null | string;
+    price_list: null | PriceListDTO;
+    variants: ProductVariant[];
+    variant: ProductVariant;
+    variant_id: string;
+    region_id: null | string;
+    currency: CurrencyDTO;
+    region: Region;
   }
 }

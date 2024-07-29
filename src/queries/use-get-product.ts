@@ -11,7 +11,7 @@ async function getProduct(
   access_token: string,
   product_id: string,
 ): Promise<Product> {
-  const url = new URL(`/admin/products/${product_id}`, BACKEND_URL);
+  const url = new URL(`/admin/products-v2/${product_id}`, BACKEND_URL);
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,

@@ -15,6 +15,7 @@ import { IEditDraftOrderShippingAddressModal } from "src/modals/edit-draft-order
 import { IEditLotSummaryModal } from "src/modals/edit-lot-summary-modal";
 import { IEditOptionsModal } from "src/modals/edit-options-modal/edit-options-modal";
 import { IEditShippingAddressModal } from "src/modals/edit-shipping-address-modal";
+import { IEditVariantModal } from "src/modals/edit-variant-modal";
 import { IMarkPayDraftOrderModal } from "src/modals/mark-pay-draft-order-modal/mark-pay-draft-order-modal";
 import { Modal } from "src/modals/modal-provider";
 import { IUpdateLotStatusModal } from "src/modals/update-lot-status-modal/update-lot-status-modal";
@@ -114,6 +115,11 @@ const initialState = {
       open: false,
       props: {},
     } as Modal<IUpdateWarrantyModal>,
+    {
+      id: "edit-variant-modal",
+      open: false,
+      props: {},
+    } as Modal<IEditVariantModal>,
   ],
 };
 
