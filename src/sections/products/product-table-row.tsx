@@ -1,20 +1,20 @@
 import { Product } from "@medusajs/types";
+import { ChangeEvent, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, ChangeEvent, SetStateAction } from "react";
 
-import Popover from "@mui/material/Popover";
-import TableRow from "@mui/material/TableRow";
+import { Avatar, Stack, Typography } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
-import MenuItem from "@mui/material/MenuItem";
-import TableCell from "@mui/material/TableCell";
 import IconButton from "@mui/material/IconButton";
-import { Stack, Avatar, Typography } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Popover from "@mui/material/Popover";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
 import { ProductStatus } from "src/enums";
 import { useDeleteProduct } from "src/mutations/use-delete-product";
 
-import Label from "src/components/label";
 import Iconify from "src/components/iconify";
+import Label from "src/components/label";
 
 // ----------------------------------------------------------------------
 
@@ -96,9 +96,7 @@ export default function ProductTableRow({
           </Stack>
         </TableCell>
 
-        <TableCell align="center">{0}</TableCell>
-
-        <TableCell align="center">{0}</TableCell>
+        <TableCell align="center">{product.variants.length}</TableCell>
 
         <TableCell>
           <Label

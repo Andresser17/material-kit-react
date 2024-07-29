@@ -172,7 +172,6 @@ export default function IMarkPayDraftOrderModal() {
             id="change.method"
             label="Payment Method"
             options={paymentMethods}
-            required
             mapControlValueToOption={(value: { id: string; label: string }) => {
               const found = paymentMethods.find(
                 (method) => method.id === value.id,

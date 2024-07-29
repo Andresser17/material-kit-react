@@ -15,6 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import Iconify from "src/components/iconify";
 import { IAddProductToDraftOrderModal } from "src/modals/add-product-to-draft-order-modal";
 import { useModal } from "src/modals/useModal";
+import { formatCurrency } from "src/utils/format-number";
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +34,7 @@ export default function ItemsTableRow({
   } = useModal<IAddProductToDraftOrderModal>(
     "add-product-to-draft-order-modal",
   );
+  const price = variant.prices.find((price) => price.currency_code === "usd");
 
   const handleChange = (newQuantity: number) => {
     setLineItems((prev) => {
@@ -115,7 +117,7 @@ export default function ItemsTableRow({
       <TableCell>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography sx={{ fontSize: 14, mr: 1 }} variant="subtitle2" noWrap>
-            {variant.inventory_quantity ?? 0}
+            {price ? formatCurrency(price.amount) : 0}
           </Typography>
           <Typography
             sx={{ fontSize: 14, color: "text.secondary" }}

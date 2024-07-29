@@ -152,8 +152,7 @@ export default function ProductsView() {
                 headLabel={[
                   { id: "thumbnail", label: "Thumbnail", align: "center" },
                   { id: "product", label: "Product" },
-                  { id: "quantity", label: "Quantity", align: "center" },
-                  { id: "price", label: "Price", align: "center" },
+                  { id: "variants", label: "Variants", align: "center" },
                   { id: "status", label: "Status" },
                   { id: "options", label: "" },
                 ]}

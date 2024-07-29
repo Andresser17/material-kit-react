@@ -73,9 +73,6 @@ export default function OrderDetails({ order }: IOrderDetails) {
     case OrderStatus.PENDING:
       options = (
         <>
-          <MenuItem onClick={handleArchiveOrder} sx={{ fontSize: 12 }}>
-            Archive Order
-          </MenuItem>
           <MenuItem
             onClick={handleCompleteOrder}
             sx={{ color: "success.main", fontSize: 12 }}
@@ -104,13 +101,6 @@ export default function OrderDetails({ order }: IOrderDetails) {
             Cancel Order
           </MenuItem>
         </>
-      );
-      break;
-    case OrderStatus.CANCELED:
-      options = (
-        <MenuItem onClick={handleArchiveOrder} sx={{ fontSize: 12 }}>
-          Archive Order
-        </MenuItem>
       );
       break;
   }
