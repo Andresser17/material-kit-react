@@ -9,14 +9,14 @@ import Popover from "@mui/material/Popover";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 
 // ----------------------------------------------------------------------
 
 interface ICustomerTableRow {
-  customer: CustomerDTO;
+  customer: Customer;
   selectedRow: boolean;
   handleClick: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }

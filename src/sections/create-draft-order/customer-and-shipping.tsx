@@ -16,7 +16,10 @@ import { useListCustomers } from "src/queries/use-list-customers";
 import { useListShippingOptions } from "src/queries/use-list-shipping-options";
 
 import AddressCard from "src/components/address-card";
+import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
+import { ICreateCustomerModal } from "src/modals/create-customer-modal";
+import { useModal } from "src/modals/useModal";
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +44,11 @@ export default function CustomerAndShipping({
   selectedCustomer,
   setSelectedCustomer,
 }: ICustomerAndShipping) {
+  const {
+    props: { redirect_url },
+    onOpen: openCreateCustomerModal,
+  } = useModal<ICreateCustomerModal>("create-customer-modal");
+
   const { shipping_options } = useListShippingOptions({
     query: { region_id: regionId, is_return: false },
   });
@@ -142,9 +150,33 @@ export default function CustomerAndShipping({
         </Button>
       </Box>
 
-      <Typography variant="subtitle2" sx={{ fontSize: 16, mb: 3 }}>
-        Customer and shipping details
-      </Typography>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", mb: 2, mt: 4 }}
+      >
+        <Typography variant="subtitle2" sx={{ fontSize: 16 }}>
+          Customer and shipping details
+        </Typography>
+
+        <Box>
+          <Button
+            variant="contained"
+            size="small"
+            color="warning"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            sx={{ mr: 2 }}
+          >
+            New ML
+          </Button>
+          <Button
+            onClick={() => openCreateCustomerModal()}
+            variant="contained"
+            size="small"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
+            New
+          </Button>
+        </Box>
+      </Box>
 
       <FormControl fullWidth sx={{ mb: 3 }}>
         <InputLabel id="existing-customer-label">

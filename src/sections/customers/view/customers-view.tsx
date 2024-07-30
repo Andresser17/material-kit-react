@@ -16,7 +16,8 @@ import { useModal } from "src/modals/useModal";
 import Iconify from "src/components/iconify";
 import Scrollbar from "src/components/scrollbar";
 
-import { CustomerDTO } from "@medusajs/types";
+import { Customer } from "@medusajs/types";
+import { Box } from "@mui/material";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { emptyRows } from "src/utils/table-utils";
 import CustomerTableRow from "../customer-table-row";
@@ -27,7 +28,7 @@ import TableEmptyRows from "../table-empty-rows";
 // ----------------------------------------------------------------------
 
 interface ICustomersView {
-  customers: CustomerDTO[];
+  customers: Customer[];
   count: number;
 }
 
@@ -124,14 +125,26 @@ export default function CustomersView({ customers, count }: ICustomersView) {
       >
         <Typography variant="h4">Customers</Typography>
 
-        <Button
-          onClick={() => openModal()}
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="eva:plus-fill" />}
-        >
-          New Customer
-        </Button>
+        <Box>
+          <Button
+            onClick={() => openModal()}
+            variant="contained"
+            size="small"
+            color="warning"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            sx={{ mr: 2 }}
+          >
+            New Customer ML
+          </Button>
+          <Button
+            onClick={() => openModal()}
+            variant="contained"
+            size="small"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
+            New Customer
+          </Button>
+        </Box>
       </Stack>
 
       <Card>
