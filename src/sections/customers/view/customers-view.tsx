@@ -18,6 +18,7 @@ import Scrollbar from "src/components/scrollbar";
 
 import { Customer } from "@medusajs/types";
 import { Box } from "@mui/material";
+import { ICreateCustomerMlModal } from "src/modals/create-customer-ml-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { emptyRows } from "src/utils/table-utils";
 import CustomerTableRow from "../customer-table-row";
@@ -38,6 +39,8 @@ export default function CustomersView({ customers, count }: ICustomersView) {
     onOpen: openModal,
     onUpdate: updateModal,
   } = useModal<ICreateCustomerModal>("create-customer-modal");
+  const { onOpen: openCreateCustomerMlModal } =
+    useModal<ICreateCustomerMlModal>("create-customer-ml-modal");
 
   const [page, setPage] = useState(0);
 
@@ -127,7 +130,7 @@ export default function CustomersView({ customers, count }: ICustomersView) {
 
         <Box>
           <Button
-            onClick={() => openModal()}
+            onClick={() => openCreateCustomerMlModal()}
             variant="contained"
             size="small"
             color="warning"

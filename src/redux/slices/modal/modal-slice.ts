@@ -8,6 +8,7 @@ import { IAddProductToLotModal } from "src/modals/add-product-to-lot-modal/add-p
 import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal";
 import { IAddVariantModal } from "src/modals/add-variant-modal/add-variant-modal";
 import { IConfirmActionModal } from "src/modals/confirm-action-modal";
+import { ICreateCustomerMlModal } from "src/modals/create-customer-ml-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { ICreateWarrantyModal } from "src/modals/create-warranty-modal";
 import { IEditCustomerModal } from "src/modals/edit-customer-modal";
@@ -85,6 +86,11 @@ const initialState = {
       open: false,
       props: { redirect_url: "" },
     } as Modal<ICreateCustomerModal>,
+    {
+      id: "create-customer-ml-modal",
+      open: false,
+      props: {},
+    } as Modal<ICreateCustomerMlModal>,
     {
       id: "add-shipping-address-modal",
       open: false,

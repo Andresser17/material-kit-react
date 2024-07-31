@@ -1,7 +1,7 @@
 import { ChangeEvent, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Avatar, Stack, Typography } from "@mui/material";
+import { Avatar, Stack, Typography, useTheme } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +26,7 @@ export default function CustomerTableRow({
   selectedRow,
   handleClick,
 }: ICustomerTableRow) {
+  const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState<Element | null>(null);
 
@@ -110,6 +111,10 @@ export default function CustomerTableRow({
         <MenuItem onClick={handleEdit}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
+        </MenuItem>
+        <MenuItem onClick={handleEdit} sx={{ color: theme.palette.error.main }}>
+          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+          Delete
         </MenuItem>
       </Popover>
     </>

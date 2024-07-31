@@ -1,37 +1,42 @@
 import { Region } from "@medusajs/types";
-import { useQuery, useMutationState } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 
 import HTTPError from "src/utils/http-error";
 
-import { QUERY_KEY, BACKEND_URL, MUTATION_KEY } from "src/config";
+import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
-interface getRegionsResponse {
+export interface ListRegionsResponse {
   regions: Region[];
   count: number;
   offset: number;
   limit: number;
 }
 
-async function getRegions(access_token: string): Promise<getRegionsResponse> {
+async function getRegions(access_token: string): Promise<ListRegionsResponse> {
   const url = new URL(`/admin/regions`, BACKEND_URL);
   const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
   });
-  if (!response.ok) throw new HTTPError("Failed on get regions", response);
 
-  return await response.json();
+  const result = await response.json();
+  if (!response.ok) throw new HTTPError(result.message, response);
+
+  return result;
 }
 
-export function useListRegions(): getRegionsResponse {
+export function useListRegions(): UseQueryResult<
+  ListRegionsResponse,
+  HTTPError
+> {
   const { user } = useUser();
 
-  const { data } = useQuery({
+  return useQuery({
     queryKey: [QUERY_KEY.regions, user?.access_token],
-    queryFn: async ({ queryKey }): Promise<getRegionsResponse | null> =>
+    queryFn: async ({ queryKey }): Promise<ListRegionsResponse> =>
       getRegions(queryKey[1] as string),
     // refetchOnMount: false,
     // refetchOnWindowFocus: false,
@@ -41,16 +46,4 @@ export function useListRegions(): getRegionsResponse {
       return false;
     },
   });
-
-  useMutationState({
-    filters: { mutationKey: [MUTATION_KEY], status: "pending" },
-    // select: (mutation) => mutation.state.variables,
-  });
-
-  return {
-    regions: data?.regions ? data.regions : [],
-    count: data?.count ? data.count : 1,
-    offset: data?.offset ? data.offset : 0,
-    limit: data?.limit ? data.limit : 1,
-  };
 }

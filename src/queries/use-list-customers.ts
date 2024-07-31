@@ -8,7 +8,7 @@ import { BACKEND_URL, QUERY_KEY } from "src/config";
 
 import { useUser } from "./use-user";
 
-interface ListCustomersResponse {
+export interface ListCustomersResponse {
   customers: Customer[];
   count: number;
   offset: number;

@@ -15,12 +15,22 @@ import Box from "@mui/material/Box";
 import { DraftOrderStatus } from "src/enums";
 import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
 
+import { ListCustomersResponse } from "src/queries/use-list-customers";
+import { ListRegionsResponse } from "src/queries/use-list-regions";
 import ChooseRegion from "../choose-region";
 import CustomerAndShipping from "../customer-and-shipping";
 
 // ----------------------------------------------------------------------
 
-export default function CreateDraftOrderView() {
+interface ICreateDraftOrderView {
+  customers: ListCustomersResponse;
+  regions: ListRegionsResponse;
+}
+
+export default function CreateDraftOrderView({
+  customers,
+  regions,
+}: ICreateDraftOrderView) {
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [selectedMethod, setSelectedMethod] =
     useState<DraftOrderShippingMethod | null>(null);
@@ -64,33 +74,33 @@ export default function CreateDraftOrderView() {
   };
   const { mutate: createDraftOrder } = useCreateDraftOrder(resetForm);
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
-    const shipping_address = selectedAddress
-      ? {
-          first_name: selectedAddress.first_name,
-          last_name: selectedAddress.last_name,
-          phone: selectedAddress.phone,
-          company: selectedAddress.company,
-          address_1: selectedAddress.address_1,
-          address_2: selectedAddress.address_2,
-          city: selectedAddress.city,
-          country_code: selectedAddress.country_code,
-          province: selectedAddress.province,
-          postal_code: selectedAddress.postal_code,
-          metadata: selectedAddress.metadata,
-        }
-      : {
-          first_name: "",
-          last_name: "",
-          phone: "",
-          company: "",
-          address_1: "",
-          address_2: "",
-          city: "",
-          country_code: "ve",
-          province: "",
-          postal_code: "",
-          metadata: {},
-        };
+    // const shipping_address = selectedAddress
+    //   ? {
+    //       first_name: selectedAddress.first_name,
+    //       last_name: selectedAddress.last_name,
+    //       phone: selectedAddress.phone,
+    //       company: selectedAddress.company,
+    //       address_1: selectedAddress.address_1,
+    //       address_2: selectedAddress.address_2,
+    //       city: selectedAddress.city,
+    //       country_code: selectedAddress.country_code,
+    //       province: selectedAddress.province,
+    //       postal_code: selectedAddress.postal_code,
+    //       metadata: selectedAddress.metadata,
+    //     }
+    //   : {
+    //       first_name: "",
+    //       last_name: "",
+    //       phone: "",
+    //       company: "",
+    //       address_1: "",
+    //       address_2: "",
+    //       city: "",
+    //       country_code: "ve",
+    //       province: "",
+    //       postal_code: "",
+    //       metadata: {},
+    //     };
 
     createDraftOrder({
       newDraftOrder: {
@@ -116,8 +126,8 @@ export default function CreateDraftOrderView() {
               },
             ]
           : [],
-        billing_address: shipping_address,
-        shipping_address,
+        billing_address: selectedAddress,
+        shipping_address: selectedAddress,
       },
     });
   };
@@ -160,11 +170,13 @@ export default function CreateDraftOrderView() {
           }}
         >
           <ChooseRegion
+            regions={regions.regions}
             setLineItems={setLineItems}
             selectedRegion={selectedRegion}
             setSelectedRegion={setSelectedRegion}
           />
           <CustomerAndShipping
+            customers={customers.customers}
             regionName={selectedRegion?.name ?? ""}
             regionId={selectedRegion?.id ?? ""}
             selectedCustomer={selectedCustomer}

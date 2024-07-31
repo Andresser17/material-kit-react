@@ -4,25 +4,23 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { Divider, MenuItem, Select, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
-import { useListRegions } from "src/queries/use-list-regions";
-
 import SectionBox from "src/components/section-box";
 
 import ItemsTable from "./items-table/items-table";
 
 interface IChooseRegion {
+  regions: Region[];
   setLineItems: Dispatch<SetStateAction<LineItem[]>>;
   selectedRegion: Region | null;
   setSelectedRegion: Dispatch<SetStateAction<Region | null>>;
 }
 
 export default function ChooseRegion({
+  regions,
   setLineItems,
   selectedRegion,
   setSelectedRegion,
 }: IChooseRegion) {
-  const { regions } = useListRegions();
-
   const handleSelectedRegion = (e: {
     target: { value: SetStateAction<string> };
   }) => {

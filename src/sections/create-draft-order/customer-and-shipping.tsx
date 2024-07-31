@@ -12,18 +12,19 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useListCustomers } from "src/queries/use-list-customers";
 import { useListShippingOptions } from "src/queries/use-list-shipping-options";
 
 import AddressCard from "src/components/address-card";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
+import { ICreateCustomerMlModal } from "src/modals/create-customer-ml-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { useModal } from "src/modals/useModal";
 
 // ----------------------------------------------------------------------
 
 interface ICustomerAndShipping {
+  customers: Customer[];
   regionId: string;
   regionName: string;
   selectedMethod: DraftOrderShippingMethod | null;
@@ -35,6 +36,7 @@ interface ICustomerAndShipping {
 }
 
 export default function CustomerAndShipping({
+  customers,
   regionId,
   regionName,
   selectedMethod,
@@ -44,15 +46,17 @@ export default function CustomerAndShipping({
   selectedCustomer,
   setSelectedCustomer,
 }: ICustomerAndShipping) {
+  const { onOpen: openCreateCustomerModal } = useModal<ICreateCustomerModal>(
+    "create-customer-modal",
+  );
   const {
-    props: { redirect_url },
-    onOpen: openCreateCustomerModal,
-  } = useModal<ICreateCustomerModal>("create-customer-modal");
+    props: { new_customer },
+    onOpen: openCreateCustomerMlModal,
+  } = useModal<ICreateCustomerMlModal>("create-customer-ml-modal");
 
   const { shipping_options } = useListShippingOptions({
     query: { region_id: regionId, is_return: false },
   });
-  const { data: customers } = useListCustomers();
 
   const handleShippingOptions = (e: { target: { value: string } }) => {
     const found = shipping_options.find(
@@ -68,7 +72,7 @@ export default function CustomerAndShipping({
 
   const handleCustomers = (e: { target: { value: string } }) => {
     if (customers) {
-      const found = customers.customers.find(
+      const found = customers.find(
         (customer) => customer.id === e.target.value,
       );
       setSelectedCustomer(found ?? null);
@@ -85,8 +89,7 @@ export default function CustomerAndShipping({
           price: option.amount,
         });
     }
-    if (customers && customers.customers.length > 0)
-      setSelectedCustomer(customers.customers[0]);
+    if (customers && customers.length > 0) setSelectedCustomer(customers[0]);
   }, [shipping_options, customers]);
 
   useEffect(() => {
@@ -99,6 +102,13 @@ export default function CustomerAndShipping({
       setSelectedAddress(newAddress);
     }
   }, [selectedAddress, selectedCustomer]);
+
+  // update selected customer after a new one created
+  useEffect(() => {
+    if (new_customer) {
+      setSelectedCustomer(new_customer);
+    }
+  }, [new_customer]);
 
   return (
     <SectionBox
@@ -159,6 +169,7 @@ export default function CustomerAndShipping({
 
         <Box>
           <Button
+            onClick={() => openCreateCustomerMlModal()}
             variant="contained"
             size="small"
             color="warning"
@@ -190,7 +201,7 @@ export default function CustomerAndShipping({
           onChange={handleCustomers}
         >
           {customers &&
-            customers.customers.map((customer) => {
+            customers.map((customer) => {
               const label =
                 customer.first_name && customer.last_name
                   ? `${customer.first_name} ${customer.last_name} (${customer.email})`
@@ -204,9 +215,18 @@ export default function CustomerAndShipping({
             })}
         </Select>
       </FormControl>
-      <Typography variant="subtitle2" sx={{ fontSize: 16, mb: 3 }}>
-        Choose existing addresses
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+        <Typography variant="subtitle2" sx={{ fontSize: 16 }}>
+          Choose existing addresses
+        </Typography>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+        >
+          New
+        </Button>
+      </Box>
       {selectedCustomer?.shipping_addresses &&
       selectedCustomer?.shipping_addresses.length > 0 ? (
         selectedCustomer?.shipping_addresses.map((address) => (
