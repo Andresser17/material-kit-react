@@ -5,6 +5,7 @@ import {
   PriceListDTO,
   ProductVariantDTO,
   SalesChannelDTO,
+  ShippingOptionDTO,
 } from "@medusajs/types";
 
 import { Theme as OriginalTheme } from "@mui/material/styles";
@@ -484,7 +485,7 @@ export declare module "@medusajs/types" {
     product: Product;
   }
 
-  interface ShippingOptionDTO {
+  interface ShippingOption extends ShippingOptionDTO {
     amount: number;
     region: Region;
   }

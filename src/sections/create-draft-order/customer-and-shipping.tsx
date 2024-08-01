@@ -1,50 +1,34 @@
-import { Address, Customer, DraftOrderShippingMethod } from "@medusajs/types";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { Link } from "react-router-dom";
-
 import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
+  Address,
+  Customer,
+  DraftOrderRequest,
+  ShippingOption,
+} from "@medusajs/types";
+import { useEffect, useState } from "react";
 
-import { useListShippingOptions } from "src/queries/use-list-shipping-options";
+import { Box, Button, Typography } from "@mui/material";
 
-import AddressCard from "src/components/address-card";
+import { Control } from "react-hook-form";
+import ControlledSelect from "src/components/controlled-select";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import { ICreateCustomerMlModal } from "src/modals/create-customer-ml-modal";
 import { ICreateCustomerModal } from "src/modals/create-customer-modal";
 import { useModal } from "src/modals/useModal";
+import { formatCurrency } from "src/utils/format-number";
 
 // ----------------------------------------------------------------------
 
 interface ICustomerAndShipping {
+  control: Control<DraftOrderRequest>;
   customers: Customer[];
-  regionId: string;
-  regionName: string;
-  selectedMethod: DraftOrderShippingMethod | null;
-  setSelectedMethod: Dispatch<SetStateAction<DraftOrderShippingMethod | null>>;
-  selectedCustomer: Customer | null;
-  setSelectedCustomer: Dispatch<SetStateAction<Customer | null>>;
-  selectedAddress: Address | null;
-  setSelectedAddress: Dispatch<SetStateAction<Address | null>>;
+  shippingOptions: ShippingOption[];
 }
 
 export default function CustomerAndShipping({
+  control,
   customers,
-  regionId,
-  regionName,
-  selectedMethod,
-  setSelectedMethod,
-  selectedAddress,
-  setSelectedAddress,
-  selectedCustomer,
-  setSelectedCustomer,
+  shippingOptions,
 }: ICustomerAndShipping) {
   const { onOpen: openCreateCustomerModal } = useModal<ICreateCustomerModal>(
     "create-customer-modal",
@@ -54,59 +38,18 @@ export default function CustomerAndShipping({
     onOpen: openCreateCustomerMlModal,
   } = useModal<ICreateCustomerMlModal>("create-customer-ml-modal");
 
-  const { shipping_options } = useListShippingOptions({
-    query: { region_id: regionId, is_return: false },
-  });
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [address, setAddress] = useState<Address | null>(null);
 
-  const handleShippingOptions = (e: { target: { value: string } }) => {
-    const found = shipping_options.find(
-      (shipping_option) => shipping_option.id === e.target.value,
-    );
-    if (found)
-      setSelectedMethod({
-        option_id: found.id,
-        data: found.data ?? {},
-        price: found.amount,
-      });
-  };
-
-  const handleCustomers = (e: { target: { value: string } }) => {
-    if (customers) {
-      const found = customers.find(
-        (customer) => customer.id === e.target.value,
-      );
-      setSelectedCustomer(found ?? null);
-    }
-  };
-
+  // select first customer address
   useEffect(() => {
-    if (shipping_options.length > 0) {
-      const option = shipping_options[0];
-      if (option)
-        setSelectedMethod({
-          option_id: option.id,
-          data: option.data ?? {},
-          price: option.amount,
-        });
-    }
-    if (customers && customers.length > 0) setSelectedCustomer(customers[0]);
-  }, [shipping_options, customers]);
-
-  useEffect(() => {
-    if (!selectedAddress) {
-      const newAddress =
-        selectedCustomer?.shipping_addresses &&
-        selectedCustomer.shipping_addresses.length > 0
-          ? selectedCustomer?.shipping_addresses[0]
-          : null;
-      setSelectedAddress(newAddress);
-    }
-  }, [selectedAddress, selectedCustomer]);
+    if (customer) setAddress(customer.shipping_addresses[0]);
+  }, [customer]);
 
   // update selected customer after a new one created
   useEffect(() => {
     if (new_customer) {
-      setSelectedCustomer(new_customer);
+      setCustomer(new_customer);
     }
   }, [new_customer]);
 
@@ -118,37 +61,44 @@ export default function CustomerAndShipping({
       }}
     >
       <Typography variant="subtitle2" sx={{ fontSize: 16, mb: 3 }}>
-        Shipping method (To {regionName})
+        Shipping method (To {})
       </Typography>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">
-          Choose a shipping method
-        </InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={selectedMethod?.option_id ?? ""}
-          label="Choose a shipping method"
-          onChange={handleShippingOptions}
-        >
-          {shipping_options &&
-            shipping_options.map((shippingOption) => {
-              const amount = shippingOption.amount.toString().split("");
-              const amountPrint = amount
-                .slice(
-                  0,
-                  amount.length >= 3 ? amount.length - 2 : amount.length,
-                )
-                .join("");
 
-              return (
-                <MenuItem key={shippingOption.id} value={shippingOption.id}>
-                  {`${shippingOption.name} - ${amountPrint} ${shippingOption.region.currency_code.toUpperCase()}`}
-                </MenuItem>
-              );
-            })}
-        </Select>
-      </FormControl>
+      <ControlledSelect
+        control={control}
+        options={shippingOptions.map((shipping_option) => ({
+          id: shipping_option.id,
+          label: `${shipping_option.name} - ${formatCurrency(shipping_option.amount)} ${shipping_option.region.currency_code.toUpperCase()}`,
+          inputValue: "",
+        }))}
+        mapControlValueToOption={(shipping_methods: ShippingOption[]) => {
+          if (shipping_methods.length === 0)
+            return { inputValue: "", id: "", label: "" };
+
+          const shipping_option = shipping_methods[0];
+          return {
+            inputValue: "",
+            id: shipping_option.id,
+            label: `${shipping_option.name} - ${formatCurrency(shipping_option.amount)} ${shipping_option.region.currency_code.toUpperCase()}`,
+          };
+        }}
+        handleSelectOption={(option: {
+          inputValue: string;
+          id: string;
+          label: string;
+        }) => {
+          const found = shippingOptions.find(
+            (shipping_option) => shipping_option.id === option.id,
+          );
+          if (found) return [found];
+          return [];
+        }}
+        id="shipping_methods"
+        label="Choose a shipping method"
+        required
+        sx={{ width: "100%", mb: 3 }}
+      />
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <Button
           variant="outlined"
@@ -189,32 +139,40 @@ export default function CustomerAndShipping({
         </Box>
       </Box>
 
-      <FormControl fullWidth sx={{ mb: 3 }}>
-        <InputLabel id="existing-customer-label">
-          Find a existing customer
-        </InputLabel>
-        <Select
-          labelId="existing-customer-label"
-          id="existing-customer"
-          value={selectedCustomer?.id ?? ""}
-          label="Find existing customer"
-          onChange={handleCustomers}
-        >
-          {customers &&
-            customers.map((customer) => {
-              const label =
-                customer.first_name && customer.last_name
-                  ? `${customer.first_name} ${customer.last_name} (${customer.email})`
-                  : customer.email;
+      <ControlledSelect
+        control={control}
+        options={customers.map((customer) => ({
+          id: customer.id,
+          label: `${customer.first_name} ${customer.last_name} (${customer.email})`,
+          inputValue: "",
+        }))}
+        mapControlValueToOption={(customer_id: string) => {
+          const found = customers.find(
+            (customer) => customer.id === customer_id,
+          );
+          if (found)
+            return {
+              inputValue: "",
+              id: customer_id,
+              label: `${found.first_name} ${found.last_name} (${found.email})`,
+            };
+          return { inputValue: "", id: "", label: "" };
+        }}
+        handleSelectOption={(option: {
+          inputValue: string;
+          id: string;
+          label: string;
+        }) => {
+          const found = customers.find((customer) => customer.id === option.id);
+          if (found) setCustomer(found);
+          return option.id;
+        }}
+        id="customer_id"
+        label="Find Existing Customer"
+        required
+        sx={{ width: "100%", mb: 3 }}
+      />
 
-              return (
-                <MenuItem key={customer.id} value={customer.id}>
-                  {label}
-                </MenuItem>
-              );
-            })}
-        </Select>
-      </FormControl>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Typography variant="subtitle2" sx={{ fontSize: 16 }}>
           Choose existing addresses
@@ -227,22 +185,21 @@ export default function CustomerAndShipping({
           New
         </Button>
       </Box>
-      {selectedCustomer?.shipping_addresses &&
-      selectedCustomer?.shipping_addresses.length > 0 ? (
-        selectedCustomer?.shipping_addresses.map((address) => (
+
+      {/* {customer && customer.shipping_addresses.length > 0 ? (
+        customer.shipping_addresses.map((shipping_address) => (
           <AddressCard
-            key={address.id}
-            address={address}
-            selected={selectedAddress}
-            setSelected={setSelectedAddress}
+            key={shipping_address.id}
+            address={shipping_address}
+            selected={address}
+            setSelected={setAddress}
           />
         ))
       ) : (
         <Typography variant="subtitle2">
-          Shipping addresses not found:{" "}
-          <Link to={`/customers/${selectedCustomer?.id}`}>Add an address</Link>
+          This customer don't have an address added
         </Typography>
-      )}
+      )} */}
     </SectionBox>
   );
 }

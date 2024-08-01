@@ -1,12 +1,5 @@
-import {
-  Address,
-  Customer,
-  DraftOrderRequest,
-  DraftOrderShippingMethod,
-  LineItem,
-  Region,
-} from "@medusajs/types";
-import { useState } from "react";
+import { DraftOrderRequest } from "@medusajs/types";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Button } from "@mui/material";
@@ -17,6 +10,7 @@ import { useCreateDraftOrder } from "src/mutations/use-create-draft-order";
 
 import { ListCustomersResponse } from "src/queries/use-list-customers";
 import { ListRegionsResponse } from "src/queries/use-list-regions";
+import { useListShippingOptions } from "src/queries/use-list-shipping-options";
 import ChooseRegion from "../choose-region";
 import CustomerAndShipping from "../customer-and-shipping";
 
@@ -31,20 +25,13 @@ export default function CreateDraftOrderView({
   customers,
   regions,
 }: ICreateDraftOrderView) {
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
-  const [selectedMethod, setSelectedMethod] =
-    useState<DraftOrderShippingMethod | null>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-    null,
-  );
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [regionId, setRegionId] = useState("");
 
-  const [status, setStatus] = useState(DraftOrderStatus.OPEN);
-  const [lineItems, setLineItems] = useState<LineItem[]>([]);
-  const { handleSubmit, reset } = useForm<DraftOrderRequest>({
+  const { handleSubmit, control, setValue } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
       region_id: "",
+      customer_id: "",
       shipping_methods: [],
       status: DraftOrderStatus.OPEN,
       billing_address: {},
@@ -68,12 +55,11 @@ export default function CreateDraftOrderView({
     },
     mode: "onChange",
   });
-  const resetForm = () => {
-    reset();
-    setStatus(DraftOrderStatus.OPEN);
-  };
-  const { mutate: createDraftOrder } = useCreateDraftOrder(resetForm);
+
+  const { mutate: createDraftOrderMutation } = useCreateDraftOrder();
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
+    console.log({ data });
+
     // const shipping_address = selectedAddress
     //   ? {
     //       first_name: selectedAddress.first_name,
@@ -101,36 +87,47 @@ export default function CreateDraftOrderView({
     //       postal_code: "",
     //       metadata: {},
     //     };
-
-    createDraftOrder({
-      newDraftOrder: {
-        ...data,
-        status,
-        email: selectedCustomer?.email ?? "",
-        region_id: selectedRegion?.id ?? "",
-        customer_id: selectedCustomer?.id ?? "",
-        items: lineItems,
-        shipping_methods: selectedMethod
-          ? [
-              {
-                ...selectedMethod,
-                data: {
-                  first_name: selectedCustomer?.first_name,
-                  last_name: selectedCustomer?.last_name,
-                  document: selectedCustomer?.document,
-                  phone: selectedCustomer?.phone,
-                  destination_agency: "Zoom MRW Tealca Placeholder",
-                  destination_city: "Placeholder",
-                  destination_state: "Placeholder",
-                },
-              },
-            ]
-          : [],
-        billing_address: selectedAddress,
-        shipping_address: selectedAddress,
-      },
-    });
+    // createDraftOrder({
+    //   newDraftOrder: {
+    //     ...data,
+    //     status,
+    //     email: selectedCustomer?.email ?? "",
+    //     region_id: selectedRegion?.id ?? "",
+    //     customer_id: selectedCustomer?.id ?? "",
+    //     items: lineItems,
+    //     shipping_methods: selectedMethod
+    //       ? [
+    //           {
+    //             ...selectedMethod,
+    //             data: {
+    //               first_name: selectedCustomer?.first_name,
+    //               last_name: selectedCustomer?.last_name,
+    //               document: selectedCustomer?.document,
+    //               phone: selectedCustomer?.phone,
+    //               destination_agency: "Zoom MRW Tealca Placeholder",
+    //               destination_city: "Placeholder",
+    //               destination_state: "Placeholder",
+    //             },
+    //           },
+    //         ]
+    //       : [],
+    //     billing_address: shipping_address,
+    //     shipping_address,
+    //   },
+    // });
   };
+
+  const { data: shipping_options } = useListShippingOptions({
+    query: { region_id: regionId, is_return: false },
+  });
+
+  // Autoselect first value in every Select component
+  useEffect(() => {
+    if (regions) {
+      setValue("region_id", regions.regions[0].id);
+      setRegionId(regions.regions[0].id);
+    }
+  }, [regions]);
 
   const floatingButtons = (
     <Box sx={{ position: "fixed", bottom: 10, right: 5, zIndex: 99 }}>
@@ -169,23 +166,14 @@ export default function CreateDraftOrderView({
             },
           }}
         >
-          <ChooseRegion
-            regions={regions.regions}
-            setLineItems={setLineItems}
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-          />
-          <CustomerAndShipping
-            customers={customers.customers}
-            regionName={selectedRegion?.name ?? ""}
-            regionId={selectedRegion?.id ?? ""}
-            selectedCustomer={selectedCustomer}
-            setSelectedCustomer={setSelectedCustomer}
-            selectedMethod={selectedMethod}
-            setSelectedMethod={setSelectedMethod}
-            selectedAddress={selectedAddress}
-            setSelectedAddress={setSelectedAddress}
-          />
+          <ChooseRegion control={control} regions={regions.regions} />
+          {shipping_options && (
+            <CustomerAndShipping
+              control={control}
+              customers={customers.customers}
+              shippingOptions={shipping_options.shipping_options}
+            />
+          )}
           {floatingButtons}
         </Box>
       </Box>

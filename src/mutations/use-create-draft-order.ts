@@ -4,7 +4,6 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { UseFormReset } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +18,7 @@ export interface DraftOrderResponse {
 
 async function createDraftOrder(
   access_token: string | undefined,
-  newDraftOrder: DraftOrderRequest,
+  new_draft_order: DraftOrderRequest,
 ): Promise<DraftOrderResponse> {
   const url = new URL("/admin/draft-orders", BACKEND_URL);
   const response = await fetch(url, {
@@ -28,7 +27,7 @@ async function createDraftOrder(
       "Content-Type": "application/json",
       Authorization: `Bearer ${access_token}`,
     },
-    body: JSON.stringify(newDraftOrder),
+    body: JSON.stringify(new_draft_order),
   });
 
   const result = await response.json();
@@ -38,12 +37,10 @@ async function createDraftOrder(
 }
 
 interface IUseCreateDraftOrderArgs {
-  newDraftOrder: DraftOrderRequest;
+  new_draft_order: DraftOrderRequest;
 }
 
-export function useCreateDraftOrder(
-  resetForm: UseFormReset<DraftOrder>,
-): UseMutationResult<
+export function useCreateDraftOrder(): UseMutationResult<
   DraftOrderResponse,
   HTTPError,
   IUseCreateDraftOrderArgs,
@@ -54,8 +51,8 @@ export function useCreateDraftOrder(
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async ({ newDraftOrder }: IUseCreateDraftOrderArgs) => {
-      return createDraftOrder(user?.access_token, newDraftOrder);
+    mutationFn: async ({ new_draft_order }: IUseCreateDraftOrderArgs) => {
+      return createDraftOrder(user?.access_token, new_draft_order);
     },
     mutationKey: [MUTATION_KEY.create_draft_order],
     onSettled: () =>
@@ -68,7 +65,6 @@ export function useCreateDraftOrder(
     onSuccess(data) {
       // call pop up
       toast.success("Draft order created successfully");
-      resetForm();
       navigate(`/draft-orders/${data.draft_order.id}`);
     },
   });

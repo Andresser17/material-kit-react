@@ -1,65 +1,53 @@
-import { LineItem, Region } from "@medusajs/types";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { DraftOrderRequest, Region } from "@medusajs/types";
 
-import { Divider, MenuItem, Select, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
+import { Divider, Typography } from "@mui/material";
 
 import SectionBox from "src/components/section-box";
 
-import ItemsTable from "./items-table/items-table";
+import { Control } from "react-hook-form";
+import ControlledSelect from "src/components/controlled-select";
 
 interface IChooseRegion {
+  control: Control<DraftOrderRequest>;
   regions: Region[];
-  setLineItems: Dispatch<SetStateAction<LineItem[]>>;
-  selectedRegion: Region | null;
-  setSelectedRegion: Dispatch<SetStateAction<Region | null>>;
 }
 
-export default function ChooseRegion({
-  regions,
-  setLineItems,
-  selectedRegion,
-  setSelectedRegion,
-}: IChooseRegion) {
-  const handleSelectedRegion = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    const found = regions.find((region) => region.id === e.target.value);
-    setSelectedRegion(found ?? null);
-  };
-
-  useEffect(() => {
-    if (regions.length > 0) {
-      setSelectedRegion(regions[0]);
-    }
-  }, [regions]);
-
+export default function ChooseRegion({ control, regions }: IChooseRegion) {
   return (
     <SectionBox sx={{ minWidth: "100%" }}>
       <Typography variant="h4">Choose region</Typography>
       <Divider orientation="horizontal" flexItem sx={{ my: 2 }} />
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        <Select
-          id="region"
-          label="Region"
-          variant="outlined"
-          required
-          fullWidth
-          value={selectedRegion?.id ?? ""}
-          onChange={handleSelectedRegion}
-        >
-          {regions &&
-            regions.map((region) => (
-              <MenuItem key={region.id} value={region.id}>
-                {region.name}
-              </MenuItem>
-            ))}
-        </Select>
-      </Box>
+
+      <ControlledSelect
+        control={control}
+        options={regions.map((region) => ({
+          id: region.id,
+          label: region.name,
+          inputValue: "",
+        }))}
+        mapControlValueToOption={(region_id: string) => {
+          const found = regions.find((region) => region.id === region_id);
+          if (found)
+            return { inputValue: "", id: region_id, label: found.name };
+          return { inputValue: "", id: "", label: "" };
+        }}
+        handleSelectOption={(option: {
+          inputValue: string;
+          id: string;
+          label: string;
+        }) => {
+          return option.id;
+        }}
+        id="region_id"
+        label="Region"
+        required
+        sx={{ width: "100%" }}
+      />
+
       <Typography variant="subtitle2" sx={{ my: 2 }}>
         Items for the order
       </Typography>
-      <ItemsTable setLineItems={setLineItems} />
+      {/* <ItemsTable setLineItems={setLineItems} /> */}
     </SectionBox>
   );
 }
