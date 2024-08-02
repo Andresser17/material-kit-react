@@ -1,6 +1,6 @@
 import { Address } from "@medusajs/types";
 import { Box, Button, Typography } from "@mui/material";
-import AddressCard from "src/components/address-card";
+import AddressCard from "src/components/controlled-card";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
 import { IAddShippingAddressModal } from "src/modals/add-shipping-address-modal";

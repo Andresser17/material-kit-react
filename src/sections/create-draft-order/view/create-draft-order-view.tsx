@@ -1,4 +1,9 @@
-import { DraftOrderRequest } from "@medusajs/types";
+import {
+  Address,
+  Customer,
+  DraftOrderRequest,
+  LineItem,
+} from "@medusajs/types";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -26,13 +31,16 @@ export default function CreateDraftOrderView({
   regions,
 }: ICreateDraftOrderView) {
   const [regionId, setRegionId] = useState("");
+  const [address, setAddress] = useState<Address | null>(null);
+  const [lineItems, setLineItems] = useState<LineItem[]>([]);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const { handleSubmit, control, setValue } = useForm<DraftOrderRequest>({
     defaultValues: {
       email: "",
       region_id: "",
       customer_id: "",
-      shipping_methods: [],
+      shipping_methods: [{ option_id: "", data: {}, price: 0 }],
       status: DraftOrderStatus.OPEN,
       billing_address: {},
       shipping_address: {
@@ -58,63 +66,45 @@ export default function CreateDraftOrderView({
 
   const { mutate: createDraftOrderMutation } = useCreateDraftOrder();
   const onSubmit: SubmitHandler<DraftOrderRequest> = (data) => {
-    console.log({ data });
+    if (!address || !customer) return;
 
-    // const shipping_address = selectedAddress
-    //   ? {
-    //       first_name: selectedAddress.first_name,
-    //       last_name: selectedAddress.last_name,
-    //       phone: selectedAddress.phone,
-    //       company: selectedAddress.company,
-    //       address_1: selectedAddress.address_1,
-    //       address_2: selectedAddress.address_2,
-    //       city: selectedAddress.city,
-    //       country_code: selectedAddress.country_code,
-    //       province: selectedAddress.province,
-    //       postal_code: selectedAddress.postal_code,
-    //       metadata: selectedAddress.metadata,
-    //     }
-    //   : {
-    //       first_name: "",
-    //       last_name: "",
-    //       phone: "",
-    //       company: "",
-    //       address_1: "",
-    //       address_2: "",
-    //       city: "",
-    //       country_code: "ve",
-    //       province: "",
-    //       postal_code: "",
-    //       metadata: {},
-    //     };
-    // createDraftOrder({
-    //   newDraftOrder: {
-    //     ...data,
-    //     status,
-    //     email: selectedCustomer?.email ?? "",
-    //     region_id: selectedRegion?.id ?? "",
-    //     customer_id: selectedCustomer?.id ?? "",
-    //     items: lineItems,
-    //     shipping_methods: selectedMethod
-    //       ? [
-    //           {
-    //             ...selectedMethod,
-    //             data: {
-    //               first_name: selectedCustomer?.first_name,
-    //               last_name: selectedCustomer?.last_name,
-    //               document: selectedCustomer?.document,
-    //               phone: selectedCustomer?.phone,
-    //               destination_agency: "Zoom MRW Tealca Placeholder",
-    //               destination_city: "Placeholder",
-    //               destination_state: "Placeholder",
-    //             },
-    //           },
-    //         ]
-    //       : [],
-    //     billing_address: shipping_address,
-    //     shipping_address,
-    //   },
-    // });
+    const {
+      created_at: _created_at,
+      updated_at: _updated_at,
+      deleted_at: _deleted_at,
+      id: _id,
+      customer_id: customer_id,
+      ...shipping_address
+    } = address;
+
+    const shipping_methods = data.shipping_methods.map((method) => ({
+      ...method,
+      data: {
+        ...method.data,
+        customer: {
+          first_name: customer.first_name,
+          last_name: customer.last_name,
+          document: customer.document,
+          phone: customer.phone,
+        },
+        destination: {
+          agency: "Placeholder",
+          city: "Placeholder",
+          state: "Placeholder",
+        },
+      },
+    }));
+
+    createDraftOrderMutation({
+      new_draft_order: {
+        ...data,
+        email: customer.email,
+        items: lineItems,
+        shipping_methods,
+        billing_address: shipping_address,
+        shipping_address,
+      },
+    });
   };
 
   const { data: shipping_options } = useListShippingOptions({
@@ -166,11 +156,19 @@ export default function CreateDraftOrderView({
             },
           }}
         >
-          <ChooseRegion control={control} regions={regions.regions} />
+          <ChooseRegion
+            control={control}
+            regions={regions.regions}
+            setLineItems={setLineItems}
+          />
           {shipping_options && (
             <CustomerAndShipping
               control={control}
+              address={address}
+              setAddress={setAddress}
               customers={customers.customers}
+              customer={customer}
+              setCustomer={setCustomer}
               shippingOptions={shipping_options.shipping_options}
             />
           )}

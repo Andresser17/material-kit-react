@@ -1,6 +1,6 @@
 import { Address, DraftOrderResponse } from "@medusajs/types";
 import { useEffect, useState } from "react";
-import AddressCard from "src/components/address-card";
+import AddressCard from "src/components/controlled-card";
 import { useUpdateDraftOrderShippingAddress } from "src/mutations/use-update-draft-order-shipping-address";
 import { useGetCustomer } from "src/queries/use-get-customer";
 import BaseModal from "../base-modal";

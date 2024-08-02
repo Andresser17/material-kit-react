@@ -51,6 +51,7 @@ export const MUTATION_KEY = {
 
   create_customer: "create_customer",
   update_customer: "update_customer",
+  delete_customer: "delete_customer",
 
   add_customer_shipping_address: "add_customer_shipping_address",
   edit_customer_shipping_address: "edit_customer_shipping_address",

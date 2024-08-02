@@ -12,6 +12,7 @@ import TableRow from "@mui/material/TableRow";
 import { Customer } from "@medusajs/types";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
+import { useDeleteCustomer } from "src/mutations/use-delete-customer";
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function CustomerTableRow({
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState<Element | null>(null);
+  const { mutate: deleteCustomerMutation } = useDeleteCustomer();
 
   const handleOpenMenu = (event: {
     currentTarget: SetStateAction<Element | null>;
@@ -43,6 +45,11 @@ export default function CustomerTableRow({
   const handleEdit = () => {
     handleCloseMenu();
     navigate(`/customers/${customer.id}`);
+  };
+
+  const handleDelete = () => {
+    deleteCustomerMutation({ customer_id: customer.id });
+    handleCloseMenu();
   };
 
   return (
@@ -112,7 +119,10 @@ export default function CustomerTableRow({
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleEdit} sx={{ color: theme.palette.error.main }}>
+        <MenuItem
+          onClick={handleDelete}
+          sx={{ color: theme.palette.error.main }}
+        >
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Delete
         </MenuItem>

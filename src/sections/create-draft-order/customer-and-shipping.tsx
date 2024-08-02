@@ -2,13 +2,15 @@ import {
   Address,
   Customer,
   DraftOrderRequest,
+  ShippingMethodRequest,
   ShippingOption,
 } from "@medusajs/types";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 import { Box, Button, Typography } from "@mui/material";
 
 import { Control } from "react-hook-form";
+import AddressCard from "src/components/address-card";
 import ControlledSelect from "src/components/controlled-select";
 import Iconify from "src/components/iconify";
 import SectionBox from "src/components/section-box";
@@ -21,13 +23,21 @@ import { formatCurrency } from "src/utils/format-number";
 
 interface ICustomerAndShipping {
   control: Control<DraftOrderRequest>;
+  address: Address | null;
+  setAddress: Dispatch<SetStateAction<Address | null>>;
   customers: Customer[];
+  customer: Customer | null;
+  setCustomer: Dispatch<SetStateAction<Customer | null>>;
   shippingOptions: ShippingOption[];
 }
 
 export default function CustomerAndShipping({
   control,
+  address,
+  setAddress,
   customers,
+  customer,
+  setCustomer,
   shippingOptions,
 }: ICustomerAndShipping) {
   const { onOpen: openCreateCustomerModal } = useModal<ICreateCustomerModal>(
@@ -38,10 +48,7 @@ export default function CustomerAndShipping({
     onOpen: openCreateCustomerMlModal,
   } = useModal<ICreateCustomerMlModal>("create-customer-ml-modal");
 
-  const [customer, setCustomer] = useState<Customer | null>(null);
-  const [address, setAddress] = useState<Address | null>(null);
-
-  // select first customer address
+  // select first customer
   useEffect(() => {
     if (customer) setAddress(customer.shipping_addresses[0]);
   }, [customer]);
@@ -71,16 +78,20 @@ export default function CustomerAndShipping({
           label: `${shipping_option.name} - ${formatCurrency(shipping_option.amount)} ${shipping_option.region.currency_code.toUpperCase()}`,
           inputValue: "",
         }))}
-        mapControlValueToOption={(shipping_methods: ShippingOption[]) => {
-          if (shipping_methods.length === 0)
-            return { inputValue: "", id: "", label: "" };
+        mapControlValueToOption={(
+          shipping_methods: ShippingMethodRequest[],
+        ) => {
+          const found = shippingOptions.find(
+            (method) => method.id === shipping_methods[0].option_id,
+          );
+          if (found)
+            return {
+              inputValue: "",
+              id: found.id,
+              label: `${found.name} - ${formatCurrency(found.amount)} ${found.region.currency_code.toUpperCase()}`,
+            };
 
-          const shipping_option = shipping_methods[0];
-          return {
-            inputValue: "",
-            id: shipping_option.id,
-            label: `${shipping_option.name} - ${formatCurrency(shipping_option.amount)} ${shipping_option.region.currency_code.toUpperCase()}`,
-          };
+          return { inputValue: "", id: "", label: "" };
         }}
         handleSelectOption={(option: {
           inputValue: string;
@@ -90,7 +101,14 @@ export default function CustomerAndShipping({
           const found = shippingOptions.find(
             (shipping_option) => shipping_option.id === option.id,
           );
-          if (found) return [found];
+          if (found)
+            return [
+              {
+                option_id: found.id,
+                data: found.data,
+                price: found.amount,
+              },
+            ];
           return [];
         }}
         id="shipping_methods"
@@ -186,7 +204,7 @@ export default function CustomerAndShipping({
         </Button>
       </Box>
 
-      {/* {customer && customer.shipping_addresses.length > 0 ? (
+      {customer && customer.shipping_addresses.length > 0 ? (
         customer.shipping_addresses.map((shipping_address) => (
           <AddressCard
             key={shipping_address.id}
@@ -199,7 +217,7 @@ export default function CustomerAndShipping({
         <Typography variant="subtitle2">
           This customer don't have an address added
         </Typography>
-      )} */}
+      )}
     </SectionBox>
   );
 }

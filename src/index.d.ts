@@ -260,7 +260,7 @@ export declare module "@medusajs/types" {
     display_id: number;
     cart: Cart;
     cart_id: string;
-    order: OrderDTO;
+    order: Order;
     order_id: string;
     canceled_at: string;
     no_notification_order: boolean;
@@ -278,11 +278,7 @@ export declare module "@medusajs/types" {
     > {
     email: string;
     region_id: string;
-    shipping_methods: {
-      option_id: string;
-      data: Record<string, unknown>;
-      price: number;
-    }[];
+    shipping_methods: ShippingMethodRequest[];
     status: DraftOrderStatus;
     billing_address: ShippingAddress;
     shipping_address: ShippingAddress;
@@ -292,6 +288,28 @@ export declare module "@medusajs/types" {
     no_notification_order: boolean;
     metadata: Record<string, unknown>;
   }
+
+  interface ShippingMethodRequest {
+    option_id: string;
+    data: ShippingMethodData;
+    price: number;
+  }
+
+  type ShippingMethodData = {
+    id: string;
+    name: string;
+    customer: {
+      first_name: string;
+      last_name: string;
+      document: string;
+      phone: string;
+    };
+    destination: {
+      agency: string;
+      city: string;
+      state: string;
+    };
+  };
 
   interface LineItem {
     [key: string]:
@@ -584,23 +602,6 @@ export declare module "@medusajs/types" {
     currency_code: string | null;
     min_quantity: number | null;
     max_quantity: number | null;
-  }
-
-  interface ShippingMethodData {
-    first_name: string;
-    last_name: string;
-    document: string;
-    phone: string;
-    destination_agency: string;
-    destination_city: string;
-    destination_state: string;
-    shipping_option_id: string;
-  }
-
-  interface DraftOrderShippingMethod {
-    option_id: string;
-    data: Record<string, unknown>;
-    price: number;
   }
 
   interface Lot {

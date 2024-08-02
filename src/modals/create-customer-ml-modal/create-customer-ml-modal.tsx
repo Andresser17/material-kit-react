@@ -58,7 +58,7 @@ export default function CreateCustomerMlModal() {
             details.last_name =
               full_name.length === 4
                 ? `${full_name[2]} ${full_name[3]}`
-                : full_name[1];
+                : full_name[full_name.length - 1];
             break;
           case "Dirección":
             details.address = value;
